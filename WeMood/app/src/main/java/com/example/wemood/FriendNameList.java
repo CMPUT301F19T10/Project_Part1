@@ -25,6 +25,7 @@ import java.util.ArrayList;
  *
  * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
  */
+
 public class FriendNameList extends ArrayAdapter<User> {
     private ArrayList<User> friends;
     private Context context;

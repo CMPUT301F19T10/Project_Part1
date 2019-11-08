@@ -35,6 +35,7 @@ import java.util.Date;
  *
  * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
  */
+
 public class AddMoodActivity extends AppCompatActivity{
     Mood mood;
     private StorageReference Folder;

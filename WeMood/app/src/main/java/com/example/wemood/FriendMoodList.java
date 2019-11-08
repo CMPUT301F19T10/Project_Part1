@@ -30,6 +30,7 @@ import java.util.ArrayList;
  *
  * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
  */
+
 public class FriendMoodList extends ArrayAdapter<Mood> {
     private ArrayList<Mood> moods;
     private Context context;
