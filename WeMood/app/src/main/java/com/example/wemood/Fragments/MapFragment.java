@@ -107,7 +107,7 @@ public class MapFragment extends Fragment implements View.OnClickListener{
         friendsMap.setOnClickListener(this);
 
         // create the map
-        mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.frg);
+        mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
