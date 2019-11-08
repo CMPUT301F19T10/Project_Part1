@@ -1,36 +1,46 @@
 package com.example.wemood;
 
-public class Mood {
-    private String date;
-    private String time;
+import java.util.Date;
+
+public class Mood implements Comparable<Mood>{
+    private Date datetime;
     private String emotionalState;
+    private String explanation;
     private String comment;
     private String socialSituation;
-    private MoodLocation location;
+    private String location;
+    private String username;
 
-    public Mood(String date, String time, String emotionalState, String comment, String socialSituation, MoodLocation location) {
-        this.date = date;
-        this.time = time;
+
+    // Add mood original constructor
+    public Mood(Date datetime, String emotionalState, String comment, String socialSituation, String title) {
+        this.datetime = datetime;
         this.emotionalState = emotionalState;
         this.comment = comment;
         this.socialSituation = socialSituation;
+        this.explanation = title;
+
+    }
+
+
+    // Used in Home Page Constructor
+    public Mood(Date datetime, String emotionalState, String explanation, String comment, String socialSituation, String location, String username) {
+        this.datetime = datetime;
+        this.emotionalState = emotionalState;
+        this.comment = comment;
+        this.socialSituation = socialSituation;
+        this.explanation = explanation;
         this.location = location;
+        this.username = username;
+
     }
 
-    public String getDate() {
-        return date;
+    public Date getDatetime() {
+        return datetime;
     }
 
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
+    public void setDatetime(Date datetime) {
+        this.datetime = datetime;
     }
 
     public String getEmotionalState() {
@@ -57,11 +67,35 @@ public class Mood {
         this.socialSituation = socialSituation;
     }
 
-    public MoodLocation getLocation() {
+    public String getExplanation() {
+        return explanation;
+    }
+
+    public void setExplanation(String explanation) {
+        this.explanation = explanation;
+    }
+
+    public String getLocation() {
         return location;
     }
 
-    public void setLocation(MoodLocation location) {
+    public void setLocation(String location) {
         this.location = location;
     }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    // Compare to the other mood's date
+    // used to sort moods in moodlist by date
+    @Override
+    public int compareTo(Mood mood){
+        return getDatetime().compareTo(mood.getDatetime());
+    }
+
 }

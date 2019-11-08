@@ -2,7 +2,7 @@ package com.example.wemood;
 
 
 
-public class User {
+public class  User {
     private String email;
     private String userName;
     private String phone;

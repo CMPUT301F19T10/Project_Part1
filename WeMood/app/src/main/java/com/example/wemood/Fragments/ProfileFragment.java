@@ -8,6 +8,7 @@ package com.example.wemood.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,10 +54,8 @@ import static android.content.ContentValues.TAG;
  */
 
 public class ProfileFragment extends Fragment {
-    // The fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_SHOW_TEXT = "text";
+
     // Other class attributes are also defined here
-    private String mContentText;
     private String userName;
     private String userID;
     private String email;
@@ -92,16 +91,10 @@ public class ProfileFragment extends Fragment {
 
     /**
      * Constructor
-     * @param param1
      * @return profile fragment
      */
-    public static ProfileFragment newInstance(String param1) {
+    public static ProfileFragment newInstance() {
         ProfileFragment fragment = new ProfileFragment();
-        Bundle args = new Bundle();
-
-        args.putString(ARG_SHOW_TEXT, param1);
-        fragment.setArguments(args);
-
         return fragment;
     }
 
@@ -112,10 +105,6 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mContentText = getArguments().getString(ARG_SHOW_TEXT);
-        }
     }
 
     /**
@@ -168,10 +157,10 @@ public class ProfileFragment extends Fragment {
      * @return the current user
      */
     public FirebaseUser getUser() {
-            mAuth = FirebaseAuth.getInstance();
-            user = mAuth.getCurrentUser();
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
 
-            return user;
+        return user;
     }
 
     /**
@@ -254,37 +243,45 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 newPhone = editPhoneView.getText().toString();
-                // Update current phone number
-                documentReference
-                        .update("phone", newPhone)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d(TAG, "DocumentSnapshot successfully updated!");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w(TAG, "Error updating document", e);
-                            }
-                        });
-                // Get and display new phone number
-                documentReference.get()
-                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                            @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                User user = documentSnapshot.toObject(User.class);
-                                phone = user.getPhone();
-                                phoneView.setText("New Phone No.: " + phone);
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getActivity(), "Error!", Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, e.toString());
-                    }
-                });
+                // Check the validity
+                // Should not be empty and the length should be less than 10
+                if (TextUtils.isEmpty(newPhone) || !(newPhone.length() < 10)) {
+                    editPhoneView.setError("Invalid Phone!");
+                } else {
+                    editPhoneView.setError(null);
+                    // Update current phone number
+                    documentReference
+                            .update("phone", newPhone)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d(TAG, "DocumentSnapshot successfully updated!");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w(TAG, "Error updating document", e);
+                                }
+                            });
+                    // Get and display new phone number
+                    documentReference.get()
+                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    User user = documentSnapshot.toObject(User.class);
+                                    phone = user.getPhone();
+                                    phoneView.setText("New Phone No.: " + phone);
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getActivity(), "Error!", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, e.toString());
+                        }
+                    });
+                 }
+
             }
         });
     }
@@ -319,7 +316,9 @@ public class ProfileFragment extends Fragment {
                                 numMoods += 1;
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                             }
-                            moodsView.setText("Moods\n" + String.valueOf(numMoods));
+                            String moodsDisplay = "Moods\n%s";
+                            moodsDisplay = String.format(moodsDisplay, String.valueOf(numMoods));
+                            moodsView.setText(moodsDisplay);
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
                         }
@@ -333,7 +332,9 @@ public class ProfileFragment extends Fragment {
      */
     public void updateFollowers(int numFollowers) {
         // Display latest followers number
-        followersView.setText("Followers\n" + String.valueOf(numFollowers));
+        String followersDisplay = "Followers\n%s";
+        followersDisplay = String.format(followersDisplay, String.valueOf(numFollowers));
+        followersView.setText(followersDisplay);
     }
 
     /**
@@ -342,7 +343,25 @@ public class ProfileFragment extends Fragment {
      */
     public void updateFollowing(int numFollowing) {
         // Display latest following number
-        followingView.setText("Following\n" + String.valueOf(numFollowing));
+        String followingDisplay = "Following\n%s";
+        followingDisplay = String.format(followingDisplay, String.valueOf(numFollowing));
+        followingView.setText(followingDisplay);
+    }
+
+    /**
+     * Getter for numFollowers
+     * @return the number of followers of the current user
+     */
+    public int getNumFollowers() {
+        return numFollowers;
+    }
+
+    /**
+     * Getter for numFollowing
+     * @return the number of following of the current user
+     */
+    public int getNumFollowing() {
+        return numFollowing;
     }
 
     /**

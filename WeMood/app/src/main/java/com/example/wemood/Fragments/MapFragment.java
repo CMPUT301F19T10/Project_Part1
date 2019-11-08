@@ -53,7 +53,6 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
  * @version 1.0
  */
 public class MapFragment extends Fragment implements View.OnClickListener{
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
     private SupportMapFragment mapFragment;
     private Button myMap;
