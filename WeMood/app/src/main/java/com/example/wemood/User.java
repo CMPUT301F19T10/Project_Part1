@@ -2,11 +2,13 @@ package com.example.wemood;
 
 
 
-public class User {
+public class  User {
     private String email;
     private String userName;
     private String phone;
     private String userId;
+
+    public User() {}
 
     public User(String email, String userName, String phone, String userId) {
         this.email = email;

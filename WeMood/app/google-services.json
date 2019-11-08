@@ -15,14 +15,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "440252495144-8g4ogsnkchr4lhviji24j926eq4d8hve.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.wemood",
-            "certificate_hash": "8142c5635e06dd8ca8cc1e99171007a7798d0b72"
-          }
-        },
-        {
           "client_id": "440252495144-l1r9kcmh47g28ig278mp8rvai5303aei.apps.googleusercontent.com",
           "client_type": 3
         }
