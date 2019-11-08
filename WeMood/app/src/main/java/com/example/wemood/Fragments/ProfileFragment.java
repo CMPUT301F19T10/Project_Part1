@@ -346,6 +346,22 @@ public class ProfileFragment extends Fragment {
     }
 
     /**
+     * Getter got numFollowers
+     * @return the number of following if the current user
+     */
+    public int getNumFollowers() {
+        return numFollowers;
+    }
+
+    /**
+     * Getter got numFollowing
+     * @return the number of following if the current user
+     */
+    public int getNumFollowing() {
+        return numFollowing;
+    }
+
+    /**
      * Log out from the current account
      * @param logoutButton
      */

@@ -1,15 +1,37 @@
 package com.example.wemood;
 
 
-
+/**
+ * Class name: User
+ *
+ * version 1.0
+ *
+ * Date: November 1, 2019
+ *
+ * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
+ */
 public class  User {
     private String email;
     private String userName;
     private String phone;
     private String userId;
 
+    /**
+     * required empty constructor
+     */
     public User() {}
 
+    /**
+     *
+     * @param email
+     * user's email
+     * @param userName
+     * user's unique username
+     * @param phone
+     * user's phone
+     * @param userId
+     * user's unique id
+     */
     public User(String email, String userName, String phone, String userId) {
         this.email = email;
         this.userName = userName;

@@ -1,7 +1,19 @@
 package com.example.wemood;
 
 import java.util.Date;
+/**
+ * Class name: Mood
+ *
+ * version 1.0
+ *
+ * Date: November 1, 2019
+ *
+ * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
+ */
 
+/**
+ * create a mood
+ */
 public class Mood implements Comparable<Mood>{
     private Date datetime;
     private String emotionalState;
@@ -12,7 +24,14 @@ public class Mood implements Comparable<Mood>{
     private String username;
 
 
-    // Add mood original constructor
+    /**
+     * construct a mood
+     * @param datetime
+     * @param emotionalState
+     * @param comment
+     * @param socialSituation
+     * @param title
+     */
     public Mood(Date datetime, String emotionalState, String comment, String socialSituation, String title) {
         this.datetime = datetime;
         this.emotionalState = emotionalState;
@@ -23,7 +42,16 @@ public class Mood implements Comparable<Mood>{
     }
 
 
-    // Used in Home Page Constructor
+    /**
+     * construct a mood
+     * @param datetime
+     * @param emotionalState
+     * @param explanation
+     * @param comment
+     * @param socialSituation
+     * @param location
+     * @param username
+     */
     public Mood(Date datetime, String emotionalState, String explanation, String comment, String socialSituation, String location, String username) {
         this.datetime = datetime;
         this.emotionalState = emotionalState;
@@ -92,7 +120,7 @@ public class Mood implements Comparable<Mood>{
     }
 
     // Compare to the other mood's date
-    // used to sort moods in moodlist by date
+    // used to sort moods in moodList by date
     @Override
     public int compareTo(Mood mood){
         return getDatetime().compareTo(mood.getDatetime());
