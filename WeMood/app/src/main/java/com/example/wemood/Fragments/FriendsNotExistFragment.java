@@ -1,4 +1,9 @@
 package com.example.wemood.Fragments;
+/**
+ * @author Alpha Hou
+ *
+ * @version 1.0
+ */
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,22 +17,50 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.wemood.R;
 
+/**
+ * Class name: FriendsNotExistFragment
+ *
+ * Version 1.0
+ *
+ * Date: November 7, 2019
+ *
+ * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
+ */
 public class FriendsNotExistFragment extends Fragment{
 
+    /**
+     * Constructor
+     */
     public FriendsNotExistFragment() {
         // Required empty public constructor
     }
 
+    /**
+     * Constructor
+     * @return
+     */
     public static FriendsNotExistFragment newInstance() {
         FriendsNotExistFragment fragment = new FriendsNotExistFragment();
         return fragment;
     }
 
+    /**
+     * Initialize the FriendNotExistFragment
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     * Create the view of the FriendNotExistFragment will lock moods history of this friend and will be able to
+     * send the follow request message by clicking the button "Follow"
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

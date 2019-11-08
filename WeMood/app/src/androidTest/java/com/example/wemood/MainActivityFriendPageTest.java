@@ -1,4 +1,9 @@
 package com.example.wemood;
+/**
+ * @author Boyuan Dong
+ *
+ * @version 1.0
+ */
 
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -12,10 +17,27 @@ import org.junit.Test;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 
+/**
+ * Class name: MainActivityFriendPageTest
+ *
+ * Version 1.0
+ *
+ * Date: November 7, 2019
+ *
+ * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
+ */
+
+/**
+ * Will Test the MainActivityFriendPage.
+ */
+
 public class MainActivityFriendPageTest {
 
     private Solo solo;
 
+    /**
+     * The First Activity in the app would be LogSignInActivity.
+     */
     @Rule
     public ActivityTestRule<LogSignInActivity> rule = new ActivityTestRule<>(LogSignInActivity.class, true, true);
 
@@ -23,7 +45,6 @@ public class MainActivityFriendPageTest {
      * Runs before all tests and creates solo instance.
      * @throws Exception
      */
-
     @Before
     public void setUp() throws Exception {
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
@@ -40,7 +61,6 @@ public class MainActivityFriendPageTest {
     /**
      * Check whether the MainActivity opens by clicking on the Sign in Button.
      */
-
     @Test
     public void checkoutMainActivity() {
         solo.assertCurrentActivity("Not in MainActivity", MainActivity.class);
@@ -49,7 +69,6 @@ public class MainActivityFriendPageTest {
     /**
      * Check whether the FriendFragment opens by clicking on the FriendButton RadioButton.
      */
-
     @Test
     public void checkFriendFragmentChange() {
         RadioButton FriendButton = (RadioButton) solo.getView(R.id.friends_tab);
@@ -60,7 +79,6 @@ public class MainActivityFriendPageTest {
     /**
      * Check whether the FriendNotExist opens by searching for the username
      */
-
     @Test
     public void checkFriendNotExistChange() {
         RadioButton FriendButton = (RadioButton) solo.getView(R.id.friends_tab);
@@ -75,7 +93,6 @@ public class MainActivityFriendPageTest {
     /**
      * Check whether the FriendNotExistFollowDialog opens by click on Follow button
      */
-
     @Test
     public void checkFriendNotExistFollowDialogChange() {
         RadioButton FriendButton = (RadioButton) solo.getView(R.id.friends_tab);
@@ -91,9 +108,8 @@ public class MainActivityFriendPageTest {
 
 
     /**
-     * Check whether the FriendNotExistFollowDialogClose close by click on Yes button
+     * Check whether the FriendNotExistFollowDialog close by click on Yes button
      */
-
     @Test
     public void checkFriendNotExistFollowDialogYesClose() {
         RadioButton FriendButton = (RadioButton) solo.getView(R.id.friends_tab);
@@ -110,7 +126,7 @@ public class MainActivityFriendPageTest {
     }
 
     /**
-     * Check whether the FriendNotExistFollowDialogClose close by click on No button
+     * Check whether the FriendNotExistFollowDialog close by click on No button
      */
 
     @Test
@@ -130,7 +146,7 @@ public class MainActivityFriendPageTest {
 
 
     /**
-     * Check whether the FriendNotExist close by click on cancel button
+     * Check whether the FriendFragment opens by click on cancel button
      */
 
     @Test
@@ -162,9 +178,8 @@ public class MainActivityFriendPageTest {
 
 
     /**
-     * Check whether the FriendUnfollowFragmentDialog close by clicking on the Unfollow button.
+     * Check whether the FriendUnfollowFragmentDialog opens by clicking on the Unfollow button.
      */
-
     @Test
     public void checkFriendUnfollowFragmentDialogChange() {
         RadioButton FriendButton = (RadioButton) solo.getView(R.id.friends_tab);
@@ -179,7 +194,6 @@ public class MainActivityFriendPageTest {
     /**
      * Check whether the FriendUnfollowFragmentDialog close by click on Yes button
      */
-
     @Test
     public void checkFriendUnfollowFragmentDialogYesClose() {
         RadioButton FriendButton = (RadioButton) solo.getView(R.id.friends_tab);
@@ -212,7 +226,7 @@ public class MainActivityFriendPageTest {
 
 
     /**
-     * Check whether the checkFriendBackChange opens by clicking on the back button.
+     * Check whether the FriendExistFragment opens by clicking on the back button.
      */
 
     @Test

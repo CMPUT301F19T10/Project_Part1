@@ -1,4 +1,9 @@
 package com.example.wemood.Fragments;
+/**
+ * @author Alpha Hou
+ *
+ * @version 1.0
+ */
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,25 +25,59 @@ import com.example.wemood.User;
 
 import java.util.ArrayList;
 
+/**
+ * Class name: FriendsFragment
+ *
+ * Version 1.0
+ *
+ * Date: November 7, 2019
+ *
+ * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
+ */
+
+/**
+ * Will connect to the firebase later
+ */
 public class FriendsFragment extends Fragment {
 
     ListView friendList;
     ArrayAdapter<User> friendAdapter;
     ArrayList<User> frienddataList;
 
+    /**
+     * Constructor
+     */
     public FriendsFragment() {
         // Required empty public constructor
     }
 
+    /**
+     * Constructor
+     * @return
+     */
     public static FriendsFragment newInstance() {
         FriendsFragment fragment = new FriendsFragment();
         return fragment;
     }
+
+    /**
+     * Initialize the FriendsFragment
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     * Create the view of the FriendsFragment. Will display a list of friends' username and will be
+     * able to search a user by his/her username and click the "Search" button. Will be able to see the
+     * friend's information by clicking the username on the list.
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

@@ -1,4 +1,9 @@
 package com.example.wemood;
+/**
+ * @author Boyuan Dong
+ *
+ * @version 1.0
+ */
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -16,19 +21,37 @@ import androidx.annotation.Nullable;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
+/**
+ * Class name: FriendMoodList
+ *
+ * Version 1.0
+ *
+ * Date: November 7, 2019
+ *
+ * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
+ */
 public class FriendMoodList extends ArrayAdapter<Mood> {
     private ArrayList<Mood> moods;
     private Context context;
 
-    // Constructor to get the context and list of most recent friend moods
+    /**
+     * Constructor to get the context and list of most recent friend moods.
+     * @param context
+     * @param moods
+     */
     public FriendMoodList(Context context, ArrayList<Mood> moods) {
         super(context,0,moods);
         this.moods = moods;
         this.context = context;
     }
 
-    // get the view of the friendmoodlist
+    /**
+     * Get the view of the friendmoodlist. Will display the detail information of moods.
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return
+     */
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = convertView;
 
