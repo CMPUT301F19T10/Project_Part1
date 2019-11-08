@@ -1,4 +1,9 @@
 package com.example.wemood;
+/**
+ * @author Boyuan Dong
+ *
+ * @version 1.0
+ */
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,18 +17,39 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
+/**
+ * Class name: FriendRequestList
+ *
+ * Version 1.0
+ *
+ * Date: November 7, 2019
+ *
+ * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
+ */
 public class FriendRequestList extends ArrayAdapter<String> {
 
     private Context context;
     private List<String> messages;
 
-    // Constructor to get the context and list of friend request messages
+    /**
+     * Constructor to get the context and list of friend request messages.
+     * @param context
+     * @param messages
+     */
     public FriendRequestList(Context context, ArrayList<String> messages) {
         super(context,0,messages);
         this.messages = messages;
         this.context = context;
     }
+
+    /**
+     * Will get the view of the FriendRequestList. Will display a list of messages of friend requests need user
+     * to decline or accept.
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -42,4 +68,4 @@ public class FriendRequestList extends ArrayAdapter<String> {
     }
 
 
-    }
+}

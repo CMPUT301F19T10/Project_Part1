@@ -1,4 +1,9 @@
 package com.example.wemood.Fragments;
+/**
+ * @author Boyuan Dong
+ *
+ * @version 1.0
+ */
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,6 +20,16 @@ import com.example.wemood.R;
 
 import java.util.ArrayList;
 
+/**
+ * Class name: FriendRequestMessageFragment
+ *
+ * Version 1.0
+ *
+ * Date: November 7, 2019
+ *
+ * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
+ */
+
 public class FriendRequestMessageFragment extends Fragment {
 
     // Declare the variables so that you will be able to reference it later.
@@ -23,20 +38,38 @@ public class FriendRequestMessageFragment extends Fragment {
     ArrayList<String> dataMessageList;
 
 
+    /**
+     * A empty constructor
+     */
     public FriendRequestMessageFragment(){
         // Empty constructor
     }
 
+    /**
+     * Constructor
+     * @return
+     */
     public static FriendRequestMessageFragment newInstance() {
         FriendRequestMessageFragment fragment = new FriendRequestMessageFragment();
         return fragment;
     }
 
+    /**
+     * On create this fragment
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     * Create the view of the FriendRequestMessageFragment. And will display a list of messages of the request messages.
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -66,7 +99,7 @@ public class FriendRequestMessageFragment extends Fragment {
     }
 
 
-
+// Will implement later
 //    @Override
 //    // Decline the friend request
 //    public void DeclineRequest(String message){ messageAdapter.remove(message);};
