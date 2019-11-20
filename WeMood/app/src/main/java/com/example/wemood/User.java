@@ -1,6 +1,8 @@
 package com.example.wemood;
 
 
+import java.util.ArrayList;
+
 /**
  * Class name: User
  *
@@ -15,6 +17,8 @@ public class  User {
     private String userName;
     private String phone;
     private String userId;
+    private ArrayList<String> friendList;
+    private ArrayList<String> waitFriendList;
 
     /**
      * required empty constructor
@@ -37,6 +41,14 @@ public class  User {
         this.userName = userName;
         this.phone = phone;
         this.userId = userId;
+        friendList = new ArrayList<>();
+        this.friendList.add("Dio");
+        this.friendList.add("boyuan");
+        this.friendList.add("dbytest1");
+        waitFriendList = new ArrayList<>();
+        waitFriendList.add("shuijiao1");
+        waitFriendList.add("dby123");
+        this.friendList.add("dby123123");
     }
 
     public String getUserName() {
@@ -71,4 +83,19 @@ public class  User {
         this.phone = phone;
     }
 
+    public ArrayList<String> getFriendList() {
+        return friendList;
+    }
+
+    public void setFriendList(ArrayList<String> friendList) {
+        this.friendList = friendList;
+    }
+
+    public ArrayList<String> getWaitFriendList() {
+        return waitFriendList;
+    }
+
+    public void setWaitFriendList(ArrayList<String> waitFriendList) {
+        this.waitFriendList = waitFriendList;
+    }
 }

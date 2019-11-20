@@ -22,7 +22,27 @@ public class Mood implements Comparable<Mood>{
     private String socialSituation;
     private String location;
     private String username;
+    private double longitude;
+    private double latitude;
 
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Mood() {
+    }
 
     /**
      * construct a mood
@@ -32,12 +52,15 @@ public class Mood implements Comparable<Mood>{
      * @param socialSituation
      * @param title
      */
-    public Mood(Date datetime, String emotionalState, String comment, String socialSituation, String title) {
+    public Mood(Date datetime, String emotionalState, String comment, String socialSituation, String title, double longitude, double latitude, String location) {
         this.datetime = datetime;
         this.emotionalState = emotionalState;
         this.comment = comment;
         this.socialSituation = socialSituation;
         this.explanation = title;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.location = location;
 
     }
 
