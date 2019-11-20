@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -88,11 +87,6 @@ public class FriendsNotExistFragment extends Fragment{
                 new FriendFollowFragment().show(getFragmentManager(), "Follow Pressed");
             }
         });
-
-//        public void showEditDialog(View v) {
-//            FriendFollowFragment = new FriendFollowFragment(this, R.style.AdInfoDialog, onClickListener);
-//            FriendFollowFragment.show();
-//        }
 
         return rootView;
     }

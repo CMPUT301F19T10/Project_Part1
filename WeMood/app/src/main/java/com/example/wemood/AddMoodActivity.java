@@ -1,4 +1,9 @@
 package com.example.wemood;
+/**
+ * @author Ziyi Ye
+ *
+ * @version 1.0
+ */
 
 import android.content.Intent;
 import android.net.Uri;
@@ -29,9 +34,9 @@ import java.util.Date;
 /**
  * Class name: AddMoodActivity
  *
- * version 1.0
+ * Version 1.0
  *
- * Date: November 3, 2019
+ * Date: November 4, 2019
  *
  * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
  */
@@ -47,12 +52,11 @@ public class AddMoodActivity extends AppCompatActivity{
     String name;
     Date currentTime = Calendar.getInstance().getTime();
 
-    /**
-     * @author Ziyi Ye
-     *
-     * @version 1.0
-     */
 
+    /**
+     * Initialize
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +82,7 @@ public class AddMoodActivity extends AppCompatActivity{
 
         /**
          * press the Add Mood button
-         * put the mood to firebase
+         * put the mood to fireBase
          */
         Button Add = findViewById(R.id.add);
         Add.setOnClickListener(new View.OnClickListener() {
@@ -96,11 +100,8 @@ public class AddMoodActivity extends AppCompatActivity{
                     name = user.getDisplayName();
                     DocumentReference docRef = db.collection("Users").document(name);
                     db = FirebaseFirestore.getInstance();
-                    //create the mood
-                    mood = new Mood(currentTime, emotionString, explanation, situationString, title);
-                    //put the mood to firebase
-                    docRef.collection("MoodList").document(currentTime.toString()).set(mood);
 
+                    addMood(currentTime, emotionString, explanation, situationString, title, docRef);
                     //add image to storage if it is not null
                     if (imageUri != null){
                         StorageReference Image = Folder.child("image");
@@ -115,6 +116,21 @@ public class AddMoodActivity extends AppCompatActivity{
         });
     }
 
+    /**
+     * add a mood to fireBase
+     * @param currentTime
+     * @param emotionString
+     * @param explanation
+     * @param situationString
+     * @param title
+     * @param docRef
+     */
+    public void addMood(Date currentTime, String emotionString, String explanation, String situationString, String title, DocumentReference docRef){
+        mood = new Mood(currentTime, emotionString, explanation, situationString, title);
+        //put the mood to fireBase
+        docRef.collection("MoodList").document(currentTime.toString()).set(mood);
+
+    }
     /**
      * check if title has more than 3 words
      * @param comment
@@ -190,7 +206,7 @@ public class AddMoodActivity extends AppCompatActivity{
     }
 
     /**
-     * get and show the selected image in the imageview
+     * get and show the selected image in the imageView
      */
 
     @Override

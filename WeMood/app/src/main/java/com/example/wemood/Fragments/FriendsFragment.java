@@ -19,9 +19,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.wemood.FriendNameList;
 import com.example.wemood.R;
-//import com.example.wemood.ShowExistFriend;
 import com.example.wemood.User;
-//import com.google.firebase.firestore.auth.User;
 
 import java.util.ArrayList;
 
@@ -92,13 +90,6 @@ public class FriendsFragment extends Fragment {
         frienddataList.add(new User("Alpha@ualberta.ca","Alpha","123-222-2222","AlphaUserID"));
         frienddataList.add(new User("Zoey@ualberta.ca","Zoey","123-111-1111","ZoeyUserID"));
         frienddataList.add(new User("Boyuan@gmail.com","Boyuan","122-111-1122","BoyuanUserID"));
-//        frienddataList.add(new User("Zuhao","passward1"));
-//        frienddataList.add(new User("Ziyi","passward1"));
-//        frienddataList.add(new User("Ruochen","passward1"));
-//        frienddataList.add(new User("Willy","passward1"));
-//        frienddataList.add(new User("Cherry","passward1"));
-//        frienddataList.add(new User("Rose","passward1"));
-//        frienddataList.add(new User("Candy","passward1"));
         frienddataList.add(new User("Anna@gmail.com","Anna","222-222-1234","AnnaUserID"));
 
         friendAdapter = new FriendNameList(getActivity(), frienddataList);

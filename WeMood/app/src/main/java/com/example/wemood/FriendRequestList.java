@@ -68,4 +68,4 @@ public class FriendRequestList extends ArrayAdapter<String> {
     }
 
 
-    }
+}

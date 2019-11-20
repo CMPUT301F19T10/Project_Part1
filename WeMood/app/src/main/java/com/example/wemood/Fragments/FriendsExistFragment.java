@@ -21,7 +21,6 @@ import com.example.wemood.Mood;
 import com.example.wemood.R;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 /**
