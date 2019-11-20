@@ -7,14 +7,20 @@ package com.example.wemood.Fragments;
  */
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -24,6 +30,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.wemood.LogSignInActivity;
+import com.example.wemood.MoodHistory;
 import com.example.wemood.R;
 import com.example.wemood.User;
 
@@ -40,7 +47,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
+
+import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
 
 /**
@@ -62,9 +74,6 @@ public class ProfileFragment extends Fragment {
     private String phone;
     private String newPhone;
 
-    private int numFollowers = 0;
-    private int numFollowing = 0;
-
     private FirebaseAuth mAuth;
     private FirebaseUser user;
     private FirebaseFirestore db;
@@ -74,15 +83,20 @@ public class ProfileFragment extends Fragment {
     private View rootView;
     private ImageView figureView;
     private TextView moodsView;
-    private TextView followersView;
     private TextView followingView;
     private TextView userNameView;
     private TextView userIDView ;
     private TextView emailView;
     private TextView phoneView;
     private EditText editPhoneView;
+    private ImageButton cameraButton;
     private Button historyButton;
     private RadioButton logoutButton;
+
+    private FirebaseStorage storage;
+    private StorageReference folder;
+    private Uri imageUri;
+    private static final int PICK_IMAGE = 100;
 
     /**
      * Required empty public constructor
@@ -121,13 +135,13 @@ public class ProfileFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_profile, container, false);
         figureView = rootView.findViewById(R.id.figure);
         moodsView = rootView.findViewById(R.id.moods);
-        followersView = rootView.findViewById(R.id.followers);
         followingView = rootView.findViewById(R.id.following);
         userNameView = rootView.findViewById(R.id.username);
         userIDView = rootView.findViewById(R.id.userID);
         emailView = rootView.findViewById(R.id.email);
         phoneView = rootView.findViewById(R.id.phone);
         editPhoneView = rootView.findViewById(R.id.editPhone);
+        cameraButton = rootView.findViewById(R.id.camera);
         historyButton = rootView.findViewById(R.id.history);
         logoutButton = rootView.findViewById(R.id.logout);
 
@@ -140,11 +154,14 @@ public class ProfileFragment extends Fragment {
         // Update Moods Number
         updateMoods(moodsView);
 
-        // Update Followers Number
-        updateFollowers(numFollowers);
-
         // Update Following Number
-        updateFollowing(numFollowing);
+        updateFollowing(followingView);
+
+        // Update Figure
+        updateFigure();
+
+        // Go to My Mood History
+        goHistory();
 
         // Log Out
         logout(logoutButton);
@@ -171,6 +188,16 @@ public class ProfileFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
 
         return db;
+    }
+
+    /**
+     * Get storage
+     * @return the storage instance
+     */
+    public FirebaseStorage getStorage() {
+        storage = FirebaseStorage.getInstance();
+
+        return storage;
     }
 
     /**
@@ -204,7 +231,8 @@ public class ProfileFragment extends Fragment {
                 .document(userName);
 
         // Get and display phone from current document
-        documentReference.get()
+        documentReference
+                .get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -265,7 +293,8 @@ public class ProfileFragment extends Fragment {
                                 }
                             });
                     // Get and display new phone number
-                    documentReference.get()
+                    documentReference
+                            .get()
                             .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                 @Override
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -316,8 +345,8 @@ public class ProfileFragment extends Fragment {
                                 numMoods += 1;
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                             }
-                            String moodsDisplay = "Moods\n%s";
-                            moodsDisplay = String.format(moodsDisplay, String.valueOf(numMoods));
+                            String moodsDisplay = "Moods\n%d";
+                            moodsDisplay = String.format(moodsDisplay, numMoods);
                             moodsView.setText(moodsDisplay);
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
@@ -327,41 +356,94 @@ public class ProfileFragment extends Fragment {
     }
 
     /**
-     * Update Followers Number
-     * @param numFollowers
-     */
-    public void updateFollowers(int numFollowers) {
-        // Display latest followers number
-        String followersDisplay = "Followers\n%s";
-        followersDisplay = String.format(followersDisplay, String.valueOf(numFollowers));
-        followersView.setText(followersDisplay);
-    }
-
-    /**
      * Update Following Number
-     * @param numFollowing
+     * @param followingView
      */
-    public void updateFollowing(int numFollowing) {
-        // Display latest following number
-        String followingDisplay = "Following\n%s";
-        followingDisplay = String.format(followingDisplay, String.valueOf(numFollowing));
-        followingView.setText(followingDisplay);
+    public void updateFollowing(final TextView followingView) {
+        // Get database and current user
+        getDatabase();
+        user = getUser();
+
+        // Get username for later reference
+        userName = user.getDisplayName();
+
+        // Get collection reference
+        documentReference = db.collection("Users")
+                .document(userName);
+
+        documentReference
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        User user = documentSnapshot.toObject(User.class);
+                        ArrayList<String> friendList = user.getFriendList();
+                        int numFollowing = friendList.size();
+                        String followingDisplay = "Following\n%d";
+                        followingDisplay = String.format(followingDisplay, numFollowing);
+                        followingView.setText(followingDisplay);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getActivity(), "Error!", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, e.toString());
+            }
+        });
     }
 
     /**
-     * Getter for numFollowers
-     * @return the number of followers of the current user
+     * Update figure
      */
-    public int getNumFollowers() {
-        return numFollowers;
+    public void updateFigure() {
+        // Get folder
+        folder = getStorage().getReference().child("ProfileFolder");
+
+        // Choose a photo from gallery
+        cameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                startActivityForResult(gallery, PICK_IMAGE);
+            }
+        });
     }
 
     /**
-     * Getter for numFollowing
-     * @return the number of following of the current user
+     * Get and show the selected image then upload it
+     * @param requestCode
+     * @param resultCode
+     * @param data
      */
-    public int getNumFollowing() {
-        return numFollowing;
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PICK_IMAGE) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                imageUri = data.getData();
+                figureView.setImageURI(imageUri);
+
+                // Add figure to storage if it is not null
+                if (imageUri != null) {
+                    StorageReference Image = folder.child(userName);
+                    Image.putFile(imageUri);
+                }
+            }
+        }
+    }
+
+    /**
+     * Go to MoodHistory Activity
+     */
+    public void goHistory() {
+        historyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Go to MoodHistory Activity
+                Intent intent = new Intent(getActivity(), MoodHistory.class);
+                startActivity(intent);
+            }
+        });
     }
 
     /**

@@ -1,40 +1,38 @@
 package com.example.wemood.Fragments;
+/**
+ * @author Alpha Hou
+ *
+ * @version 1.0
+ */
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.example.wemood.R;
+/**
+ * Class name: FriendUnfollowFragment
+ *
+ * Version 1.0
+ *
+ * Date: November 7, 2019
+ *
+ * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
+ */
 
 public class FriendUnfollowFragment extends DialogFragment {
 
     private TextView information;
-//    private FriendFollowFragment.OnFragmentInteractionListener listener;
 
-//    public interface OnFragmentInteractionListener{
-////        void onYesPressed();
-////        void onNoPressed();
-//    }
-
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof FriendFollowFragment.OnFragmentInteractionListener){
-//            listener = (FriendFollowFragment.OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//    }
-
+    /**
+     * Create the UnfollowFragment Dialog for the already exist friend of the user choose to unfollow this friend
+     * @param savedInstanceState
+     * @return
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -49,8 +47,5 @@ public class FriendUnfollowFragment extends DialogFragment {
                 .setNeutralButton("No", null)
                 .setPositiveButton("Yes", null).create();
     }
-
-
-
 
 }

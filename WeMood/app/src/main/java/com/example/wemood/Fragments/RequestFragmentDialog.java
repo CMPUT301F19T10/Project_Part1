@@ -1,4 +1,9 @@
 package com.example.wemood.Fragments;
+/**
+ * @author Boyuan Dong
+ *
+ * @version 1.0
+ */
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -14,38 +19,39 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.wemood.R;
-
+/**
+ * Class name: RequestFragmentDialog
+ *
+ * Version 1.0
+ *
+ * Date: November 7, 2019
+ *
+ * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
+ */
 public class RequestFragmentDialog extends DialogFragment {
     private TextView FriendReqestTitle;
     private TextView RequestPermission;
     private View message;
 
+    /**
+     * Constructor
+     * @param view
+     */
     public RequestFragmentDialog(View view) {
         message = view;
     }
 
+    // Constructor
     public RequestFragmentDialog() {
         //Empty constructor
     }
 
-//    private OnFragmentInteractionListener listener;
-//
-//    public interface OnFragmentInteractionListener {
-//        void DeclineRequest(String message);
-//        void AcceceptRequest(String message);
-//    }
-
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener){
-//            listener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//    }
-
+    /**
+     * Will Create a view of the RequestFragmentDialog
+     * so that user can choose to accept the friend request or decline this request message.
+     * @param savedInstanceState
+     * @return
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
