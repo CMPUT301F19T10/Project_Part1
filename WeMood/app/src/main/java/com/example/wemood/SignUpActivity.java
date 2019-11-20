@@ -29,6 +29,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -40,6 +42,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static android.content.ContentValues.TAG;
 
 
 /**
@@ -70,6 +73,7 @@ public class SignUpActivity extends AppCompatActivity implements
 
     private Button signUpButton;
     private CollectionReference collectionReference;
+    private DocumentReference documentReference;
     private FirebaseFirestore db;
 
 
@@ -124,7 +128,66 @@ public class SignUpActivity extends AppCompatActivity implements
                 addUserName.setError("User name is already exist");
             }*/
 
-            createAccount(userName, email, password, phone);
+            documentReference = db.collection("Users")
+                    .document(userName);
+
+            documentReference.get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            User user = documentSnapshot.toObject(User.class);
+                            if (user != null){
+                                addUserName.setError("Username already exist!");
+                            } else{
+                                createAccount(userName, email, password, phone);
+                            }
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                }
+            });
+
+
+
+            /*collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+
+
+                @Override
+                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                    for(QueryDocumentSnapshot doc: queryDocumentSnapshots){
+
+
+                        String usernameInDataBase = doc.getId();
+                        Log.d("name1",usernameInDataBase);
+
+
+
+                        if (usernameInDataBase.equals(userName)){
+
+
+                            Log.d("name2", "found");
+                            break;
+                        }else{
+                            createAccount(userName, email, password, phone);
+
+                            Log.d("name2", "not found");
+
+                            break;
+                        }
+
+                    }
+                }
+
+            });*/
+
+
+
+
+
+
+
 
 
 
@@ -301,7 +364,10 @@ public class SignUpActivity extends AppCompatActivity implements
 
 
     /*private boolean isUserNameValid(final String username){
+        boolean name_found  = false;
         Log.d("name0",username);
+
+        final ArrayList<String> nameList = new ArrayList<>();
 
         collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
 
@@ -313,8 +379,13 @@ public class SignUpActivity extends AppCompatActivity implements
 
                     String usernameInDataBase = doc.getId();
                     Log.d("name1",usernameInDataBase);
+
+
+
+                    nameList.add(usernameInDataBase);
+
+
                     if (usernameInDataBase.equals(username)){
-                        myCallback.onCallback(usernameInDataBase);
 
 
                         Log.d("name2", "found");
@@ -326,12 +397,30 @@ public class SignUpActivity extends AppCompatActivity implements
 
                 }
             }
-        });
-        System.out.println("---------"+valid.isNameValid());
-        return valid.isNameValid();
-    }
 
-    public String readData(new MyCallback() {
+
+
+        });
+
+
+
+        for (int i=0;i < nameList.size();i++){
+            Log.d("name3", nameList.get(i));
+
+            if (username.equals(nameList.get(i))){
+                name_found = true;
+                break;
+            }
+        }
+
+        return name_found;
+
+
+    }*/
+
+
+
+    /*public String readData(new MyCallback() {
         @Override
         public void onCallback(String value) {
             Log.d("TAG", value);
