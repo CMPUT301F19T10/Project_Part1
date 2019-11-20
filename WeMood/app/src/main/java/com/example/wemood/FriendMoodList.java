@@ -93,30 +93,35 @@ public class FriendMoodList extends ArrayAdapter<Mood> {
         switch (emotionalState){
             case "happy":
                 view.setBackgroundColor(Color.rgb(253,91,91));
+                view.getBackground().setAlpha(200);
                 Bitmap bMap = BitmapFactory.decodeResource(view.getResources(), R.drawable.happy);
                 Bitmap bMapScaled = Bitmap.createScaledBitmap(bMap, 100, 100, true);
                 FriendMoodState.setImageBitmap(bMapScaled);
                 break;
             case "sad":
                 view.setBackgroundColor(Color.rgb(106,106,240));
+                view.getBackground().setAlpha(200);
                 Bitmap bMap1 = BitmapFactory.decodeResource(view.getResources(), R.drawable.sad);
                 Bitmap bMapScaled1 = Bitmap.createScaledBitmap(bMap1, 100, 100, true);
                 FriendMoodState.setImageBitmap(bMapScaled1);
                 break;
             case "tired":
                 view.setBackgroundColor(Color.rgb(121,121,121));
+                view.getBackground().setAlpha(200);
                 Bitmap bMap2 = BitmapFactory.decodeResource(view.getResources(), R.drawable.tired);
                 Bitmap bMapScaled2 = Bitmap.createScaledBitmap(bMap2, 100, 100, true);
                 FriendMoodState.setImageBitmap(bMapScaled2);
                 break;
             case "angry":
                 view.setBackgroundColor(Color.rgb(250,233,90));
+                view.getBackground().setAlpha(200);
                 Bitmap bMap3 = BitmapFactory.decodeResource(view.getResources(), R.drawable.angry);
                 Bitmap bMapScaled3 = Bitmap.createScaledBitmap(bMap3, 100, 100, true);
                 FriendMoodState.setImageBitmap(bMapScaled3);
                 break;
             case "lonely":
                 view.setBackgroundColor(Color.rgb(255,152,0));
+                view.getBackground().setAlpha(200);
                 Bitmap bMap4 = BitmapFactory.decodeResource(view.getResources(), R.drawable.tired);
                 Bitmap bMapScaled4 = Bitmap.createScaledBitmap(bMap4, 100, 100, true);
                 FriendMoodState.setImageBitmap(bMapScaled4);
