@@ -151,49 +151,6 @@ public class SignUpActivity extends AppCompatActivity implements
 
 
 
-            /*collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-
-
-                @Override
-                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                    for(QueryDocumentSnapshot doc: queryDocumentSnapshots){
-
-
-                        String usernameInDataBase = doc.getId();
-                        Log.d("name1",usernameInDataBase);
-
-
-
-                        if (usernameInDataBase.equals(userName)){
-
-
-                            Log.d("name2", "found");
-                            break;
-                        }else{
-                            createAccount(userName, email, password, phone);
-
-                            Log.d("name2", "not found");
-
-                            break;
-                        }
-
-                    }
-                }
-
-            });*/
-
-
-
-
-
-
-
-
-
-
-
-
-
         }
     }
 
@@ -362,70 +319,6 @@ public class SignUpActivity extends AppCompatActivity implements
 
 
 
-
-    /*private boolean isUserNameValid(final String username){
-        boolean name_found  = false;
-        Log.d("name0",username);
-
-        final ArrayList<String> nameList = new ArrayList<>();
-
-        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-
-
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                for(QueryDocumentSnapshot doc: queryDocumentSnapshots){
-
-
-                    String usernameInDataBase = doc.getId();
-                    Log.d("name1",usernameInDataBase);
-
-
-
-                    nameList.add(usernameInDataBase);
-
-
-                    if (usernameInDataBase.equals(username)){
-
-
-                        Log.d("name2", "found");
-                        break;
-                    }else{
-
-                        Log.d("name2", "not found");
-                    }
-
-                }
-            }
-
-
-
-        });
-
-
-
-        for (int i=0;i < nameList.size();i++){
-            Log.d("name3", nameList.get(i));
-
-            if (username.equals(nameList.get(i))){
-                name_found = true;
-                break;
-            }
-        }
-
-        return name_found;
-
-
-    }*/
-
-
-
-    /*public String readData(new MyCallback() {
-        @Override
-        public void onCallback(String value) {
-            Log.d("TAG", value);
-        }
-    });*/
 
 
 }

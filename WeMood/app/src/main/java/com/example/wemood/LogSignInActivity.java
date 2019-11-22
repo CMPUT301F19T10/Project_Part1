@@ -93,7 +93,7 @@ public class LogSignInActivity extends AppCompatActivity implements
                     checkbox.setText("Hide Password");
                 } else {
                     addPassWord.setInputType(129);
-                    checkbox.setText("Show Password");
+                    //checkbox.setText("Show Password");
                 }
             }
         });
