@@ -66,9 +66,14 @@ public class FriendRequestMessageActivity extends AppCompatActivity implements R
             }
         });
 
+
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
         dataMessageList = new ArrayList<>();
         getWaitList();
-
     }
 
 

@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 import com.example.wemood.FriendMoodList;
 import com.example.wemood.FriendRequestMessageActivity;
 import com.example.wemood.Mood;
+import com.example.wemood.MoodDetailClicked;
 import com.example.wemood.R;
 import com.example.wemood.User;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -136,11 +138,18 @@ public class HomeFragment extends Fragment {
         });
 
         friendmoodList = (ListView) rootView.findViewById(R.id.home_friend_moods);
-        moodDataList = new ArrayList<>();
-        getMoodList();
+
+
         return rootView;
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        moodDataList = new ArrayList<>();
+        getMoodList();
+
+    }
 
 
     public void getMoodList(){
@@ -209,6 +218,18 @@ public class HomeFragment extends Fragment {
                         Collections.sort(moodDataList, Collections.reverseOrder());
                         moodAdapter = new FriendMoodList(getContext(), moodDataList);
                         friendmoodList.setAdapter(moodAdapter);
+
+                        friendmoodList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                Intent intent = new Intent(getActivity(), MoodDetailClicked.class);
+                                Mood mood = moodDataList.get(i);
+                                intent.putExtra("Mood", mood);
+                                startActivity(intent);
+                                ((Activity) getActivity()).overridePendingTransition(0, 0);
+                            }
+
+                        });
 
                     }
                 });
