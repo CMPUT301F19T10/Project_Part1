@@ -17,8 +17,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:hint="Please enter 'Lee' at this moment"/>
+            android:hint="Please enter 'Lee' at this moment"
+            android:inputType="textPersonName" />
 
         <Button
             android:id="@+id/friend_search"

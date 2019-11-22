@@ -90,18 +90,18 @@ public class FriendMoodList extends ArrayAdapter<Mood> {
         // Classify the moods by different mood states
         // set the background color by different mood states
         String emotionalState = mood.getEmotionalState();
-        if (emotionalState == "happy"){
+        if (emotionalState.equals( "happy")){
             view.setBackgroundColor(Color.RED);
             Bitmap bMap = BitmapFactory.decodeResource(view.getResources(), R.drawable.happy);
             Bitmap bMapScaled = Bitmap.createScaledBitmap(bMap, 100, 100, true);
             FriendMoodState.setImageBitmap(bMapScaled);
-        }else if (emotionalState == "sad"){
+        }else if (emotionalState.equals("sad")){
             view.setBackgroundColor(Color.BLUE);
             Bitmap bMap = BitmapFactory.decodeResource(view.getResources(), R.drawable.sad);
             Bitmap bMapScaled = Bitmap.createScaledBitmap(bMap, 100, 100, true);
             FriendMoodState.setImageBitmap(bMapScaled);
         }
-        else if (emotionalState == "tired"){
+        else if (emotionalState.equals("tired")){
             view.setBackgroundColor(Color.YELLOW);
             Bitmap bMap = BitmapFactory.decodeResource(view.getResources(), R.drawable.tired);
             Bitmap bMapScaled = Bitmap.createScaledBitmap(bMap, 100, 100, true);

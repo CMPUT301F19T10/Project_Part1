@@ -11,6 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".FriendsExist"></activity>
+        <activity android:name=".FriendsNotExist"></activity>
         <activity android:name=".SignUpActivity"></activity>
         <activity android:name=".LogSignInActivity">
             <intent-filter>
@@ -24,7 +26,8 @@
             android:label="@string/app_name"></activity>
         <activity
             android:name=".AddMoodActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+        </activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
