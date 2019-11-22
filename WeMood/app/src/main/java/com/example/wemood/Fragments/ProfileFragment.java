@@ -10,11 +10,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +46,12 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 
 import static android.app.Activity.RESULT_OK;
@@ -95,6 +97,7 @@ public class ProfileFragment extends Fragment {
 
     private FirebaseStorage storage;
     private StorageReference folder;
+    private StorageReference image;
     private Uri imageUri;
     private static final int PICK_IMAGE = 100;
 
@@ -146,7 +149,7 @@ public class ProfileFragment extends Fragment {
         logoutButton = rootView.findViewById(R.id.logout);
 
         // Display personal information
-        displayInfo(userNameView, userIDView, emailView, phoneView);
+        displayInfo(userNameView, userIDView, emailView, phoneView, figureView);
 
         // Update Phone Number
         updatePhoneNumber(phoneView, editPhoneView);
@@ -208,10 +211,10 @@ public class ProfileFragment extends Fragment {
      * @param emailView
      * @param phoneView
      */
-    public void displayInfo(TextView userNameView, TextView userIDView, TextView emailView, final TextView phoneView) {
+    public void displayInfo(TextView userNameView, TextView userIDView, TextView emailView, final TextView phoneView, final ImageView figureView) {
 
         // Get database and current user
-        getDatabase();
+        db = getDatabase();
         user = getUser();
 
         // Get and display username
@@ -247,8 +250,23 @@ public class ProfileFragment extends Fragment {
                 Log.d(TAG, e.toString());
             }
         });
-    }
 
+        // Get and display figure
+        // Get storage and image
+        storage = getStorage();
+        image = storage.getReference().child("ProfileFolder/" + userName);
+        image.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(final Uri uri) {
+                Picasso.get().load(uri).into(figureView);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
+    }
     /**
      * Update Phone Number then
      * display the latest Phone Number
@@ -257,7 +275,7 @@ public class ProfileFragment extends Fragment {
      */
     public void updatePhoneNumber(final TextView phoneView, final EditText editPhoneView) {
         // Get database and current user
-        getDatabase();
+        db = getDatabase();
         user = getUser();
 
         // Get username for later reference
@@ -309,7 +327,7 @@ public class ProfileFragment extends Fragment {
                             Log.d(TAG, e.toString());
                         }
                     });
-                 }
+                }
 
             }
         });
@@ -321,7 +339,7 @@ public class ProfileFragment extends Fragment {
      */
     public void updateMoods(final TextView moodsView) {
         // Get database and current user
-        getDatabase();
+        db = getDatabase();
         user = getUser();
 
         // Get username for later reference
@@ -361,7 +379,7 @@ public class ProfileFragment extends Fragment {
      */
     public void updateFollowing(final TextView followingView) {
         // Get database and current user
-        getDatabase();
+        db = getDatabase();
         user = getUser();
 
         // Get username for later reference
@@ -396,8 +414,9 @@ public class ProfileFragment extends Fragment {
      * Update figure
      */
     public void updateFigure() {
-        // Get folder
-        folder = getStorage().getReference().child("ProfileFolder");
+        // Get storage and folder
+        storage = getStorage();
+        folder = storage.getReference().child("ProfileFolder");
 
         // Choose a photo from gallery
         cameraButton.setOnClickListener(new View.OnClickListener() {
@@ -459,6 +478,17 @@ public class ProfileFragment extends Fragment {
                 startActivity(intent);
             }
         });
+    }
+
+    /**
+     * Real-time update
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        updateMoods(moodsView);
+        updateFollowing(followingView);
     }
 
 }

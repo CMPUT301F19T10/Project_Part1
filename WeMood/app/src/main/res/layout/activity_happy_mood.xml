@@ -10,11 +10,12 @@
 
     <ImageButton
         android:id="@+id/back"
-        android:layout_width="110dp"
-        android:layout_height="90dp"
+        android:layout_width="100dp"
+        android:layout_height="80dp"
         android:layout_marginStart="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
+        android:background="#E9C4C4"
         android:src="@drawable/betterback"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

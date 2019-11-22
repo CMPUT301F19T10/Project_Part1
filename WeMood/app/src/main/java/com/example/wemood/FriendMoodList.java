@@ -56,7 +56,7 @@ public class FriendMoodList extends ArrayAdapter<Mood> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = convertView;
 
-        if (view == null) {
+        if (view == null){
             view = LayoutInflater.from(context).inflate(R.layout.home_content,parent,false);
         }
 
@@ -83,33 +83,52 @@ public class FriendMoodList extends ArrayAdapter<Mood> {
         FriendMoodDate.setText(dateFormat.format(mood.getDatetime().getTime()));
         FriendMoodTime.setText(timeFormat.format(mood.getDatetime().getTime()));
         FriendMoodSocialSituation.setText(mood.getSocialSituation());
-//        FriendMoodLocation.setText(mood.getLocation());
+        FriendMoodLocation.setText(mood.getLocation());
         //        FriendMoodState.setText(mood.getEmotionalState());
 
 
         // Classify the moods by different mood states
         // set the background color by different mood states
         String emotionalState = mood.getEmotionalState();
-        if (emotionalState == "happy"){
-            view.setBackgroundColor(Color.RED);
-            Bitmap bMap = BitmapFactory.decodeResource(view.getResources(), R.drawable.happy);
-            Bitmap bMapScaled = Bitmap.createScaledBitmap(bMap, 100, 100, true);
-            FriendMoodState.setImageBitmap(bMapScaled);
-        }else if (emotionalState == "sad"){
-            view.setBackgroundColor(Color.BLUE);
-            Bitmap bMap = BitmapFactory.decodeResource(view.getResources(), R.drawable.sad);
-            Bitmap bMapScaled = Bitmap.createScaledBitmap(bMap, 100, 100, true);
-            FriendMoodState.setImageBitmap(bMapScaled);
-        }
-        else if (emotionalState == "tired"){
-            view.setBackgroundColor(Color.YELLOW);
-            Bitmap bMap = BitmapFactory.decodeResource(view.getResources(), R.drawable.tired);
-            Bitmap bMapScaled = Bitmap.createScaledBitmap(bMap, 100, 100, true);
-            FriendMoodState.setImageBitmap(bMapScaled);
+        switch (emotionalState) {
+            case "happy":
+                view.setBackgroundColor(Color.rgb(253,91,91));
+                view.getBackground().setAlpha(200);
+                Bitmap bMap = BitmapFactory.decodeResource(view.getResources(), R.drawable.happy_marker);
+                Bitmap bMapScaled = Bitmap.createScaledBitmap(bMap, 100, 100, true);
+                FriendMoodState.setImageBitmap(bMapScaled);
+                break;
+            case "sad":
+                view.setBackgroundColor(Color.rgb(106,106,240));
+                view.getBackground().setAlpha(200);
+                Bitmap bMap1 = BitmapFactory.decodeResource(view.getResources(), R.drawable.sad_marker);
+                Bitmap bMapScaled1 = Bitmap.createScaledBitmap(bMap1, 100, 100, true);
+                FriendMoodState.setImageBitmap(bMapScaled1);
+                break;
+            case "tired":
+                view.setBackgroundColor(Color.rgb(121,121,121));
+                view.getBackground().setAlpha(200);
+                Bitmap bMap2 = BitmapFactory.decodeResource(view.getResources(), R.drawable.tired_marker);
+                Bitmap bMapScaled2 = Bitmap.createScaledBitmap(bMap2, 100, 100, true);
+                FriendMoodState.setImageBitmap(bMapScaled2);
+                break;
+            case "angry":
+                view.setBackgroundColor(Color.rgb(250,233,90));
+                view.getBackground().setAlpha(200);
+                Bitmap bMap3 = BitmapFactory.decodeResource(view.getResources(), R.drawable.angry_marker);
+                Bitmap bMapScaled3 = Bitmap.createScaledBitmap(bMap3, 100, 100, true);
+                FriendMoodState.setImageBitmap(bMapScaled3);
+                break;
+            case "lonely":
+                view.setBackgroundColor(Color.rgb(255,152,0));
+                view.getBackground().setAlpha(200);
+                Bitmap bMap4 = BitmapFactory.decodeResource(view.getResources(), R.drawable.zoey);
+                Bitmap bMapScaled4 = Bitmap.createScaledBitmap(bMap4, 100, 100, true);
+                FriendMoodState.setImageBitmap(bMapScaled4);
+                break;
         }
 
         return view;
     }
-
 
 }

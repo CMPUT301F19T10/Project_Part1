@@ -93,11 +93,11 @@ public class AddMoodActivity extends AppCompatActivity{
         final CollectionReference collectionReference = db.collection("Users");
 
         imageView = findViewById(R.id.imageView);
-        Button choosePhoto = findViewById(R.id.choosePhoto);
+        //Button choosePhoto = findViewById(R.id.choosePhoto);
         locationSwitch = findViewById(R.id.gpsSwitch);
         locationMessage = findViewById(R.id.locationMessage);
         lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        choosePhoto.setOnClickListener(new View.OnClickListener() {
+        imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
@@ -138,30 +138,7 @@ public class AddMoodActivity extends AppCompatActivity{
                         StorageReference Image = Folder.child("image");
                         Image.putFile(imageUri);
                     }
-                    /*
-                    collectionReference
-                            .get()
-                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        // Count the number of moods
-                                        int numMoods = 0;
-                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                            // Increment by 1 per iteration
-                                            numMoods += 1;
-                                            Log.d(TAG, document.getId() + " => " + document.getData());
-                                        }
-                                        String moodsDisplay = "Moods\n%s";
-                                        moodsDisplay = String.format(moodsDisplay, numMoods);
-                                        TextView moodsView = findViewById(R.id.moods);
-                                        moodsView.setText(moodsDisplay);
-                                    } else {
-                                        Log.d(TAG, "Error getting documents: ", task.getException());
-                                    }
-                                }
-                            });
-                            */
+
                     finish();
                 }
             }
