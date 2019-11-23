@@ -71,7 +71,7 @@ public class RequestFragmentDialog extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.friend_request_dialog, null);
         RequestPermission = view.findViewById(R.id.friend_request_permission_text);
-        RequestPermission.setText("Do you want " + message +" to be your friend ?");
+        RequestPermission.setText( message +" want you to be his/her friend so that he/she are able to follow and view your most the recent mood");
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
