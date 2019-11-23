@@ -25,7 +25,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginLeft="100dp"
-                android:fontFamily="@font/aclonica"
                 android:text="WeMood"
                 android:textColor="#E91E63"
                 android:textSize="45dp" />

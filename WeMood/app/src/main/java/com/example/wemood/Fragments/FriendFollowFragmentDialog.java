@@ -6,8 +6,9 @@ package com.example.wemood.Fragments;
  */
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,7 +16,7 @@ import androidx.fragment.app.DialogFragment;
 
 
 /**
- * Class name: FriendFollowFragment
+ * Class name: FriendFollowFragmentDialog
  *
  * Version 1.0
  *
@@ -24,9 +25,25 @@ import androidx.fragment.app.DialogFragment;
  * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
  */
 
-public class FriendFollowFragment extends DialogFragment {
+public class FriendFollowFragmentDialog extends DialogFragment {
+    private OnFragmentInteractionListener listener;
 
-    private TextView information;
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        listener = (OnFragmentInteractionListener)context;
+    }
+
+    public interface OnFragmentInteractionListener {
+        public void FollowRequest();
+
+    }
+
+    // Constructor
+    public FriendFollowFragmentDialog() {
+        //Empty constructor
+    }
+
     /**
      * Create a dialog to send a follow request to  a User.
      * @param savedInstanceState
@@ -35,16 +52,18 @@ public class FriendFollowFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-//        View view = LayoutInflater.from(getActivity()).inflate(R.layout.friend_unfollow_fragment, null);
-
-//        information = view.findViewById(R.id.unfollow_confirmation);
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
-//                .setView(view)
                 .setTitle("Follow Request")
                 .setMessage("Your request will be sent. You can follow the user after approval.")
                 .setNeutralButton("Cancel", null)
-                .setPositiveButton("Send", null).create();
+                .setPositiveButton("Send", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        listener.FollowRequest();
+                    }
+                })
+                .create();
     }
 
 }

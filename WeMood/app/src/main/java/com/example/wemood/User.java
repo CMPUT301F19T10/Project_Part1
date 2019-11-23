@@ -41,14 +41,8 @@ public class  User {
         this.userName = userName;
         this.phone = phone;
         this.userId = userId;
-        friendList = new ArrayList<>();
-        this.friendList.add("Dio");
-        this.friendList.add("boyuan");
-        this.friendList.add("dbytest1");
-        waitFriendList = new ArrayList<>();
-        waitFriendList.add("shuijiao1");
-        waitFriendList.add("dby123");
-        this.friendList.add("dby123123");
+        this.friendList = new ArrayList<>();
+        this.waitFriendList = new ArrayList<>();
     }
 
     public String getUserName() {

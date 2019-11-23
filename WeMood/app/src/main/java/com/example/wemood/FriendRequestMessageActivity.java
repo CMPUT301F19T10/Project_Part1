@@ -122,8 +122,8 @@ public class FriendRequestMessageActivity extends AppCompatActivity implements R
     public void AcceceptRequest(String message){
         messageAdapter.remove(message);
         collectionReference = db.collection("Users");
-        collectionReference.document(userName)
-                .update("friendList",FieldValue.arrayUnion(message));
+        collectionReference.document(message)
+                .update("friendList",FieldValue.arrayUnion(userName));
         collectionReference.document(userName)
                 .update("waitFriendList",FieldValue.arrayRemove(message));
 

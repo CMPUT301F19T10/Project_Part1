@@ -86,6 +86,8 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     private double longitude;
     private double latitude;
 
+    private int statusNumber;
+
     /**
      * Required empty public constructor
      */
@@ -110,6 +112,8 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        this.statusNumber = 0;
         // Initialize FireBase Auth
         mAuth = FirebaseAuth.getInstance();
         // Initialize Database
@@ -179,6 +183,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         switch (view.getId()) {
             // tap this button will show all moods of the current user on the map
             case R.id.myMap:
+                this.statusNumber = 1;
                 mapFragment.getMapAsync(new OnMapReadyCallback() {
                     @Override
                     public void onMapReady(GoogleMap googleMap) {
@@ -189,6 +194,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 break;
             // tap this button will show all friends' moods of the current user on the map
             case R.id.friendsMap:
+                this.statusNumber = 2;
                 mapFragment.getMapAsync(new OnMapReadyCallback() {
                     @Override
                     public void onMapReady(GoogleMap googleMap) {
@@ -234,19 +240,52 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     /**
      * update location
      */
+    @Override
     public void onResume() {
         super.onResume();
         locationUpdate();
+        switch (this.statusNumber){
+            case 0:
+                mapFragment.getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(GoogleMap googleMap) {
+                        googleMap.clear();
+                        setMoodMarker(googleMap,userName);
+                    }
+                });
+            case 1:
+                mapFragment.getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(GoogleMap googleMap) {
+                        googleMap.clear();
+                        setMoodMarker(googleMap,userName);
+                    }
+                });
+            case 2:
+                mapFragment.getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(GoogleMap googleMap) {
+                        googleMap.clear();
+                        setFriendsMapMarker(googleMap);
+                    }
+                });
+        }
     }
 
     /**
      * stop updating location
      */
+    @Override
     public void onPause() {
         super.onPause();
         lm.removeUpdates(mLocationListener);
     }
 
+   /* @Override
+    public void onStop(){
+        super.onStop();
+        locationUpdate();
+    }*/
     /**
      * update location
      */
@@ -258,12 +297,16 @@ public class MapFragment extends Fragment implements View.OnClickListener {
             return;
         }
 
-        Location location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        setLongitude(location.getLongitude());
-        setLatitude(location.getLatitude());
+        try {
+            Location location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            setLongitude(location.getLongitude());
+            setLatitude(location.getLatitude());
+            // get the location every 2 seconds
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 8, mLocationListener);
+        }catch (Exception e){
+            Toast.makeText(getActivity(), "Unknown error! Please try again", Toast.LENGTH_SHORT).show();
+        }
 
-        // get the location every 2 seconds
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 8, mLocationListener);
     }
 
     /**

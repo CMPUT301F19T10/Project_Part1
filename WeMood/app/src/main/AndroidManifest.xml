@@ -12,8 +12,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MoodDetailClicked"></activity>
-        <activity android:name=".FriendRequestMessageActivity" />
+        <activity android:name=".FriendRequestMessageActivity"></activity>
+        <activity android:name=".MoodDetailClicked" />
+        <activity android:name=".FriendsExist" />
+        <activity android:name=".FriendsNotExist" />
+        <activity android:name=".TiredMood" />
+        <activity android:name=".AngryMood" />
+        <activity android:name=".LonelyMood" />
+        <activity android:name=".SadMood" />
+        <activity android:name=".HappyMood" />
+        <activity android:name=".MoodHistory" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".LogSignInActivity">
             <intent-filter>
@@ -32,9 +40,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyA-yXsEoIszoitXrbTPrsG5Dnr0n07Z_vs" />
-        <meta-data
-            android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
+
     </application>
 
 </manifest>
