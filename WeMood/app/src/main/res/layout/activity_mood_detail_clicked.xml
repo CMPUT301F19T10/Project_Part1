@@ -52,8 +52,7 @@
         <ImageView
             android:id="@+id/friend_mood_photo"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:background="@mipmap/ic_launcher" />
+            android:layout_height="300dp" />
 
         <TextView
             android:id="@+id/friend_mood_explanation"

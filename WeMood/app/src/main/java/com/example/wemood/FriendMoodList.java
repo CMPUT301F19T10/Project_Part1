@@ -9,12 +9,20 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,6 +43,10 @@ public class FriendMoodList extends ArrayAdapter<Mood> {
     private ArrayList<Mood> moods;
     private Context context;
 
+    private FirebaseFirestore db;
+    private FirebaseStorage storage;
+    private StorageReference image;
+
     /**
      * Constructor to get the context and list of most recent friend moods.
      * @param context
@@ -45,6 +57,27 @@ public class FriendMoodList extends ArrayAdapter<Mood> {
         this.moods = moods;
         this.context = context;
     }
+
+    /**
+     * Get database
+     * @return the database instance
+     */
+    public FirebaseFirestore getDatabase() {
+        db = FirebaseFirestore.getInstance();
+
+        return db;
+    }
+
+    /**
+     * Get storage
+     * @return the storage instance
+     */
+    public FirebaseStorage getStorage() {
+        storage = FirebaseStorage.getInstance();
+
+        return storage;
+    }
+
 
     /**
      * Get the view of the friendmoodlist. Will display the detail information of moods.
@@ -70,7 +103,7 @@ public class FriendMoodList extends ArrayAdapter<Mood> {
         TextView FriendMoodTime =view.findViewById(R.id.friend_mood_time);
         TextView FriendMoodSocialSituation =view.findViewById(R.id.friend_mood_social_situation);
         TextView FriendMoodLocation =view.findViewById(R.id.friend_mood_location);
-//        ImageView FriendMoodPhoto = view.findViewById(R.id.friend_mood_photo);
+        final ImageView FriendMoodPhoto = view.findViewById(R.id.friend_mood_photo);
         ImageView FriendMoodState = view.findViewById(R.id.friend_mood_state);
 
         // set mood properties shown in the list by call mood getters
@@ -84,7 +117,31 @@ public class FriendMoodList extends ArrayAdapter<Mood> {
         FriendMoodTime.setText(timeFormat.format(mood.getDatetime().getTime()));
         FriendMoodSocialSituation.setText(mood.getSocialSituation());
         FriendMoodLocation.setText(mood.getLocation());
-        //        FriendMoodState.setText(mood.getEmotionalState());
+
+
+        // Get and display figure
+        // Get storage and image
+        storage = getStorage();
+        if (mood.getUsername().equals("dby123123")){
+            System.out.println("***********11111111*******************");
+            System.out.println(mood.getDatetime().toString());
+        }
+        image = storage.getReference().child("ImageFolder/" + mood.getUsername() + "/" + mood.getDatetime().toString());
+        image.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(final Uri uri) {
+                Picasso.get().load(uri).into(FriendMoodPhoto);
+                System.out.println("******************************");
+                System.out.println(uri);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+                FriendMoodPhoto.setImageResource(R.drawable.default_photo);
+            }
+        });
+
 
 
         // Classify the moods by different mood states
@@ -94,35 +151,35 @@ public class FriendMoodList extends ArrayAdapter<Mood> {
             case "happy":
                 view.setBackgroundColor(Color.rgb(253,91,91));
                 view.getBackground().setAlpha(200);
-                Bitmap bMap = BitmapFactory.decodeResource(view.getResources(), R.drawable.happy);
+                Bitmap bMap = BitmapFactory.decodeResource(view.getResources(), R.drawable.happy_marker);
                 Bitmap bMapScaled = Bitmap.createScaledBitmap(bMap, 100, 100, true);
                 FriendMoodState.setImageBitmap(bMapScaled);
                 break;
             case "sad":
                 view.setBackgroundColor(Color.rgb(106,106,240));
                 view.getBackground().setAlpha(200);
-                Bitmap bMap1 = BitmapFactory.decodeResource(view.getResources(), R.drawable.sad);
+                Bitmap bMap1 = BitmapFactory.decodeResource(view.getResources(), R.drawable.sad_marker);
                 Bitmap bMapScaled1 = Bitmap.createScaledBitmap(bMap1, 100, 100, true);
                 FriendMoodState.setImageBitmap(bMapScaled1);
                 break;
             case "tired":
                 view.setBackgroundColor(Color.rgb(121,121,121));
                 view.getBackground().setAlpha(200);
-                Bitmap bMap2 = BitmapFactory.decodeResource(view.getResources(), R.drawable.tired);
+                Bitmap bMap2 = BitmapFactory.decodeResource(view.getResources(), R.drawable.tired_marker);
                 Bitmap bMapScaled2 = Bitmap.createScaledBitmap(bMap2, 100, 100, true);
                 FriendMoodState.setImageBitmap(bMapScaled2);
                 break;
             case "angry":
                 view.setBackgroundColor(Color.rgb(250,233,90));
                 view.getBackground().setAlpha(200);
-                Bitmap bMap3 = BitmapFactory.decodeResource(view.getResources(), R.drawable.angry);
+                Bitmap bMap3 = BitmapFactory.decodeResource(view.getResources(), R.drawable.angry_marker);
                 Bitmap bMapScaled3 = Bitmap.createScaledBitmap(bMap3, 100, 100, true);
                 FriendMoodState.setImageBitmap(bMapScaled3);
                 break;
             case "lonely":
                 view.setBackgroundColor(Color.rgb(255,152,0));
                 view.getBackground().setAlpha(200);
-                Bitmap bMap4 = BitmapFactory.decodeResource(view.getResources(), R.drawable.tired);
+                Bitmap bMap4 = BitmapFactory.decodeResource(view.getResources(), R.drawable.tired_marker);
                 Bitmap bMapScaled4 = Bitmap.createScaledBitmap(bMap4, 100, 100, true);
                 FriendMoodState.setImageBitmap(bMapScaled4);
                 break;

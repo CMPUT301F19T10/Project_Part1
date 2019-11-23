@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,6 +40,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -150,7 +153,7 @@ public class HomeFragment extends Fragment {
         getMoodList();
 
     }
-
+    
 
     public void getMoodList(){
         collectionReference = db.collection("Users");
@@ -218,6 +221,7 @@ public class HomeFragment extends Fragment {
                         Collections.sort(moodDataList, Collections.reverseOrder());
                         moodAdapter = new FriendMoodList(getContext(), moodDataList);
                         friendmoodList.setAdapter(moodAdapter);
+
 
                         friendmoodList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
