@@ -4,26 +4,40 @@ package com.example.wemood;
  *
  * @version 1.0
  */
-
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.wemood.Fragments.FriendFollowFragmentDialog;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import static android.content.ContentValues.TAG;
 /**
  * Class name: FriendsNotExist
  *
@@ -42,6 +56,9 @@ public class FriendsNotExist extends AppCompatActivity implements FriendFollowFr
     private FirebaseUser user;
     private FirebaseFirestore db;
     private CollectionReference collectionReference;
+    private DocumentReference documentReference;
+    private FirebaseStorage storage;
+    private StorageReference image;
 
     private ImageView figureView;
     private TextView userNameView;
@@ -66,12 +83,92 @@ public class FriendsNotExist extends AppCompatActivity implements FriendFollowFr
         user = mAuth.getCurrentUser();
         userName = user.getDisplayName();
 
+        figureView = findViewById(R.id.friend_photo);
+        moodsView = findViewById(R.id.mood_num);
+        followingView = findViewById(R.id.following_num);
+
         Button cancelButton = findViewById(R.id.cancel_button);
         Button followButton = findViewById(R.id.follow_button);
 
+        getPhoto();
+        updateMoods();
+        updateFollowing();
+        setSearchName();
         setCancelButton(cancelButton);
         setFollowButton(followButton);
-        setSearchName();
+    }
+
+    public void getPhoto(){
+//        // Get and display figure
+//        // Get storage and image
+//        storage = getStorage();
+//        image = storage.getReference().child("ImageFolder/" + mood.getUsername() + "/" + mood.getDatetime().toString());
+//        image.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//            @Override
+//            public void onSuccess(final Uri uri) {
+//                Picasso.get().load(uri).into(FriendMoodPhoto);
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception exception) {
+//                // Handle any errors
+//                FriendMoodPhoto.setImageResource(R.drawable.default_photo);
+//            }
+//        });
+    }
+
+    public void updateMoods() {
+        collectionReference = db.collection("Users")
+                .document(searchName)
+                .collection("MoodList");
+        collectionReference
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            // Count the number of moods
+                            int numMoods = 0;
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                // Increment by 1 per iteration
+                                numMoods += 1;
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                            }
+                            String moodsDisplay = "Moods\n%d";
+                            moodsDisplay = String.format(moodsDisplay, numMoods);
+                            moodsView.setText(moodsDisplay);
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+    }
+    public void updateFollowing() {
+        // Get collection reference
+        documentReference = db.collection("Users")
+                .document(searchName);
+        documentReference
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        User user = documentSnapshot.toObject(User.class);
+                        ArrayList<String> friendList = user.getFriendList();
+                        int numFollowing = friendList.size();
+//                        if (friendList.size() = null){
+//                        }
+                        String followingDisplay = "Following\n%d";
+                        followingDisplay = String.format(followingDisplay, numFollowing);
+                        followingView.setText(followingDisplay);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(FriendsNotExist.this, "Error!", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, e.toString());
+                    }
+                });
     }
 
     public void setSearchName(){
@@ -100,6 +197,6 @@ public class FriendsNotExist extends AppCompatActivity implements FriendFollowFr
     public void FollowRequest(){
         collectionReference = db.collection("Users");
         collectionReference.document(searchName)
-                .update("waitFriendList",FieldValue.arrayUnion(userName));
+                .update("waitFriendList", FieldValue.arrayUnion(userName));
     }
 }

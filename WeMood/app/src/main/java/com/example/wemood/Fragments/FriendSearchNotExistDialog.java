@@ -25,5 +25,4 @@ public class FriendSearchNotExistDialog extends DialogFragment {
                 .setMessage("The name you searched does not exist.")
                 .setNeutralButton("OK", null).create();
     }
-
 }

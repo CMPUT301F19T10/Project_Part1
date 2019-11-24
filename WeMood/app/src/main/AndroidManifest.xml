@@ -2,7 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.wemood">
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 
     <application
         android:allowBackup="true"
@@ -11,9 +12,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".FriendsExist"></activity>
-        <activity android:name=".FriendsNotExist"></activity>
-        <activity android:name=".SignUpActivity"></activity>
+        <activity android:name=".FriendRequestMessageActivity"></activity>
+        <activity android:name=".MoodDetailClicked" />
+        <activity android:name=".FriendsExist" />
+        <activity android:name=".FriendsNotExist" />
+        <activity android:name=".TiredMood" />
+        <activity android:name=".AngryMood" />
+        <activity android:name=".LonelyMood" />
+        <activity android:name=".SadMood" />
+        <activity android:name=".HappyMood" />
+        <activity android:name=".MoodHistory" />
+        <activity android:name=".SignUpActivity" />
         <activity android:name=".LogSignInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,17 +32,15 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name"></activity>
+            android:label="@string/app_name" />
         <activity
             android:name=".AddMoodActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyA-yXsEoIszoitXrbTPrsG5Dnr0n07Z_vs"/>
-    </application>
+            android:value="AIzaSyA-yXsEoIszoitXrbTPrsG5Dnr0n07Z_vs" />
 
-    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+    </application>
 
 </manifest>

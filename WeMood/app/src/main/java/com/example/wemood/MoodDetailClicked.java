@@ -4,19 +4,25 @@ package com.example.wemood;
  *
  * @version 1.0
  */
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
-import android.view.LayoutInflater;
+import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.wemood.Fragments.RequestFragmentDialog;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -24,13 +30,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+
 /**
- * Class name: FriendMoodList
+ * Class name: MoodDetailClicked
  *
  * Version 1.0
  *
@@ -39,72 +43,30 @@ import java.util.ArrayList;
  * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
  */
 
-public class FriendMoodList extends ArrayAdapter<Mood> {
-    private ArrayList<Mood> moods;
-    private Context context;
 
+public class MoodDetailClicked extends AppCompatActivity {
     private FirebaseFirestore db;
     private FirebaseStorage storage;
     private StorageReference image;
 
-    /**
-     * Constructor to get the context and list of most recent friend moods.
-     * @param context
-     * @param moods
-     */
-    public FriendMoodList(Context context, ArrayList<Mood> moods) {
-        super(context,0,moods);
-        this.moods = moods;
-        this.context = context;
-    }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_mood_detail_clicked);
+        View view =  findViewById(R.id.mood_detail_layout);
 
-    /**
-     * Get database
-     * @return the database instance
-     */
-    public FirebaseFirestore getDatabase() {
-        db = FirebaseFirestore.getInstance();
+        Mood mood = (Mood) getIntent().getSerializableExtra("Mood");
 
-        return db;
-    }
+        TextView FriendUername = findViewById(R.id.friend_mood_username);
+        TextView FriendMoodExplanation = findViewById(R.id.friend_mood_explanation);
+        TextView FriendMoodReason = findViewById(R.id.friend_mood_reason);
+        TextView FriendMoodDate = findViewById(R.id.friend_mood_date);
+        TextView FriendMoodTime = findViewById(R.id.friend_mood_time);
+        TextView FriendMoodSocialSituation = findViewById(R.id.friend_mood_social_situation);
+        TextView FriendMoodLocation = findViewById(R.id.friend_mood_location);
+        final ImageView FriendMoodPhoto = view.findViewById(R.id.friend_mood_photo);
+        ImageView FriendMoodState = findViewById(R.id.friend_mood_state);
 
-    /**
-     * Get storage
-     * @return the storage instance
-     */
-    public FirebaseStorage getStorage() {
-        storage = FirebaseStorage.getInstance();
-
-        return storage;
-    }
-
-
-    /**
-     * Get the view of the friendmoodlist. Will display the detail information of moods.
-     * @param position
-     * @param convertView
-     * @param parent
-     * @return
-     */
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        View view = convertView;
-
-        if (view == null){
-            view = LayoutInflater.from(context).inflate(R.layout.home_content,parent,false);
-        }
-
-        // for each mood get the textview and images by id's
-        Mood mood = moods.get(position);
-
-        TextView FriendUername =view.findViewById(R.id.friend_mood_username);
-        TextView FriendMoodExplanation = view.findViewById(R.id.friend_mood_explanation);
-        TextView FriendMoodReason = view.findViewById(R.id.friend_mood_reason);
-        TextView FriendMoodDate =view.findViewById(R.id.friend_mood_date);
-        TextView FriendMoodTime =view.findViewById(R.id.friend_mood_time);
-        TextView FriendMoodSocialSituation =view.findViewById(R.id.friend_mood_social_situation);
-        TextView FriendMoodLocation =view.findViewById(R.id.friend_mood_location);
-//        final ImageView FriendMoodPhoto = view.findViewById(R.id.friend_mood_photo);
-        ImageView FriendMoodState = view.findViewById(R.id.friend_mood_state);
 
         // set mood properties shown in the list by call mood getters
         FriendUername.setText(mood.getUsername());
@@ -119,30 +81,22 @@ public class FriendMoodList extends ArrayAdapter<Mood> {
         FriendMoodLocation.setText(mood.getLocation());
 
 
-//        // Get and display figure
-//        // Get storage and image
-//        storage = getStorage();
-//        if (mood.getUsername().equals("dby123123")){
-//            System.out.println("***********11111111*******************");
-//            System.out.println(mood.getDatetime().toString());
-//        }
-//        image = storage.getReference().child("ImageFolder/" + mood.getUsername() + "/" + mood.getDatetime().toString());
-//        image.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//            @Override
-//            public void onSuccess(final Uri uri) {
-//                Picasso.get().load(uri).into(FriendMoodPhoto);
-//                System.out.println("******************************");
-//                System.out.println(uri);
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception exception) {
-//                // Handle any errors
-//                FriendMoodPhoto.setImageResource(R.drawable.default_photo);
-//            }
-//        });
-
-
+        // Get and display figure
+        // Get storage and image
+        storage = getStorage();
+        image = storage.getReference().child("ImageFolder/" + mood.getUsername() + "/" + mood.getDatetime().toString());
+        image.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(final Uri uri) {
+                Picasso.get().load(uri).into(FriendMoodPhoto);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+                FriendMoodPhoto.setImageResource(R.drawable.default_photo);
+            }
+        });
 
         // Classify the moods by different mood states
         // set the background color by different mood states
@@ -179,13 +133,30 @@ public class FriendMoodList extends ArrayAdapter<Mood> {
             case "lonely":
                 view.setBackgroundColor(Color.rgb(255,152,0));
                 view.getBackground().setAlpha(200);
-                Bitmap bMap4 = BitmapFactory.decodeResource(view.getResources(), R.drawable.loney_marker);
+                Bitmap bMap4 = BitmapFactory.decodeResource(view.getResources(), R.drawable.tired_marker);
                 Bitmap bMapScaled4 = Bitmap.createScaledBitmap(bMap4, 100, 100, true);
                 FriendMoodState.setImageBitmap(bMapScaled4);
                 break;
-        }
 
-        return view;
+        }
+    }
+
+    /**
+     * Get database
+     * @return the database instance
+     */
+    public FirebaseFirestore getDatabase() {
+        db = FirebaseFirestore.getInstance();
+        return db;
+    }
+
+    /**
+     * Get storage
+     * @return the storage instance
+     */
+    public FirebaseStorage getStorage() {
+        storage = FirebaseStorage.getInstance();
+        return storage;
     }
 
 

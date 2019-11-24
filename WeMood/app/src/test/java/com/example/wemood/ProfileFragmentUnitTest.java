@@ -17,24 +17,4 @@ public class ProfileFragmentUnitTest {
         return profileFragment;
     }
 
-    /**
-     * Test whether updateFollowers method works properly
-     */
-    @Test
-    void testUpdateFollowers() {
-        ProfileFragment profileFragment = mockProfileFragment();
-        int numFollowers = profileFragment.getNumFollowers();
-        assertEquals(0, numFollowers);
-    }
-
-    /**
-     * Test whether updateFollowing method works properly
-     */
-    @Test
-    void testUpdateFollowing() {
-        ProfileFragment profileFragment = mockProfileFragment();
-        int numFollowing = profileFragment.getNumFollowing();
-        assertEquals(0, numFollowing);
-    }
-
 }

@@ -1,5 +1,6 @@
 package com.example.wemood;
 
+import java.io.Serializable;
 import java.util.Date;
 /**
  * Class name: Mood
@@ -14,7 +15,7 @@ import java.util.Date;
 /**
  * create a mood
  */
-public class Mood implements Comparable<Mood>{
+public class Mood implements Comparable<Mood>, Serializable {
     private Date datetime;
     private String emotionalState;
     private String explanation;
