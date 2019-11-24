@@ -124,7 +124,7 @@ public class FriendMoodList extends ArrayAdapter<Mood> {
         storage = getStorage();
         if (mood.getUsername().equals("dby123123")){
             System.out.println("***********11111111*******************");
-            System.out.println(mood.getDatetime().toString().split("\\s+"));
+            System.out.println(mood.getDatetime().toString());
         }
         image = storage.getReference().child("ImageFolder/" + mood.getUsername() + "/" + mood.getDatetime().toString());
         image.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
