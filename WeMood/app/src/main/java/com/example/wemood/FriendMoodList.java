@@ -103,7 +103,7 @@ public class FriendMoodList extends ArrayAdapter<Mood> {
         TextView FriendMoodTime =view.findViewById(R.id.friend_mood_time);
         TextView FriendMoodSocialSituation =view.findViewById(R.id.friend_mood_social_situation);
         TextView FriendMoodLocation =view.findViewById(R.id.friend_mood_location);
-//        final ImageView FriendMoodPhoto = view.findViewById(R.id.friend_mood_photo);
+        final ImageView FriendMoodPhoto = view.findViewById(R.id.friend_mood_photo);
         ImageView FriendMoodState = view.findViewById(R.id.friend_mood_state);
 
         // set mood properties shown in the list by call mood getters
@@ -119,28 +119,28 @@ public class FriendMoodList extends ArrayAdapter<Mood> {
         FriendMoodLocation.setText(mood.getLocation());
 
 
-//        // Get and display figure
-//        // Get storage and image
-//        storage = getStorage();
-//        if (mood.getUsername().equals("dby123123")){
-//            System.out.println("***********11111111*******************");
-//            System.out.println(mood.getDatetime().toString());
-//        }
-//        image = storage.getReference().child("ImageFolder/" + mood.getUsername() + "/" + mood.getDatetime().toString());
-//        image.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//            @Override
-//            public void onSuccess(final Uri uri) {
-//                Picasso.get().load(uri).into(FriendMoodPhoto);
-//                System.out.println("******************************");
-//                System.out.println(uri);
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception exception) {
-//                // Handle any errors
-//                FriendMoodPhoto.setImageResource(R.drawable.default_photo);
-//            }
-//        });
+        // Get and display figure
+        // Get storage and image
+        storage = getStorage();
+        if (mood.getUsername().equals("dby123123")){
+            System.out.println("***********11111111*******************");
+            System.out.println(mood.getDatetime().toString().split("\\s+"));
+        }
+        image = storage.getReference().child("ImageFolder/" + mood.getUsername() + "/" + mood.getDatetime().toString());
+        image.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(final Uri uri) {
+                Picasso.get().load(uri).into(FriendMoodPhoto);
+                System.out.println("******************************");
+                System.out.println(uri);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+                FriendMoodPhoto.setImageResource(R.drawable.default_photo);
+            }
+        });
 
 
 
