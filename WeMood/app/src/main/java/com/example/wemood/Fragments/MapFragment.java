@@ -200,7 +200,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                     public void onMapReady(GoogleMap googleMap) {
                         googleMap.clear();
                         setFriendsMapMarker(googleMap);
-
                     }
                 });
                 break;
@@ -427,5 +426,4 @@ public class MapFragment extends Fragment implements View.OnClickListener {
             }
         });
     }
-
 }

@@ -40,12 +40,11 @@ public class FriendRequestMessageActivity extends AppCompatActivity implements R
 
     private String userName;
     public  ArrayList<String> waitfriendList;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_request_message);
-
         // Initialize FireBase Auth
         mAuth = FirebaseAuth.getInstance();
         // Initialize Database
@@ -53,7 +52,6 @@ public class FriendRequestMessageActivity extends AppCompatActivity implements R
         user = mAuth.getCurrentUser();
         userName = user.getDisplayName();
         user = mAuth.getCurrentUser();
-
 
         messageList = findViewById(R.id.friend_request_message_list);
 
@@ -65,8 +63,6 @@ public class FriendRequestMessageActivity extends AppCompatActivity implements R
                 new RequestFragmentDialog(requestMessage).show(getSupportFragmentManager(), "Friend Request");
             }
         });
-
-
     }
 
     @Override
@@ -75,7 +71,6 @@ public class FriendRequestMessageActivity extends AppCompatActivity implements R
         dataMessageList = new ArrayList<>();
         getWaitList();
     }
-
 
     public void getWaitList(){
         collectionReference = db.collection("Users");
@@ -87,21 +82,18 @@ public class FriendRequestMessageActivity extends AppCompatActivity implements R
                             User user = documentSnapshot.toObject(User.class);
                             waitfriendList = user.getWaitFriendList();
                             dataMessageList.addAll(waitfriendList);
-
                         }
-
                         messageAdapter = new FriendRequestList(getBaseContext(), dataMessageList);
                         messageList.setAdapter(messageAdapter);
-
                     }
-                }).addOnFailureListener(new OnFailureListener() {
+                })
+                .addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(getBaseContext(), "Error!", Toast.LENGTH_SHORT).show();
                 Log.d(ContentValues.TAG, e.toString());
             }
         });
-
     }
 
 
@@ -116,16 +108,14 @@ public class FriendRequestMessageActivity extends AppCompatActivity implements R
 
     }
 
-
     @Override
     // Accept the friend request
-    public void AcceceptRequest(String message){
+    public void AcceptRequest(String message){
         messageAdapter.remove(message);
         collectionReference = db.collection("Users");
         collectionReference.document(message)
                 .update("friendList",FieldValue.arrayUnion(userName));
         collectionReference.document(userName)
                 .update("waitFriendList",FieldValue.arrayRemove(message));
-
     }
 }
