@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "440252495144",
+    "firebase_url": "https://wemood-3f3d1.firebaseio.com",
+    "project_id": "wemood-3f3d1",
+    "storage_bucket": "wemood-3f3d1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:440252495144:android:895dc3cfea92821e774c1d",
+        "android_client_info": {
+          "package_name": "com.example.wemood"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "440252495144-l1r9kcmh47g28ig278mp8rvai5303aei.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKdWr1VSMrrKAMvT9FTNchrfthTznWI0M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "440252495144-l1r9kcmh47g28ig278mp8rvai5303aei.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
