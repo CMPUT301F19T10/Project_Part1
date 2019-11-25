@@ -13,12 +13,16 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
@@ -46,6 +50,7 @@ public class SignUpActivity extends AppCompatActivity implements
 
     private Button signUpButton;
     private CollectionReference collectionReference;
+    private DocumentReference documentReference;
     private FirebaseFirestore db;
 
     @Override
@@ -64,7 +69,6 @@ public class SignUpActivity extends AppCompatActivity implements
         addEmail = findViewById(R.id.email);
         addPhone = findViewById(R.id.phone);
         addUserName = findViewById(R.id.username);
-
     }
 
     /**
@@ -74,7 +78,6 @@ public class SignUpActivity extends AppCompatActivity implements
      * method.
      * No place can leave empty, otherwise sign-up process can't be completed
      * @param v*/
-
     @Override
     public void onClick(View v) {
         int i = v.getId();
@@ -89,7 +92,32 @@ public class SignUpActivity extends AppCompatActivity implements
                         Toast.LENGTH_SHORT).show();
                 return;
             }
-            createAccount(userName, email, password, phone);
+
+            /*if (isUserNameValid(userName)){
+            }else{
+                addUserName.setError("User name is already exist");
+            }*/
+
+            documentReference = db.collection("Users")
+                    .document(userName);
+
+            documentReference.get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            User user = documentSnapshot.toObject(User.class);
+                            if (user != null){
+                                addUserName.setError("Username already exist!");
+                            } else{
+                                createAccount(userName, email, password, phone);
+                            }
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                }
+            });
         }
     }
 
@@ -104,8 +132,7 @@ public class SignUpActivity extends AppCompatActivity implements
      * @param email
      * @param password
      * @param phone*/
-
-    private void createAccount(final String username, final String email, final String password, final String phone) {
+    public void createAccount(final String username, final String email, final String password, final String phone) {
         Log.d(TAG, "createAccount:" + email);
         if (!validateForm()) {
             return;
@@ -160,7 +187,6 @@ public class SignUpActivity extends AppCompatActivity implements
      * @param userId
      * @param phone*/
 
-
     private void setUserFireBase(String userId, String username, String email, String phone) {
         User user = new User(email, username, phone, userId);
         collectionReference.document(username).set(user);
@@ -172,8 +198,6 @@ public class SignUpActivity extends AppCompatActivity implements
      * accordingly. For username and phone we only check if it's empty and
      * show error message accordingly
      * @return Return boolean value*/
-
-
     private boolean validateForm() {
         boolean valid = true;
         String email = addEmail.getText().toString();
@@ -193,11 +217,13 @@ public class SignUpActivity extends AppCompatActivity implements
             addPassWord.setError(null);
         }
 
-        String username = addUserName.getText().toString();
-        if (TextUtils.isEmpty(username)) {
+        String username = addUserName.getText().toString().trim();
+        if (TextUtils.isEmpty(username) ) {
             addUserName.setError("Required");
             valid = false;
-        } else {
+        } /*else if (!isUserNameValid(addUserName.getText().toString())) {
+            addUserName.setError("Username already exist!");
+        }*/else{
             addUserName.setError(null);
         }
 
@@ -219,17 +245,16 @@ public class SignUpActivity extends AppCompatActivity implements
      *  true.
      *  @param password
      *  @return Return boolean value*/
-
     public boolean isPasswordValid(final String password){
 
         if(password.length()<6){
             return false;
-        }else{
+        } else {
             for (int p =0; p < password.length();p++){
-                if(Character.isLetter(password.charAt(p))){
+                if (Character.isLetter(password.charAt(p))) {
                     Log.i("name12",Character.toString(password.charAt(p)));
-                    for(int i =0; i< password.length();i++){
-                        if (Character.isDigit(password.charAt(i))){
+                    for (int i =0; i< password.length();i++) {
+                        if (Character.isDigit(password.charAt(i))) {
                             Log.i("name23",Character.toString(password.charAt(i)));
                             return true;
                         }
@@ -245,9 +270,8 @@ public class SignUpActivity extends AppCompatActivity implements
      * less than 10 digits long. Return true and false accordingly
      * @param phone
      * @return Return boolean value*/
-
-    public boolean isPhoneValid(final String phone){
-        if (phone.length()<10){
+    public boolean isPhoneValid(final String phone) {
+        if (phone.length()<10) {
             return false;
         }
         return true;

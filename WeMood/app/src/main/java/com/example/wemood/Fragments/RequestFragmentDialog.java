@@ -7,6 +7,7 @@ package com.example.wemood.Fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -29,22 +30,35 @@ import com.example.wemood.R;
  * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
  */
 public class RequestFragmentDialog extends DialogFragment {
-    private TextView FriendReqestTitle;
-    private TextView RequestPermission;
-    private View message;
 
-    /**
-     * Constructor
-     * @param view
-     */
-    public RequestFragmentDialog(View view) {
-        message = view;
+    private TextView RequestPermission;
+    private String message;
+    private OnFragmentInteractionListener listener;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        listener = (OnFragmentInteractionListener)context;
+    }
+
+    public interface OnFragmentInteractionListener {
+        public void AcceceptRequest(String message);
+        public void DeclineRequest(String message);
+
+    }
+
+
+
+    public RequestFragmentDialog(String requestMessage) {
+        message = requestMessage;
     }
 
     // Constructor
     public RequestFragmentDialog() {
         //Empty constructor
     }
+
+
 
     /**
      * Will Create a view of the RequestFragmentDialog
@@ -57,6 +71,7 @@ public class RequestFragmentDialog extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.friend_request_dialog, null);
         RequestPermission = view.findViewById(R.id.friend_request_permission_text);
+        RequestPermission.setText( message +" want you to be his/her friend so that he/she are able to follow and view your most the recent mood");
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
@@ -65,13 +80,13 @@ public class RequestFragmentDialog extends DialogFragment {
                 .setNegativeButton("Decline", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        message.setBackgroundColor(Color.GRAY);
+                        listener.DeclineRequest(message);
                     }
                 })
                 .setPositiveButton("Accept", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        message.setBackgroundColor(Color.GREEN);
+                        listener.AcceceptRequest(message);
                     }
                 }).create();
 
