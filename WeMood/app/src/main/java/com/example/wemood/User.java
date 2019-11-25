@@ -18,6 +18,7 @@ public class  User {
     private String phone;
     private String userId;
     private ArrayList<String> friendList;
+    private ArrayList<String> waitFriendList;
 
     /**
      * required empty constructor
@@ -41,6 +42,7 @@ public class  User {
         this.phone = phone;
         this.userId = userId;
         this.friendList = new ArrayList<>();
+        this.waitFriendList = new ArrayList<>();
     }
 
     public String getUserName() {
@@ -81,5 +83,13 @@ public class  User {
 
     public void setFriendList(ArrayList<String> friendList) {
         this.friendList = friendList;
+    }
+
+    public ArrayList<String> getWaitFriendList() {
+        return waitFriendList;
+    }
+
+    public void setWaitFriendList(ArrayList<String> waitFriendList) {
+        this.waitFriendList = waitFriendList;
     }
 }

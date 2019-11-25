@@ -36,6 +36,8 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-storage:4.3.1'
     implementation 'com.google.android.gms:play-services-maps:16.1.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.1.17'
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
 
     testImplementation 'junit:junit:4.12'
     implementation 'com.android.support:multidex:1.0.3'
@@ -50,6 +52,7 @@ dependencies {
     androidTestImplementation 'com.jayway.android.robotium:robotium-solo:5.3.1'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.0.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.0.1'
+
 }
 
 apply plugin: 'com.google.gms.google-services'  // Google Play services Gradle plugin

@@ -46,12 +46,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
 import com.squareup.picasso.Picasso;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 
 import static android.app.Activity.RESULT_OK;
@@ -149,16 +146,16 @@ public class ProfileFragment extends Fragment {
         logoutButton = rootView.findViewById(R.id.logout);
 
         // Display personal information
-        displayInfo(userNameView, userIDView, emailView, phoneView, figureView);
+        displayInfo();
 
         // Update Phone Number
-        updatePhoneNumber(phoneView, editPhoneView);
+        updatePhoneNumber();
 
         // Update Moods Number
-        updateMoods(moodsView);
+        updateMoods();
 
         // Update Following Number
-        updateFollowing(followingView);
+        updateFollowing();
 
         // Update Figure
         updateFigure();
@@ -167,7 +164,7 @@ public class ProfileFragment extends Fragment {
         goHistory();
 
         // Log Out
-        logout(logoutButton);
+        logout();
 
         return rootView;
     }
@@ -189,7 +186,6 @@ public class ProfileFragment extends Fragment {
      */
     public FirebaseFirestore getDatabase() {
         db = FirebaseFirestore.getInstance();
-
         return db;
     }
 
@@ -199,20 +195,14 @@ public class ProfileFragment extends Fragment {
      */
     public FirebaseStorage getStorage() {
         storage = FirebaseStorage.getInstance();
-
         return storage;
     }
 
     /**
      * Display personal information
      * (username, userID, email, phone number, etc.)
-     * @param userNameView
-     * @param userIDView
-     * @param emailView
-     * @param phoneView
      */
-    public void displayInfo(TextView userNameView, TextView userIDView, TextView emailView, final TextView phoneView, final ImageView figureView) {
-
+    public void displayInfo() {
         // Get database and current user
         db = getDatabase();
         user = getUser();
@@ -246,8 +236,8 @@ public class ProfileFragment extends Fragment {
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getActivity(), "Error!", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, e.toString());
+                        Toast.makeText(getActivity(), "Error!", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, e.toString());
             }
         });
 
@@ -267,13 +257,12 @@ public class ProfileFragment extends Fragment {
             }
         });
     }
+
     /**
      * Update Phone Number then
      * display the latest Phone Number
-     * @param phoneView
-     * @param editPhoneView
      */
-    public void updatePhoneNumber(final TextView phoneView, final EditText editPhoneView) {
+    public void updatePhoneNumber() {
         // Get database and current user
         db = getDatabase();
         user = getUser();
@@ -335,9 +324,8 @@ public class ProfileFragment extends Fragment {
 
     /**
      * Update Moods Number
-     * @param moodsView
      */
-    public void updateMoods(final TextView moodsView) {
+    public void updateMoods() {
         // Get database and current user
         db = getDatabase();
         user = getUser();
@@ -375,9 +363,8 @@ public class ProfileFragment extends Fragment {
 
     /**
      * Update Following Number
-     * @param followingView
      */
-    public void updateFollowing(final TextView followingView) {
+    public void updateFollowing() {
         // Get database and current user
         db = getDatabase();
         user = getUser();
@@ -441,7 +428,6 @@ public class ProfileFragment extends Fragment {
             if (resultCode == RESULT_OK) {
                 imageUri = data.getData();
                 figureView.setImageURI(imageUri);
-
                 // Add figure to storage if it is not null
                 if (imageUri != null) {
                     StorageReference Image = folder.child(userName);
@@ -467,9 +453,8 @@ public class ProfileFragment extends Fragment {
 
     /**
      * Log out from the current account
-     * @param logoutButton
      */
-    public void logout(RadioButton logoutButton) {
+    public void logout() {
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -479,7 +464,6 @@ public class ProfileFragment extends Fragment {
             }
         });
     }
-
     /**
      * Real-time update
      */
@@ -487,8 +471,7 @@ public class ProfileFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        updateMoods(moodsView);
-        updateFollowing(followingView);
+        updateMoods();
+        updateFollowing();
     }
-
 }

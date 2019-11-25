@@ -7,6 +7,8 @@ package com.example.wemood.Fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.widget.TextView;
 
@@ -15,7 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 /**
- * Class name: FriendUnfollowFragment
+ * Class name: FriendUnfollowFragmentDialog
  *
  * Version 1.0
  *
@@ -24,9 +26,29 @@ import androidx.fragment.app.DialogFragment;
  * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
  */
 
-public class FriendUnfollowFragment extends DialogFragment {
+public class FriendUnfollowFragmentDialog extends DialogFragment {
 
     private TextView information;
+    private OnFragmentInteractionListener listener;
+    private String message;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        listener = (OnFragmentInteractionListener)context;
+    }
+
+    public interface OnFragmentInteractionListener {
+        //        public void setCancelButton(String message);
+        public void UnfollowRequest();
+
+    }
+
+
+    // Constructor
+    public FriendUnfollowFragmentDialog() {
+        //Empty constructor
+    }
 
     /**
      * Create the UnfollowFragment Dialog for the already exist friend of the user choose to unfollow this friend
@@ -36,16 +58,18 @@ public class FriendUnfollowFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-//        View view = LayoutInflater.from(getActivity()).inflate(R.layout.friend_follow_fragment, null);
-
-//        information = view.findViewById(R.id.follow_request);
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
-//                .setView(view)
                 .setTitle("Unfollow Confirmation")
                 .setMessage("Are you sure you want to unfollow this friend?")
                 .setNeutralButton("No", null)
-                .setPositiveButton("Yes", null).create();
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        listener.UnfollowRequest();
+                    }
+                })
+                .create();
     }
 
 }

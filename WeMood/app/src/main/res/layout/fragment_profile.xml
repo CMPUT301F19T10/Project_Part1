@@ -10,13 +10,14 @@
 
     <ImageView
         android:id="@+id/figure"
-        android:layout_width="125dp"
-        android:layout_height="130dp"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
         android:layout_marginStart="15dp"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
+        android:src="@drawable/default_figure"
         android:background="#000000"
         android:padding="1dp"
         app:layout_constraintEnd_toStartOf="@+id/moods"
@@ -176,8 +177,8 @@
 
     <ImageButton
         android:id="@+id/camera"
-        android:layout_width="120dp"
-        android:layout_height="70dp"
+        android:layout_width="110dp"
+        android:layout_height="60dp"
         android:background="#E9C4C4"
         android:src="@drawable/camera"
         app:layout_constraintBottom_toTopOf="@+id/moods"

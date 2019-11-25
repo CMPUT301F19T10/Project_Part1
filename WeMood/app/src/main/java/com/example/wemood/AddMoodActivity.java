@@ -8,6 +8,9 @@ package com.example.wemood;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -33,6 +36,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -43,6 +47,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -67,6 +72,7 @@ public class AddMoodActivity extends AppCompatActivity{
     private StorageReference Folder;
     ImageView imageView;
     Uri imageUri;
+
     private static final int PICK_IMAGE = 100;
     String situationString, emotionString;
     private FirebaseFirestore db;
@@ -87,13 +93,16 @@ public class AddMoodActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_mood);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        name = user.getDisplayName();
 
         db = FirebaseFirestore.getInstance();
-        Folder = FirebaseStorage.getInstance().getReference().child("ImageFolder");
+        Folder = FirebaseStorage.getInstance().getReference().child("ImageFolder").child(name);
+
         final CollectionReference collectionReference = db.collection("Users");
 
         imageView = findViewById(R.id.imageView);
-        //Button choosePhoto = findViewById(R.id.choosePhoto);
+
         locationSwitch = findViewById(R.id.gpsSwitch);
         locationMessage = findViewById(R.id.locationMessage);
         lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -117,7 +126,7 @@ public class AddMoodActivity extends AppCompatActivity{
         Add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
                 EditText exp = findViewById(R.id.reason);
                 String explanation = exp.getText().toString();
                 EditText titl = findViewById(R.id.title);
@@ -126,19 +135,35 @@ public class AddMoodActivity extends AppCompatActivity{
                 if (containsSpace(title)){
                     Toast.makeText(AddMoodActivity.this, "title has no more than 3 words", Toast.LENGTH_SHORT).show();
                 } else {
-                    name = user.getDisplayName();
+
                     DocumentReference docRef = db.collection("Users").document(name);
                     db = FirebaseFirestore.getInstance();
                     if (explanation.length() == 0){
                         explanation = "No explanation";
                     }
-                    addMood(currentTime, emotionString, explanation, situationString, title, docRef);
+
                     //add image to storage if it is not null
                     if (imageUri != null){
-                        StorageReference Image = Folder.child("image");
+                        StorageReference Image = Folder.child(currentTime.toString());
                         Image.putFile(imageUri);
                     }
 
+                    /*save image uri to the mood
+                    FirebaseStorage storage = FirebaseStorage.getInstance();
+                    //Sun%20Nov%2024%2015%3A26%3A27%20MST%202019
+                    final StorageReference image = storage.getReference().child("ImageFolder/" + name + "/" + currentTime.toString().replaceAll("\\s","").replaceAll(":",""));
+                    System.out.println("ImageFolder/" + name + "/" + currentTime.toString().replaceAll("\\s","").replaceAll(":",""));
+
+
+                    image.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(final Uri uri) {
+                            downloadUri = uri.toString();
+                            System.out.println(downloadUri);
+                        }
+                    });*/
+
+                    addMood(currentTime, emotionString, explanation, situationString, title, docRef);
                     finish();
                 }
             }
@@ -252,6 +277,7 @@ public class AddMoodActivity extends AppCompatActivity{
                     situationString = "";
                 }else{
                     situationString = parent.getItemAtPosition(position).toString();
+
                 }
 
             }
@@ -281,6 +307,45 @@ public class AddMoodActivity extends AppCompatActivity{
                 }
                 else{
                     emotionString = parent.getItemAtPosition(position).toString();
+                    // Classify the moods by different mood states
+                    // set the background color by different mood states
+                    switch (emotionString){
+                        case "happy":
+                            view.setBackgroundColor(Color.rgb(253,91,91));
+                            view.getBackground().setAlpha(200);
+                            //Bitmap bMap = BitmapFactory.decodeResource(view.getResources(), R.drawable.happy_marker);
+                            //Bitmap bMapScaled = Bitmap.createScaledBitmap(bMap, 100, 100, true);
+                            //FriendMoodState.setImageBitmap(bMapScaled);
+                            break;
+                        case "sad":
+                            view.setBackgroundColor(Color.rgb(106,106,240));
+                            view.getBackground().setAlpha(200);
+                            //Bitmap bMap1 = BitmapFactory.decodeResource(view.getResources(), R.drawable.sad_marker);
+                            //Bitmap bMapScaled1 = Bitmap.createScaledBitmap(bMap1, 100, 100, true);
+                            //FriendMoodState.setImageBitmap(bMapScaled1);
+                            break;
+                        case "tired":
+                            view.setBackgroundColor(Color.rgb(121,121,121));
+                            view.getBackground().setAlpha(200);
+                            //Bitmap bMap2 = BitmapFactory.decodeResource(view.getResources(), R.drawable.tired_marker);
+                            //Bitmap bMapScaled2 = Bitmap.createScaledBitmap(bMap2, 100, 100, true);
+                            //FriendMoodState.setImageBitmap(bMapScaled2);
+                            break;
+                        case "angry":
+                            view.setBackgroundColor(Color.rgb(250,233,90));
+                            view.getBackground().setAlpha(200);
+                            //Bitmap bMap3 = BitmapFactory.decodeResource(view.getResources(), R.drawable.angry_marker);
+                            //Bitmap bMapScaled3 = Bitmap.createScaledBitmap(bMap3, 100, 100, true);
+                            //FriendMoodState.setImageBitmap(bMapScaled3);
+                            break;
+                        case "lonely":
+                            view.setBackgroundColor(Color.rgb(255,152,0));
+                            view.getBackground().setAlpha(200);
+                            //Bitmap bMap4 = BitmapFactory.decodeResource(view.getResources(), R.drawable.loney_marker);
+                            //Bitmap bMapScaled4 = Bitmap.createScaledBitmap(bMap4, 100, 100, true);
+                            //FriendMoodState.setImageBitmap(bMapScaled4);
+                            break;
+                    }
                 }
             }
             @Override

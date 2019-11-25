@@ -1,11 +1,15 @@
 package com.example.wemood;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -18,6 +22,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +37,6 @@ public class SadMood extends AppCompatActivity {
     private ArrayList<Mood> moodDataList;
     private ArrayAdapter<Mood> moodAdapter;
     private String userName;
-
     private FirebaseAuth mAuth;
     private FirebaseUser user;
     private FirebaseFirestore db;
@@ -51,6 +56,47 @@ public class SadMood extends AppCompatActivity {
             }
         });
 
+        updateList();
+
+        moodList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(SadMood.this, EditMood.class);
+                intent.putExtra("index", position);
+                Mood mood = moodDataList.get(position);
+                intent.putExtra("mood", mood);
+                startActivity(intent);
+            }
+        });
+
+        moodList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                new AlertDialog.Builder(SadMood.this)
+                        .setTitle("Do you want to delete this item?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //remove the corresponding mood
+                                Mood mood = moodDataList.get(position);
+                                db.collection("Users").document(userName).collection("MoodList").document(mood.getDatetime().toString()).delete();;
+                                moodDataList.remove(position);
+                                FirebaseStorage storage = FirebaseStorage.getInstance();
+                                StorageReference image = storage.getReference().child("ImageFolder/" + userName + "/" + mood.getDatetime().toString());
+                                image.delete();
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+                return true;
+            }
+        });
+    }
+
+    /**
+     * Grab the moodList from the FireBase and update the local listView
+     */
+    public void updateList() {
         moodList = findViewById(R.id.moodList);
         moodDataList = new ArrayList<>();
         db = FirebaseFirestore.getInstance();
@@ -84,6 +130,17 @@ public class SadMood extends AppCompatActivity {
                         }
                     }
                 });
+
+    }
+
+    /**
+     * Real-time update
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        updateList();
     }
 
 }
