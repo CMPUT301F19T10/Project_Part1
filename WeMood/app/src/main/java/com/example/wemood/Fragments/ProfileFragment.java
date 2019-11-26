@@ -464,6 +464,7 @@ public class ProfileFragment extends Fragment {
             }
         });
     }
+
     /**
      * Real-time update
      */
@@ -474,4 +475,5 @@ public class ProfileFragment extends Fragment {
         updateMoods();
         updateFollowing();
     }
+
 }

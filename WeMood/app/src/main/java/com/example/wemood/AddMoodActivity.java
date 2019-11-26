@@ -32,22 +32,15 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.squareup.picasso.Picasso;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -55,7 +48,6 @@ import java.util.List;
 import java.util.Locale;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static android.content.ContentValues.TAG;
 
 /**
  * Class name: AddMoodActivity
@@ -65,6 +57,10 @@ import static android.content.ContentValues.TAG;
  * Date: November 4, 2019
  *
  * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
+ */
+
+/**
+ * Still need to add mandatory choose emotion, background color and emoji.
  */
 
 public class AddMoodActivity extends AppCompatActivity{
@@ -84,6 +80,7 @@ public class AddMoodActivity extends AppCompatActivity{
     private double longitude;
     private double latitude;
     private LocationListener mLocationListener;
+    private Context context;
 
     /**
      * Initialize
@@ -114,7 +111,6 @@ public class AddMoodActivity extends AppCompatActivity{
             }
         });
 
-
         setSituationSpinner();
         setEmotionSpinner();
 
@@ -132,36 +128,22 @@ public class AddMoodActivity extends AppCompatActivity{
                 EditText titl = findViewById(R.id.title);
                 String title = titl.getText().toString();
 
-                if (containsSpace(title)){
-                    Toast.makeText(AddMoodActivity.this, "title has no more than 3 words", Toast.LENGTH_SHORT).show();
-                } else {
-
+                if (containsSpace(title)) {
+                    Toast.makeText(AddMoodActivity.this, "Title has no more than 3 words", Toast.LENGTH_SHORT).show();
+                } else if (emotionString.equals("")) {
+                    Toast.makeText(AddMoodActivity.this, "You must select an emotion!", Toast.LENGTH_SHORT).show();
+                } else if (title.equals("")) {
+                    Toast.makeText(AddMoodActivity.this, "You must enter a title!", Toast.LENGTH_SHORT).show();
+                }
+                else {
                     DocumentReference docRef = db.collection("Users").document(name);
                     db = FirebaseFirestore.getInstance();
-                    if (explanation.length() == 0){
-                        explanation = "No explanation";
-                    }
 
                     //add image to storage if it is not null
                     if (imageUri != null){
                         StorageReference Image = Folder.child(currentTime.toString());
                         Image.putFile(imageUri);
                     }
-
-                    /*save image uri to the mood
-                    FirebaseStorage storage = FirebaseStorage.getInstance();
-                    //Sun%20Nov%2024%2015%3A26%3A27%20MST%202019
-                    final StorageReference image = storage.getReference().child("ImageFolder/" + name + "/" + currentTime.toString().replaceAll("\\s","").replaceAll(":",""));
-                    System.out.println("ImageFolder/" + name + "/" + currentTime.toString().replaceAll("\\s","").replaceAll(":",""));
-
-
-                    image.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(final Uri uri) {
-                            downloadUri = uri.toString();
-                            System.out.println(downloadUri);
-                        }
-                    });*/
 
                     addMood(currentTime, emotionString, explanation, situationString, title, docRef);
                     finish();
@@ -209,17 +191,17 @@ public class AddMoodActivity extends AppCompatActivity{
                         List<Address> addresses = geocoder.getFromLocation(getLatitude(), getLongitude(), 1);
                         String city = addresses.get(0).getLocality();
                         String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
-                        if (knownName != null){
+                        if (knownName != null) {
                             locationMessage.setText(city + " - " + knownName);
-                        }else{
+                        } else {
                             locationMessage.setText(city);
                         }
-                    }catch (Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                         Log.w("Current location", "Cannot get Address!");
                         System.out.println(getLatitude());
                     }
-                }else {
+                } else {
                     locationMessage.setText("None");
                 }
             }
@@ -246,17 +228,17 @@ public class AddMoodActivity extends AppCompatActivity{
      * @param comment
      * @return whether comment has more than 3 words
      */
-    public boolean containsSpace(String comment){
+    public boolean containsSpace(String comment) {
         String Comment = comment.trim();
         int numSpace = 0;
-        for(int i =0;i< Comment.length(); i++){
-            if (Character.isWhitespace(Comment.charAt(i))){
+        for (int i =0;i< Comment.length(); i++) {
+            if (Character.isWhitespace(Comment.charAt(i))) {
                 numSpace++;
             }
         }
-        if (numSpace > 2){
+        if (numSpace > 2) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -273,13 +255,11 @@ public class AddMoodActivity extends AppCompatActivity{
         situation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (parent.getItemAtPosition(position).equals("choose a situation")){
+                if (parent.getItemAtPosition(position).equals("choose a situation")) {
                     situationString = "";
-                }else{
+                } else {
                     situationString = parent.getItemAtPosition(position).toString();
-
                 }
-
             }
 
             @Override
@@ -302,48 +282,50 @@ public class AddMoodActivity extends AppCompatActivity{
         emotion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (parent.getItemAtPosition(position).equals("choose an emotion")){
+                if (parent.getItemAtPosition(position).equals("choose an emotion")) {
                     emotionString = "";
                 }
                 else{
                     emotionString = parent.getItemAtPosition(position).toString();
                     // Classify the moods by different mood states
                     // set the background color by different mood states
-                    switch (emotionString){
+                    View v = findViewById(R.id.addBackground);
+                    ImageView FriendMoodState = v.findViewById(R.id.friendMoodState);
+                    switch (emotionString) {
                         case "happy":
-                            view.setBackgroundColor(Color.rgb(253,91,91));
-                            view.getBackground().setAlpha(200);
-                            //Bitmap bMap = BitmapFactory.decodeResource(view.getResources(), R.drawable.happy_marker);
-                            //Bitmap bMapScaled = Bitmap.createScaledBitmap(bMap, 100, 100, true);
-                            //FriendMoodState.setImageBitmap(bMapScaled);
+                            v.setBackgroundColor(Color.rgb(253,91,91));
+                            v.getBackground().setAlpha(200);
+                            Bitmap bMap = BitmapFactory.decodeResource(view.getResources(), R.drawable.happy_marker);
+                            Bitmap bMapScaled = Bitmap.createScaledBitmap(bMap, 100, 100, true);
+                            FriendMoodState.setImageBitmap(bMapScaled);
                             break;
                         case "sad":
-                            view.setBackgroundColor(Color.rgb(106,106,240));
-                            view.getBackground().setAlpha(200);
-                            //Bitmap bMap1 = BitmapFactory.decodeResource(view.getResources(), R.drawable.sad_marker);
-                            //Bitmap bMapScaled1 = Bitmap.createScaledBitmap(bMap1, 100, 100, true);
-                            //FriendMoodState.setImageBitmap(bMapScaled1);
+                            v.setBackgroundColor(Color.rgb(106,106,240));
+                            v.getBackground().setAlpha(200);
+                            Bitmap bMap1 = BitmapFactory.decodeResource(view.getResources(), R.drawable.sad_marker);
+                            Bitmap bMapScaled1 = Bitmap.createScaledBitmap(bMap1, 100, 100, true);
+                            FriendMoodState.setImageBitmap(bMapScaled1);
                             break;
                         case "tired":
-                            view.setBackgroundColor(Color.rgb(121,121,121));
-                            view.getBackground().setAlpha(200);
-                            //Bitmap bMap2 = BitmapFactory.decodeResource(view.getResources(), R.drawable.tired_marker);
-                            //Bitmap bMapScaled2 = Bitmap.createScaledBitmap(bMap2, 100, 100, true);
-                            //FriendMoodState.setImageBitmap(bMapScaled2);
+                            v.setBackgroundColor(Color.rgb(121,121,121));
+                            v.getBackground().setAlpha(200);
+                            Bitmap bMap2 = BitmapFactory.decodeResource(view.getResources(), R.drawable.tired_marker);
+                            Bitmap bMapScaled2 = Bitmap.createScaledBitmap(bMap2, 100, 100, true);
+                            FriendMoodState.setImageBitmap(bMapScaled2);
                             break;
                         case "angry":
-                            view.setBackgroundColor(Color.rgb(250,233,90));
-                            view.getBackground().setAlpha(200);
-                            //Bitmap bMap3 = BitmapFactory.decodeResource(view.getResources(), R.drawable.angry_marker);
-                            //Bitmap bMapScaled3 = Bitmap.createScaledBitmap(bMap3, 100, 100, true);
-                            //FriendMoodState.setImageBitmap(bMapScaled3);
+                            v.setBackgroundColor(Color.rgb(250,233,90));
+                            v.getBackground().setAlpha(200);
+                            Bitmap bMap3 = BitmapFactory.decodeResource(view.getResources(), R.drawable.angry_marker);
+                            Bitmap bMapScaled3 = Bitmap.createScaledBitmap(bMap3, 100, 100, true);
+                            FriendMoodState.setImageBitmap(bMapScaled3);
                             break;
                         case "lonely":
-                            view.setBackgroundColor(Color.rgb(255,152,0));
-                            view.getBackground().setAlpha(200);
-                            //Bitmap bMap4 = BitmapFactory.decodeResource(view.getResources(), R.drawable.loney_marker);
-                            //Bitmap bMapScaled4 = Bitmap.createScaledBitmap(bMap4, 100, 100, true);
-                            //FriendMoodState.setImageBitmap(bMapScaled4);
+                            v.setBackgroundColor(Color.rgb(255,152,0));
+                            v.getBackground().setAlpha(200);
+                            Bitmap bMap4 = BitmapFactory.decodeResource(view.getResources(), R.drawable.loney_marker);
+                            Bitmap bMapScaled4 = Bitmap.createScaledBitmap(bMap4, 100, 100, true);
+                            FriendMoodState.setImageBitmap(bMapScaled4);
                             break;
                     }
                 }
@@ -360,7 +342,7 @@ public class AddMoodActivity extends AppCompatActivity{
      */
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PICK_IMAGE) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {

@@ -142,17 +142,19 @@ public class HomeFragment extends Fragment {
 
         friendmoodList = (ListView) rootView.findViewById(R.id.home_friend_moods);
 
-
-        return rootView;
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
         moodDataList = new ArrayList<>();
         getMoodList();
 
+        return rootView;
     }
+//
+//    @Override
+//    public void onResume(){
+//        super.onResume();
+//        moodDataList = new ArrayList<>();
+//        getMoodList();
+//
+//    }
 
 
     public void getMoodList(){
@@ -234,12 +236,8 @@ public class HomeFragment extends Fragment {
                             }
 
                         });
-
                     }
                 });
-
-
     }
-
 
 }

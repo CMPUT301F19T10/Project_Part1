@@ -25,7 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
-public abstract class FriendRequestMessageActivity extends AppCompatActivity implements RequestFragmentDialog.OnFragmentInteractionListener {
+public class FriendRequestMessageActivity extends AppCompatActivity implements RequestFragmentDialog.OnFragmentInteractionListener {
 
     // Declare the variables so that you will be able to reference it later.
     private ListView messageList;

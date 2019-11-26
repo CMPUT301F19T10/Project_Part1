@@ -7,18 +7,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -41,6 +46,9 @@ public class HappyMood extends AppCompatActivity {
     private FirebaseUser user;
     private FirebaseFirestore db;
     private CollectionReference collectionReference;
+    private static final int k = 10;
+    private int i;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,10 +70,11 @@ public class HappyMood extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(HappyMood.this, EditMood.class);
-                intent.putExtra("index", position);
+                intent.putExtra("string", moodDataList.get(position).getEmotionalState());
                 Mood mood = moodDataList.get(position);
                 intent.putExtra("mood", mood);
-                startActivity(intent);
+                i = position;
+                startActivityForResult(intent, k);
             }
         });
 
@@ -84,6 +93,8 @@ public class HappyMood extends AppCompatActivity {
                                 FirebaseStorage storage = FirebaseStorage.getInstance();
                                 StorageReference image = storage.getReference().child("ImageFolder/" + userName + "/" + mood.getDatetime().toString());
                                 image.delete();
+                                moodAdapter = new FriendMoodList(getBaseContext(), moodDataList);
+                                moodList.setAdapter(moodAdapter);
                             }
                         })
                         .setNegativeButton("No", null)
@@ -116,6 +127,7 @@ public class HappyMood extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Mood mood = document.toObject(Mood.class);
+                                mood.setUsername(userName);
                                 String flag = mood.getEmotionalState();
                                 if (flag.equals("happy")) {
                                     moodDataList.add(mood);
@@ -135,12 +147,25 @@ public class HappyMood extends AppCompatActivity {
 
     /**
      * Real-time update
+     * @param requestCode
+     * @param resultCode
+     * @param data
      */
     @Override
-    public void onResume() {
-        super.onResume();
-
-        updateList();
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == k) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                Mood mood = (Mood) data.getSerializableExtra("mood");
+                moodDataList.set(i, mood);
+                if (!mood.getEmotionalState().equals("happy")) {
+                    moodDataList.remove(i);
+                }
+                moodAdapter = new FriendMoodList(getBaseContext(), moodDataList);
+                //moodAdapter.updateImage();
+                moodList.setAdapter(moodAdapter);
+            }
+        }
     }
 
 }
