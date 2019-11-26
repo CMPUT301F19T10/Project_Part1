@@ -71,7 +71,7 @@ public class LogSignInActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_log_sign_in);
 
         // Views
-        addEmail = findViewById(R.id.add_user_name);
+        addEmail = findViewById(R.id.add_email);
         addPassWord = findViewById(R.id.add_user_password);
 
         // Buttons
