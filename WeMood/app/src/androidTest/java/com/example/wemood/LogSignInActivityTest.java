@@ -9,14 +9,9 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import com.robotium.solo.Solo;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertTrue;
 
 /**
  * Test class for Log in Activity. All the UI tests are written here.
@@ -96,9 +91,6 @@ public class LogSignInActivityTest {
 
         solo.clickOnButton("Sign in");
         solo.assertCurrentActivity("Wrong Activity", LogSignInActivity.class);
-
     }
-
-
 
 }

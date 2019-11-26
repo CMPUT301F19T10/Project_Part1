@@ -1,9 +1,7 @@
 package com.example.wemood;
 
-
 import android.app.Activity;
 import android.widget.EditText;
-
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
@@ -14,10 +12,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
-
 
 /**
  * Test class for Sign up Activity. All the UI tests are written here.
@@ -91,6 +86,5 @@ public class SignUpActivityTest {
     public void tearDown() throws Exception{
         solo.finishOpenedActivities();
     }
-
 
 }

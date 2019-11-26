@@ -1,11 +1,9 @@
 package com.example.wemood;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -13,7 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.widget.ViewAnimator;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -23,27 +20,10 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static android.content.ContentValues.TAG;
-
 
 /**
  * This is an activity that help and guide user to register
@@ -64,9 +44,6 @@ public class SignUpActivity extends AppCompatActivity implements
     private EditText addPassWord;
     private EditText addPhone;
     private String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-    private boolean valid_name;
-
-
 
     private static final String TAG = "SignUpActivity";
     private FirebaseAuth mAuth;
@@ -75,8 +52,6 @@ public class SignUpActivity extends AppCompatActivity implements
     private CollectionReference collectionReference;
     private DocumentReference documentReference;
     private FirebaseFirestore db;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,8 +69,6 @@ public class SignUpActivity extends AppCompatActivity implements
         addEmail = findViewById(R.id.email);
         addPhone = findViewById(R.id.phone);
         addUserName = findViewById(R.id.username);
-
-
     }
 
     /**
@@ -105,7 +78,6 @@ public class SignUpActivity extends AppCompatActivity implements
      * method.
      * No place can leave empty, otherwise sign-up process can't be completed
      * @param v*/
-
     @Override
     public void onClick(View v) {
         int i = v.getId();
@@ -122,8 +94,6 @@ public class SignUpActivity extends AppCompatActivity implements
             }
 
             /*if (isUserNameValid(userName)){
-
-
             }else{
                 addUserName.setError("User name is already exist");
             }*/
@@ -148,9 +118,6 @@ public class SignUpActivity extends AppCompatActivity implements
 
                 }
             });
-
-
-
         }
     }
 
@@ -165,7 +132,6 @@ public class SignUpActivity extends AppCompatActivity implements
      * @param email
      * @param password
      * @param phone*/
-
     public void createAccount(final String username, final String email, final String password, final String phone) {
         Log.d(TAG, "createAccount:" + email);
         if (!validateForm()) {
@@ -204,8 +170,9 @@ public class SignUpActivity extends AppCompatActivity implements
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(SignUpActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+                            /*Toast.makeText(SignUpActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();*/
+                            addEmail.setError("Email address is already exist!");
                         }
 
                     }
@@ -232,7 +199,6 @@ public class SignUpActivity extends AppCompatActivity implements
      * accordingly. For username and phone we only check if it's empty and
      * show error message accordingly
      * @return Return boolean value*/
-
     private boolean validateForm() {
         boolean valid = true;
         String email = addEmail.getText().toString();
@@ -258,7 +224,6 @@ public class SignUpActivity extends AppCompatActivity implements
             valid = false;
         } /*else if (!isUserNameValid(addUserName.getText().toString())) {
             addUserName.setError("Username already exist!");
-
         }*/else{
             addUserName.setError(null);
         }
@@ -281,20 +246,18 @@ public class SignUpActivity extends AppCompatActivity implements
      *  true.
      *  @param password
      *  @return Return boolean value*/
-
     public boolean isPasswordValid(final String password){
 
         if(password.length()<6){
             return false;
-        }else{
+        } else {
             for (int p =0; p < password.length();p++){
-                if(Character.isLetter(password.charAt(p))){
+                if (Character.isLetter(password.charAt(p))) {
                     Log.i("name12",Character.toString(password.charAt(p)));
-                    for(int i =0; i< password.length();i++){
-                        if (Character.isDigit(password.charAt(i))){
+                    for (int i =0; i< password.length();i++) {
+                        if (Character.isDigit(password.charAt(i))) {
                             Log.i("name23",Character.toString(password.charAt(i)));
                             return true;
-
                         }
                     }
                 }
@@ -302,25 +265,17 @@ public class SignUpActivity extends AppCompatActivity implements
             return false;
         }
     }
+
     /**
      * This method is to check length of phone number must
      * less than 10 digits long. Return true and false accordingly
      * @param phone
      * @return Return boolean value*/
-    public boolean isPhoneValid(final String phone){
-        if (phone.length()<10){
+    public boolean isPhoneValid(final String phone) {
+        if (phone.length()<10) {
             return false;
         }
         return true;
     }
 
-
-
-
-
-
-
-
 }
-
-

@@ -7,13 +7,17 @@ package com.example.wemood.Fragments;
  */
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -23,6 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.wemood.LogSignInActivity;
+import com.example.wemood.MoodHistory;
 import com.example.wemood.R;
 import com.example.wemood.User;
 
@@ -39,7 +44,14 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+
+import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
 
 /**
@@ -53,18 +65,13 @@ import static android.content.ContentValues.TAG;
  */
 
 public class ProfileFragment extends Fragment {
-    // The fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_SHOW_TEXT = "text";
+
     // Other class attributes are also defined here
-    private String mContentText;
     private String userName;
     private String userID;
     private String email;
     private String phone;
     private String newPhone;
-
-    private int numFollowers = 0;
-    private int numFollowing = 0;
 
     private FirebaseAuth mAuth;
     private FirebaseUser user;
@@ -75,15 +82,21 @@ public class ProfileFragment extends Fragment {
     private View rootView;
     private ImageView figureView;
     private TextView moodsView;
-    private TextView followersView;
     private TextView followingView;
     private TextView userNameView;
     private TextView userIDView ;
     private TextView emailView;
     private TextView phoneView;
     private EditText editPhoneView;
+    private ImageButton cameraButton;
     private Button historyButton;
     private RadioButton logoutButton;
+
+    private FirebaseStorage storage;
+    private StorageReference folder;
+    private StorageReference image;
+    private Uri imageUri;
+    private static final int PICK_IMAGE = 100;
 
     /**
      * Required empty public constructor
@@ -92,16 +105,10 @@ public class ProfileFragment extends Fragment {
 
     /**
      * Constructor
-     * @param param1
      * @return profile fragment
      */
-    public static ProfileFragment newInstance(String param1) {
+    public static ProfileFragment newInstance() {
         ProfileFragment fragment = new ProfileFragment();
-        Bundle args = new Bundle();
-
-        args.putString(ARG_SHOW_TEXT, param1);
-        fragment.setArguments(args);
-
         return fragment;
     }
 
@@ -112,10 +119,6 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mContentText = getArguments().getString(ARG_SHOW_TEXT);
-        }
     }
 
     /**
@@ -132,33 +135,36 @@ public class ProfileFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_profile, container, false);
         figureView = rootView.findViewById(R.id.figure);
         moodsView = rootView.findViewById(R.id.moods);
-        followersView = rootView.findViewById(R.id.followers);
         followingView = rootView.findViewById(R.id.following);
         userNameView = rootView.findViewById(R.id.username);
         userIDView = rootView.findViewById(R.id.userID);
         emailView = rootView.findViewById(R.id.email);
         phoneView = rootView.findViewById(R.id.phone);
         editPhoneView = rootView.findViewById(R.id.editPhone);
+        cameraButton = rootView.findViewById(R.id.camera);
         historyButton = rootView.findViewById(R.id.history);
         logoutButton = rootView.findViewById(R.id.logout);
 
         // Display personal information
-        displayInfo(userNameView, userIDView, emailView, phoneView);
+        displayInfo();
 
         // Update Phone Number
-        updatePhoneNumber(phoneView, editPhoneView);
+        updatePhoneNumber();
 
         // Update Moods Number
-        updateMoods(moodsView);
-
-        // Update Followers Number
-        updateFollowers(numFollowers);
+        updateMoods();
 
         // Update Following Number
-        updateFollowing(numFollowing);
+        updateFollowing();
+
+        // Update Figure
+        updateFigure();
+
+        // Go to My Mood History
+        goHistory();
 
         // Log Out
-        logout(logoutButton);
+        logout();
 
         return rootView;
     }
@@ -168,10 +174,10 @@ public class ProfileFragment extends Fragment {
      * @return the current user
      */
     public FirebaseUser getUser() {
-            mAuth = FirebaseAuth.getInstance();
-            user = mAuth.getCurrentUser();
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
 
-            return user;
+        return user;
     }
 
     /**
@@ -180,22 +186,25 @@ public class ProfileFragment extends Fragment {
      */
     public FirebaseFirestore getDatabase() {
         db = FirebaseFirestore.getInstance();
-
         return db;
+    }
+
+    /**
+     * Get storage
+     * @return the storage instance
+     */
+    public FirebaseStorage getStorage() {
+        storage = FirebaseStorage.getInstance();
+        return storage;
     }
 
     /**
      * Display personal information
      * (username, userID, email, phone number, etc.)
-     * @param userNameView
-     * @param userIDView
-     * @param emailView
-     * @param phoneView
      */
-    public void displayInfo(TextView userNameView, TextView userIDView, TextView emailView, final TextView phoneView) {
-
+    public void displayInfo() {
         // Get database and current user
-        getDatabase();
+        db = getDatabase();
         user = getUser();
 
         // Get and display username
@@ -215,7 +224,8 @@ public class ProfileFragment extends Fragment {
                 .document(userName);
 
         // Get and display phone from current document
-        documentReference.get()
+        documentReference
+                .get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -226,8 +236,24 @@ public class ProfileFragment extends Fragment {
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getActivity(), "Error!", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, e.toString());
+                        Toast.makeText(getActivity(), "Error!", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, e.toString());
+            }
+        });
+
+        // Get and display figure
+        // Get storage and image
+        storage = getStorage();
+        image = storage.getReference().child("ProfileFolder/" + userName);
+        image.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(final Uri uri) {
+                Picasso.get().load(uri).into(figureView);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
             }
         });
     }
@@ -235,12 +261,10 @@ public class ProfileFragment extends Fragment {
     /**
      * Update Phone Number then
      * display the latest Phone Number
-     * @param phoneView
-     * @param editPhoneView
      */
-    public void updatePhoneNumber(final TextView phoneView, final EditText editPhoneView) {
+    public void updatePhoneNumber() {
         // Get database and current user
-        getDatabase();
+        db = getDatabase();
         user = getUser();
 
         // Get username for later reference
@@ -254,48 +278,56 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 newPhone = editPhoneView.getText().toString();
-                // Update current phone number
-                documentReference
-                        .update("phone", newPhone)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d(TAG, "DocumentSnapshot successfully updated!");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w(TAG, "Error updating document", e);
-                            }
-                        });
-                // Get and display new phone number
-                documentReference.get()
-                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                            @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                User user = documentSnapshot.toObject(User.class);
-                                phone = user.getPhone();
-                                phoneView.setText("New Phone No.: " + phone);
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getActivity(), "Error!", Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, e.toString());
-                    }
-                });
+                // Check the validity
+                // Should not be empty and the length should be less than 10
+                if (TextUtils.isEmpty(newPhone) || !(newPhone.length() < 10)) {
+                    editPhoneView.setError("Invalid Phone!");
+                } else {
+                    editPhoneView.setError(null);
+                    // Update current phone number
+                    documentReference
+                            .update("phone", newPhone)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d(TAG, "DocumentSnapshot successfully updated!");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w(TAG, "Error updating document", e);
+                                }
+                            });
+                    // Get and display new phone number
+                    documentReference
+                            .get()
+                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    User user = documentSnapshot.toObject(User.class);
+                                    phone = user.getPhone();
+                                    phoneView.setText("New Phone No.: " + phone);
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getActivity(), "Error!", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, e.toString());
+                        }
+                    });
+                }
+
             }
         });
     }
 
     /**
      * Update Moods Number
-     * @param moodsView
      */
-    public void updateMoods(final TextView moodsView) {
+    public void updateMoods() {
         // Get database and current user
-        getDatabase();
+        db = getDatabase();
         user = getUser();
 
         // Get username for later reference
@@ -319,7 +351,9 @@ public class ProfileFragment extends Fragment {
                                 numMoods += 1;
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                             }
-                            moodsView.setText("Moods\n" + String.valueOf(numMoods));
+                            String moodsDisplay = "Moods\n%d";
+                            moodsDisplay = String.format(moodsDisplay, numMoods);
+                            moodsView.setText(moodsDisplay);
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
                         }
@@ -328,28 +362,99 @@ public class ProfileFragment extends Fragment {
     }
 
     /**
-     * Update Followers Number
-     * @param numFollowers
+     * Update Following Number
      */
-    public void updateFollowers(int numFollowers) {
-        // Display latest followers number
-        followersView.setText("Followers\n" + String.valueOf(numFollowers));
+    public void updateFollowing() {
+        // Get database and current user
+        db = getDatabase();
+        user = getUser();
+
+        // Get username for later reference
+        userName = user.getDisplayName();
+
+        // Get collection reference
+        documentReference = db.collection("Users")
+                .document(userName);
+
+        documentReference
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        User user = documentSnapshot.toObject(User.class);
+                        ArrayList<String> friendList = user.getFriendList();
+                        int numFollowing = friendList.size();
+                        String followingDisplay = "Following\n%d";
+                        followingDisplay = String.format(followingDisplay, numFollowing);
+                        followingView.setText(followingDisplay);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getActivity(), "Error!", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, e.toString());
+            }
+        });
     }
 
     /**
-     * Update Following Number
-     * @param numFollowing
+     * Update figure
      */
-    public void updateFollowing(int numFollowing) {
-        // Display latest following number
-        followingView.setText("Following\n" + String.valueOf(numFollowing));
+    public void updateFigure() {
+        // Get storage and folder
+        storage = getStorage();
+        folder = storage.getReference().child("ProfileFolder");
+
+        // Choose a photo from gallery
+        cameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                startActivityForResult(gallery, PICK_IMAGE);
+            }
+        });
+    }
+
+    /**
+     * Get and show the selected image then upload it
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PICK_IMAGE) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                imageUri = data.getData();
+                figureView.setImageURI(imageUri);
+                // Add figure to storage if it is not null
+                if (imageUri != null) {
+                    StorageReference Image = folder.child(userName);
+                    Image.putFile(imageUri);
+                }
+            }
+        }
+    }
+
+    /**
+     * Go to MoodHistory Activity
+     */
+    public void goHistory() {
+        historyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Go to MoodHistory Activity
+                Intent intent = new Intent(getActivity(), MoodHistory.class);
+                startActivity(intent);
+            }
+        });
     }
 
     /**
      * Log out from the current account
-     * @param logoutButton
      */
-    public void logout(RadioButton logoutButton) {
+    public void logout() {
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -358,6 +463,17 @@ public class ProfileFragment extends Fragment {
                 startActivity(intent);
             }
         });
+    }
+
+    /**
+     * Real-time update
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        updateMoods();
+        updateFollowing();
     }
 
 }

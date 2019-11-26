@@ -1,4 +1,9 @@
 package com.example.wemood;
+/**
+ * @author Alpha Hou
+ *
+ * @version 1.0
+ */
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,18 +16,40 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class FriendNameList extends ArrayAdapter<User> {
-    private ArrayList<User> friends;
+/**
+ * Class name: FriendNameList
+ *
+ * Version 1.0
+ *
+ * Date: November 7, 2019
+ *
+ * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
+ */
+
+public class FriendNameList extends ArrayAdapter<String> {
+    private List<String> friends;
     private Context context;
 
-
-    public FriendNameList(Context context, ArrayList<User> friends) {
-        super(context, 0,friends);
+    /**
+     * Constructor
+     * @param context
+     * @param friends
+     */
+    public FriendNameList(Context context, ArrayList<String> friends) {
+        super(context, 0, friends);
         this.friends = friends;
         this.context = context;
     }
 
+    /**
+     * Create the view of FriendNameList. Will display a list of user's names.
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return
+     */
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = convertView;
 
@@ -30,11 +57,11 @@ public class FriendNameList extends ArrayAdapter<User> {
             view = LayoutInflater.from(context).inflate(R.layout.friend_list, parent, false);
         }
 
-        User friendname = friends.get(position);
+        String friendname = friends.get(position);
 
         TextView FriendName = view.findViewById(R.id.friend_view);
 
-        FriendName.setText(friendname.getUserName());
+        FriendName.setText(friendname);
 
         return view;
     }

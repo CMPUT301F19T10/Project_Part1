@@ -44,7 +44,7 @@ import io.opencensus.tags.Tag;
 
 
 /**
-*   This is a activity that allow user to sign in or jump to
+ *   This is a activity that allow user to sign in or jump to
  *   sign-up activity to sign up. In this activity we check whether
  *   user has enter the correct email address and password and check
  *   it in our app database by pressing sign in button, which is
@@ -199,6 +199,5 @@ public class LogSignInActivity extends AppCompatActivity implements
 
         return valid;
     }
-
 
 }
