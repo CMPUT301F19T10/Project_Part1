@@ -80,6 +80,8 @@ public class LogSignInActivity extends AppCompatActivity implements
 
         checkbox = findViewById(R.id.checkbox);
 
+
+        addPassWord.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
         /**
          * This method is to set up a listener to see if check box
          * has been pressed. If checkbox is pressed then we hide password
