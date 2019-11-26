@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -89,11 +91,14 @@ public class LogSignInActivity extends AppCompatActivity implements
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(!isChecked) {
-                    addPassWord.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    addPassWord.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
                     checkbox.setText("Hide Password");
+                    addPassWord.setSelection(addPassWord.getText().length());
                 } else {
-                    addPassWord.setInputType(129);
+                    addPassWord.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    //addPassWord.setInputType(129);
                     //checkbox.setText("Show Password");
+                    addPassWord.setSelection(addPassWord.getText().length());
                 }
             }
         });
