@@ -72,7 +72,6 @@ public class ProfileFragment extends Fragment {
     private String email;
     private String phone;
     private String newPhone;
-    private String figure;
 
     private FirebaseAuth mAuth;
     private FirebaseUser user;
@@ -406,7 +405,16 @@ public class ProfileFragment extends Fragment {
         storage = getStorage();
         folder = storage.getReference().child("ProfileFolder");
 
-        // Choose a photo from gallery
+        // Long click on figureView to choose a photo from gallery
+        figureView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                startActivityForResult(gallery, PICK_IMAGE);
+            }
+        });
+
+        // Click on cameraButton to choose a photo from gallery
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -33,6 +33,10 @@ public class MoodHistory extends AppCompatActivity {
     private Button angryButton;
     private Button tiredButton;
 
+    /**
+     * Initialize the activity
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

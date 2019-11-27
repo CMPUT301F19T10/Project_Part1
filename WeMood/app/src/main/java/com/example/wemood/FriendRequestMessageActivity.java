@@ -2,9 +2,11 @@ package com.example.wemood;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.ContentValues;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -40,7 +42,8 @@ public class FriendRequestMessageActivity extends AppCompatActivity implements R
 
     private String userName;
     public  ArrayList<String> waitfriendList;
-    
+    SwipeRefreshLayout swipeRefreshLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,15 +66,32 @@ public class FriendRequestMessageActivity extends AppCompatActivity implements R
                 new RequestFragmentDialog(requestMessage).show(getSupportFragmentManager(), "Friend Request");
             }
         });
-    }
 
-    @Override
-    public void onResume(){
-        super.onResume();
+
+        swipeRefreshLayout = findViewById(R.id.friend_request_swipe_container);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                dataMessageList = new ArrayList<>();
+                getWaitList();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                },2000);
+            }
+        });
+
         dataMessageList = new ArrayList<>();
         getWaitList();
     }
 
+
+    /**
+     * This function get user's waitfriendlist and display wait user to give the permission to
+     * be accepted or declined to add user as a friend.
+     */
     public void getWaitList(){
         collectionReference = db.collection("Users");
         collectionReference.document(userName).get()
@@ -88,12 +108,12 @@ public class FriendRequestMessageActivity extends AppCompatActivity implements R
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getBaseContext(), "Error!", Toast.LENGTH_SHORT).show();
-                Log.d(ContentValues.TAG, e.toString());
-            }
-        });
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getBaseContext(), "Error!", Toast.LENGTH_SHORT).show();
+                        Log.d(ContentValues.TAG, e.toString());
+                    }
+                });
     }
 
 

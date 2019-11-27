@@ -1,9 +1,8 @@
 package com.example.wemood;
 
-import android.net.Uri;
-
 import java.io.Serializable;
 import java.util.Date;
+
 /**
  * Class name: Mood
  *

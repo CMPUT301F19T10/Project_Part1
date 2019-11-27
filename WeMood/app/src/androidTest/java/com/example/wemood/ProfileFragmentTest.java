@@ -39,8 +39,8 @@ public class ProfileFragmentTest {
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
         // Log in using an existing account
         solo.assertCurrentActivity("Wrong Activity", LogSignInActivity.class);
-        solo.enterText((EditText) solo.getView(R.id.add_user_name), "dby123@gmail.com");
-        solo.enterText((EditText) solo.getView(R.id.add_user_password), "dby123");
+        solo.enterText((EditText) solo.getView(R.id.add_user_name), "yzhtest@qq.com");
+        solo.enterText((EditText) solo.getView(R.id.add_user_password), "yzh123");
         solo.clickOnButton("Sign in");
         // Go directly to the MainActivity to test the profile fragment
         solo.waitForActivity(MainActivity.class, 5000);
@@ -72,18 +72,18 @@ public class ProfileFragmentTest {
 
         // Check text show
         // Check number of moods
-        assertTrue(solo.waitForText("8", 1, 2000));
+        assertTrue(solo.waitForText("1", 1, 2000));
 
         // Check number of following
-        assertTrue(solo.waitForText("4", 1, 2000));
+        assertTrue(solo.waitForText("1", 1, 2000));
 
         // Check UserName
-        assertTrue(solo.waitForText("dby123123", 1, 2000));
+        assertTrue(solo.waitForText("yzh123", 1, 2000));
 
         // Check UserID, Email, Phone Number
-        assertTrue(solo.waitForText("o4RlnXUN8kg3YQDPLcp2nQhaj513", 1, 2000));
-        assertTrue(solo.waitForText("dby123@gmail.com", 1, 2000));
-        assertTrue(solo.waitForText("2131423", 1, 2000));
+        assertTrue(solo.waitForText("RhB9589Gw4apQWR50qFamY28avn1", 1, 2000));
+        assertTrue(solo.waitForText("yzhtest@qq.com", 1, 2000));
+        assertTrue(solo.waitForText("8888888888888", 1, 2000));
     }
 
     /**

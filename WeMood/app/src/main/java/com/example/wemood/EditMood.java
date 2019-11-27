@@ -1,6 +1,5 @@
 package com.example.wemood;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,7 +18,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.Continuation;
@@ -125,10 +123,7 @@ public class EditMood extends AppCompatActivity {
                                         @Override
                                         public void onClick(View v) {
                                             //set
-                                            if (imageUri != null) {
-                                                StorageReference Image = Folder.child(mood.getDatetime().toString());
-                                                Image.putFile(imageUri);
-                                            }
+
 
                                             EditText r = findViewById(R.id.reason);
                                             final String newReason = r.getText().toString();
@@ -144,50 +139,73 @@ public class EditMood extends AppCompatActivity {
                                             else {
                                                 final DocumentReference docRef = db.collection("Users").document(userName);
 
-                                                final StorageReference Image = Folder.child(mood.getDatetime().toString());
-                                                Image.putFile(imageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                                                    @Override
-                                                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                                                        if (!task.isSuccessful()) {
-                                                            throw task.getException();
+                                                if (imageUri != null) {
+                                                    final StorageReference Image = Folder.child(mood.getDatetime().toString());
+                                                    Image.putFile(imageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                                                        @Override
+                                                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                                            if (!task.isSuccessful()) {
+                                                                throw task.getException();
+                                                            }
+                                                            return Image.getDownloadUrl();
                                                         }
-                                                        return Image.getDownloadUrl();
-                                                    }
-                                                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Uri> task) {
-                                                        if (task.isSuccessful()) {
-                                                            downloadUri = task.getResult().toString();
-                                                            mood.setUri(downloadUri);
-                                                            mood.setComment(newReason);
-                                                            mood.setExplanation(newTitle);
-                                                            mood.setEmotionalState(emotionString);
-                                                            mood.setSocialSituation(situationString);
-                                                            db.collection("MoodList").document(mood.getDatetime().toString())
-                                                                    .delete()
-                                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                        @Override
-                                                                        public void onSuccess(Void aVoid) {
-                                                                            docRef.collection("MoodList").document(d.toString()).set(mood);
-                                                                        }
-                                                                    });
-                                                            if (emotion.equals("happy")) {
-                                                                returnHappy(mood);
-                                                            } else if (emotion.equals("angry")) {
-                                                                returnAngry(mood);
-                                                            } else if (emotion.equals("lonely")) {
-                                                                returnLonely(mood);
-                                                            } else if (emotion.equals("sad")) {
-                                                                returnSad(mood);
-                                                            } else if (emotion.equals("tired")) {
-                                                                returnTired(mood);
+                                                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Uri> task) {
+                                                            if (task.isSuccessful()) {
+                                                                downloadUri = task.getResult().toString();
+                                                                mood.setUri(downloadUri);
+                                                                mood.setComment(newReason);
+                                                                mood.setExplanation(newTitle);
+                                                                mood.setEmotionalState(emotionString);
+                                                                mood.setSocialSituation(situationString);
+                                                                db.collection("MoodList").document(mood.getDatetime().toString())
+                                                                        .delete()
+                                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                            @Override
+                                                                            public void onSuccess(Void aVoid) {
+                                                                                docRef.collection("MoodList").document(d.toString()).set(mood);
+                                                                            }
+                                                                        });
+                                                                if (emotion.equals("happy")) {
+                                                                    returnHappy(mood);
+                                                                } else if (emotion.equals("angry")) {
+                                                                    returnAngry(mood);
+                                                                } else if (emotion.equals("lonely")) {
+                                                                    returnLonely(mood);
+                                                                } else if (emotion.equals("sad")) {
+                                                                    returnSad(mood);
+                                                                } else if (emotion.equals("tired")) {
+                                                                    returnTired(mood);
+                                                                }
                                                             }
                                                         }
+                                                    });
+                                                }else{
+                                                    mood.setComment(newReason);
+                                                    mood.setExplanation(newTitle);
+                                                    mood.setEmotionalState(emotionString);
+                                                    mood.setSocialSituation(situationString);
+                                                    db.collection("MoodList").document(mood.getDatetime().toString())
+                                                            .delete()
+                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                @Override
+                                                                public void onSuccess(Void aVoid) {
+                                                                    docRef.collection("MoodList").document(d.toString()).set(mood);
+                                                                }
+                                                            });
+                                                    if (emotion.equals("happy")) {
+                                                        returnHappy(mood);
+                                                    } else if (emotion.equals("angry")) {
+                                                        returnAngry(mood);
+                                                    } else if (emotion.equals("lonely")) {
+                                                        returnLonely(mood);
+                                                    } else if (emotion.equals("sad")) {
+                                                        returnSad(mood);
+                                                    } else if (emotion.equals("tired")) {
+                                                        returnTired(mood);
                                                     }
-                                                });
-
-
-
+                                                }
 
                                             }
                                         }
