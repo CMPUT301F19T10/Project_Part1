@@ -3,9 +3,9 @@ package com.example.wemood.Fragments;
 /**
  * Class name: MapFragment
  *
- * version 2.0
+ * version 3.0
  *
- * Date: November 3, 2019
+ * Date: November 25, 2019
  *
  * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
  */
@@ -70,7 +70,7 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
 /**
  * @author ChengZhang Dong
  *
- * @version 2.0
+ * @version 3.0
  */
 public class MapFragment extends Fragment implements View.OnClickListener {
 
@@ -85,7 +85,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     private LocationManager lm;
     private double longitude;
     private double latitude;
-
     private int statusNumber;
 
     /**
@@ -145,7 +144,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         friendsMap.setOnClickListener(this);
 
         // create the map
-
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
@@ -237,13 +235,14 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     };
 
     /**
-     * update location
+     * update location and markers depending on the statusNumber
      */
     @Override
     public void onResume() {
         super.onResume();
         locationUpdate();
         switch (this.statusNumber){
+                // My mood markers
             case 0:
                 mapFragment.getMapAsync(new OnMapReadyCallback() {
                     @Override
@@ -252,6 +251,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                         setMoodMarker(googleMap,userName);
                     }
                 });
+                // My mood markers
             case 1:
                 mapFragment.getMapAsync(new OnMapReadyCallback() {
                     @Override
@@ -260,6 +260,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                         setMoodMarker(googleMap,userName);
                     }
                 });
+                // Friend mood markers
             case 2:
                 mapFragment.getMapAsync(new OnMapReadyCallback() {
                     @Override
@@ -280,11 +281,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         lm.removeUpdates(mLocationListener);
     }
 
-   /* @Override
-    public void onStop(){
-        super.onStop();
-        locationUpdate();
-    }*/
     /**
      * update location
      */
@@ -346,6 +342,11 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         this.latitude = latitude;
     }
 
+    /**
+     * set mood markers depending on mood types
+     * @param googleMap
+     * @param userName
+     */
     public void setMoodMarker(final GoogleMap googleMap,final String userName) {
         collectionReference = db.collection("Users")
                 .document(userName)
@@ -388,6 +389,13 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                                                     .snippet(userName + ": " + mood.getComment())
                                                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.tired_marker)));
                                             break;
+                                        case "lonely":
+                                            googleMap.addMarker(new MarkerOptions()
+                                                    .position(new LatLng(mood.getLatitude(),mood.getLongitude()))
+                                                    .title(mood.getDatetime().toString())
+                                                    .snippet(userName + ": " + mood.getComment())
+                                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.lonely_marker)));
+                                            break;
                                     }
                                 }
                             }
@@ -398,6 +406,10 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 });
     }
 
+    /**
+     * set friends' mood markers
+     * @param googleMap
+     */
     public void setFriendsMapMarker(final GoogleMap googleMap) {
         collectionReference = db.collection("Users");
         collectionReference.document(userName).get()
