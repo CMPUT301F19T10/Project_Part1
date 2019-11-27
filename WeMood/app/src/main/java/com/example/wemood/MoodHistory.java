@@ -42,6 +42,7 @@ public class MoodHistory extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mood_history);
 
+        // Create references of the buttons
         backButton = findViewById(R.id.back);
         happyButton = findViewById(R.id.happy);
         sadButton = findViewById(R.id.sad);

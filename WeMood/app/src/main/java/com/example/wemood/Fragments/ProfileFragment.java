@@ -57,9 +57,9 @@ import static android.content.ContentValues.TAG;
 /**
  * Class name: ProfileFragment
  *
- * Version 1.0
+ * Version 2.0
  *
- * Date: November 4, 2019
+ * Date: November 20, 2019
  *
  * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
  */
