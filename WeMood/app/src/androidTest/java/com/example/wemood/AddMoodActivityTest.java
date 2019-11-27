@@ -11,18 +11,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 
 import com.robotium.solo.Solo;
-
-import java.security.spec.ECField;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
 
 public class AddMoodActivityTest {
     private Solo solo;
@@ -35,9 +26,10 @@ public class AddMoodActivityTest {
     public void setUp() throws Exception{
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
         solo.assertCurrentActivity("Wrong Activity", LogSignInActivity.class);
-        solo.enterText((EditText)solo.getView(R.id.add_user_name), "zoeye@gmail.com");
-        solo.enterText((EditText)solo.getView(R.id.add_user_password), "111222333");
+        solo.enterText((EditText) solo.getView(R.id.add_user_name), "zoeye@gmail.com");
+        solo.enterText((EditText) solo.getView(R.id.add_user_password), "111222333");
         solo.clickOnButton("Sign in");
+        solo.waitForActivity(MainActivity.class,10000);
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
 
     }

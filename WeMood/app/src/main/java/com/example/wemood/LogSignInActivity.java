@@ -6,11 +6,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -37,6 +42,19 @@ import java.util.Map;
 
 import io.opencensus.tags.Tag;
 
+
+/**
+ *   This is a activity that allow user to sign in or jump to
+ *   sign-up activity to sign up. In this activity we check whether
+ *   user has enter the correct email address and password and check
+ *   it in our app database by pressing sign in button, which is
+ *   firebase and also in order to protect user privacy we set up
+ *   a hiding password function. If user-input email address and
+ *   password are match we switch to main activity w    hich is homepage
+ *   of this app.If sign-up button is pressed then jump to sign-up activity.
+ *
+ */
+
 public class LogSignInActivity extends AppCompatActivity implements
         View.OnClickListener{
 
@@ -44,7 +62,7 @@ public class LogSignInActivity extends AppCompatActivity implements
     final String TAG = "LogSignInActivity";
     private EditText addEmail;
     private EditText addPassWord;
-
+    private CheckBox checkbox;
     private FirebaseAuth mAuth;
 
     @Override
@@ -60,11 +78,48 @@ public class LogSignInActivity extends AppCompatActivity implements
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.sign_up_button).setOnClickListener(this);
 
+        checkbox = findViewById(R.id.checkbox);
+
+
+        addPassWord.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+        /**
+         * This method is to set up a listener to see if check box
+         * has been pressed. If checkbox is pressed then we hide password
+         * and change its text from "hide password" to "show password"
+         * and then if checkbox is pressed again then we show the password
+         * in EditText*/
+
+        checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(!isChecked) {
+                    addPassWord.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    checkbox.setText("Hide Password");
+                    addPassWord.setSelection(addPassWord.getText().length());
+                } else {
+                    addPassWord.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    //addPassWord.setInputType(129);
+                    //checkbox.setText("Show Password");
+                    addPassWord.setSelection(addPassWord.getText().length());
+                }
+            }
+        });
+
         // [START initialize_auth]
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
         // [END initialize_auth]
     }
+
+
+    /**
+     * In this method, we check which button is pressed
+     * by looking at its ID. if pressed button is sign in
+     * then we take user input both email and password
+     * to check in our firestore. If sign-up button is detect
+     * we switch to sign-up activity
+     * @param  v*/
+
 
     @Override
     public void onClick(View v) {
@@ -78,9 +133,19 @@ public class LogSignInActivity extends AppCompatActivity implements
         }
     }
 
+
+    /**
+     * What this method do is to take two argument: password and email
+     * then judge its validation if input is valid, then we log in with
+     * our database. Succeed then log in and show "Success" ,else we show
+     * toast message : "Login failed"
+     * @param email
+     * @param password*/
+
+
     private void signIn(String email, String password) {
         Log.d(TAG, "signIn:" + email);
-        if (!validateForm()) {
+        if (!validateForm(addEmail.getText().toString(),addPassWord.getText().toString())) {
             return;
         }
 
@@ -107,10 +172,16 @@ public class LogSignInActivity extends AppCompatActivity implements
         // [END sign_in_with_email]
     }
 
-    private boolean validateForm() {
+    /**
+     * The purpose of this method is to see if email and password
+     * EditText are empty, if yes show error message on right
+     * hand side accordingly
+     * @return Return boolean value*/
+
+    public boolean validateForm(String email,String password) {
         boolean valid = true;
 
-        String email = addEmail.getText().toString();
+        //String email = addEmail.getText().toString();
         if (TextUtils.isEmpty(email)) {
             addEmail.setError("Required.");
             valid = false;
@@ -118,7 +189,7 @@ public class LogSignInActivity extends AppCompatActivity implements
             addEmail.setError(null);
         }
 
-        String password = addPassWord.getText().toString();
+        //String password = addPassWord.getText().toString();
         if (TextUtils.isEmpty(password)) {
             addPassWord.setError("Required.");
             valid = false;
@@ -128,6 +199,5 @@ public class LogSignInActivity extends AppCompatActivity implements
 
         return valid;
     }
-
 
 }

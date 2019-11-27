@@ -11,7 +11,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class AddMoodTest {
     @Test
-       public void testContainsSpace(){
+    public void testContainsSpace(){
         String word = "h e l l o";
         AddMoodActivity activity = new AddMoodActivity();
         assertTrue(activity.containsSpace(word));
