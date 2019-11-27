@@ -3,7 +3,7 @@ package com.example.wemood.Fragments;
 /**
  * @author Zuhao Yang
  *
- * @version 1.0
+ * @version 2.0
  */
 
 import android.content.Intent;
