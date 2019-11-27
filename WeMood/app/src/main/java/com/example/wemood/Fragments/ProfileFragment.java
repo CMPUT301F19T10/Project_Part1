@@ -405,7 +405,7 @@ public class ProfileFragment extends Fragment {
         storage = getStorage();
         folder = storage.getReference().child("ProfileFolder");
 
-        // Long click on figureView to choose a photo from gallery
+        // Click on figureView to choose a photo from gallery
         figureView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
