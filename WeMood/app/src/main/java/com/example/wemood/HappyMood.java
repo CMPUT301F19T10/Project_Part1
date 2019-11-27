@@ -56,7 +56,7 @@ public class HappyMood extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser user;
     private FirebaseFirestore db;
-    private CollectionReference collectiofnReerence;
+    private CollectionReference collectionReference;
     private static final int k = 10;
     private int i;
 

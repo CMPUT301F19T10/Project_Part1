@@ -42,6 +42,8 @@ public class LonelyMoodUnitTest {
         Mood newMood = mockMood();
         moodDataList.add(newMood);
         assertEquals(2, moodDataList.size());
+        moodDataList.remove(newMood);
+        assertEquals(1, moodDataList.size());
     }
 
 }
