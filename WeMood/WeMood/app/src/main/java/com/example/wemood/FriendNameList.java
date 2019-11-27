@@ -32,7 +32,6 @@ public class FriendNameList extends ArrayAdapter<String> {
     private List<String> friends;
     private Context context;
 
-
     /**
      * Constructor
      * @param context
@@ -43,11 +42,6 @@ public class FriendNameList extends ArrayAdapter<String> {
         this.friends = friends;
         this.context = context;
     }
-//        public FriendNameList(Context context, ArrayList<String> friends) {
-//            super(context,0,friends);
-//            this.friends = friends;
-//            this.context = context;
-//    }
 
     /**
      * Create the view of FriendNameList. Will display a list of user's names.

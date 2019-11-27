@@ -23,6 +23,7 @@
         <activity android:name=".HappyMood" />
         <activity android:name=".MoodHistory" />
         <activity android:name=".SignUpActivity" />
+        <activity android:name=".EditMood" />
         <activity android:name=".LogSignInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

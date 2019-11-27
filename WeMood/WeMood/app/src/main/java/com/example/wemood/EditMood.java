@@ -1,6 +1,9 @@
 package com.example.wemood;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,13 +13,16 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -29,12 +35,13 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.Date;
 
 public class EditMood extends AppCompatActivity {
-    int index;
+    String emotion;
     Uri imageUri;
     private FirebaseFirestore db;
     Mood mood;
@@ -44,7 +51,9 @@ public class EditMood extends AppCompatActivity {
     private FirebaseAuth mAuth;
     String situationString, emotionString;
     Date date;
+    String downloadUri;
     private static final int PICK_IMAGE = 100;
+    private ImageButton backButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +62,17 @@ public class EditMood extends AppCompatActivity {
         setSituationSpinner();
         setEmotionSpinner();
 
-
+        backButton = findViewById(R.id.back);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Go back to MoodHistory Activity
+                finish();
+            }
+        });
 
         Intent intent = getIntent();
-        index = intent.getIntExtra("index", 0);
+        emotion = intent.getStringExtra("string");
         db = FirebaseFirestore.getInstance();
         mood = (Mood) intent.getSerializableExtra("mood");
         date = mood.getDatetime();
@@ -66,7 +82,7 @@ public class EditMood extends AppCompatActivity {
 
         final String userName = user.getDisplayName();
 
-        //open imageview
+        //open ImageView
         Folder = FirebaseStorage.getInstance().getReference().child("ImageFolder").child(userName);
         imageView = findViewById(R.id.imageView);
         imageView.setOnClickListener(new View.OnClickListener() {
@@ -80,8 +96,6 @@ public class EditMood extends AppCompatActivity {
         collectionReference = db.collection("Users")
                 .document(userName)
                 .collection("MoodList");
-
-
 
         collectionReference
                 .get()
@@ -102,44 +116,94 @@ public class EditMood extends AppCompatActivity {
                                     //get image if it exists
                                     FirebaseStorage storage = FirebaseStorage.getInstance();
                                     final StorageReference image = storage.getReference().child("ImageFolder/" + userName + "/" + mood.getDatetime().toString());
-                                    if (image != null){
-                                        image.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                            @Override
-                                            public void onSuccess(final Uri uri) {
-                                                Picasso.get().load(uri).into(imageView);
-                                            }
-                                        });
+                                    if (image != null) {
+                                        Picasso.get().load(mood.getUri()).into(imageView);
                                     }
-
 
                                     Button Edit = findViewById(R.id.add);
                                     Edit.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-
                                             //set
-                                            if (imageUri != null){
+                                            if (imageUri != null) {
                                                 StorageReference Image = Folder.child(mood.getDatetime().toString());
                                                 Image.putFile(imageUri);
-
                                             }
 
-                                            EditText r= findViewById(R.id.reason);
-                                            String newReason = r.getText().toString();
-                                            EditText t= findViewById(R.id.title);
-                                            String newTitle = t.getText().toString();
-                                            if (containsSpace(newTitle)){
-                                                Toast.makeText(EditMood.this, "title has no more than 3 words", Toast.LENGTH_SHORT).show();
-                                            } else {
-                                                DocumentReference docRef = db.collection("Users").document(userName);
-                                                mood.setComment(newReason);
-                                                mood.setExplanation(newTitle);
-                                                mood.setEmotionalState(emotionString);
-                                                mood.setSocialSituation(situationString);
-                                                docRef.collection("MoodList").document(d.toString()).set(mood);
-                                                finish();
+                                            EditText r = findViewById(R.id.reason);
+                                            final String newReason = r.getText().toString();
+                                            EditText t = findViewById(R.id.title);
+                                            final String newTitle = t.getText().toString();
+                                            if (containsSpace(newTitle)) {
+                                                Toast.makeText(EditMood.this, "Title has no more than 3 words", Toast.LENGTH_SHORT).show();
+                                            } else if (emotionString.equals("")) {
+                                                Toast.makeText(EditMood.this, "You must select an emotion!", Toast.LENGTH_SHORT).show();
+                                            } else if (newTitle.equals("")) {
+                                                Toast.makeText(EditMood.this, "You must enter a title!", Toast.LENGTH_SHORT).show();
                                             }
+                                            else {
+                                                final DocumentReference docRef = db.collection("Users").document(userName);
 
+                                                final StorageReference Image = Folder.child(mood.getDatetime().toString());
+                                                Image.putFile(imageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                                                    @Override
+                                                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                                        if (!task.isSuccessful()) {
+                                                            throw task.getException();
+                                                        }
+                                                        return Image.getDownloadUrl();
+                                                    }
+                                                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Uri> task) {
+                                                        if (task.isSuccessful()) {
+                                                            downloadUri = task.getResult().toString();
+                                                            mood.setUri(downloadUri);
+                                                            mood.setComment(newReason);
+                                                            mood.setExplanation(newTitle);
+                                                            mood.setEmotionalState(emotionString);
+                                                            mood.setSocialSituation(situationString);
+                                                            db.collection("MoodList").document(mood.getDatetime().toString())
+                                                                    .delete()
+                                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                        @Override
+                                                                        public void onSuccess(Void aVoid) {
+                                                                            docRef.collection("MoodList").document(d.toString()).set(mood);
+                                                                        }
+                                                                    });
+                                                            if (emotion.equals("happy")) {
+                                                                returnHappy(mood);
+                                                            } else if (emotion.equals("angry")) {
+                                                                returnAngry(mood);
+                                                            } else if (emotion.equals("lonely")) {
+                                                                returnLonely(mood);
+                                                            } else if (emotion.equals("sad")) {
+                                                                returnSad(mood);
+                                                            } else if (emotion.equals("tired")) {
+                                                                returnTired(mood);
+                                                            }
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+
+                                    Button Delete = findViewById(R.id.delete);
+                                    Delete.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            if (emotion.equals("happy")) {
+                                                HappyDelete();
+                                            } else if (emotion.equals("angry")) {
+                                                AngryDelete();
+                                            } else if (emotion.equals("lonely")) {
+                                                LonelyDelete();
+                                            } else if (emotion.equals("sad")) {
+                                                SadDelete();
+                                            } else if (emotion.equals("tired")) {
+                                                TiredDelete();
+                                            }
                                         }
                                     });
 
@@ -157,20 +221,78 @@ public class EditMood extends AppCompatActivity {
         situation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (parent.getItemAtPosition(position).equals("choose a situation")){
+                if (parent.getItemAtPosition(position).equals("choose a situation")) {
                     situationString = "";
-                }else{
+                } else {
                     situationString = parent.getItemAtPosition(position).toString();
-
                 }
-
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
+            public void onNothingSelected(AdapterView<?> parent) { }
         });
+    }
 
+    private void HappyDelete() {
+        Intent returnIntent = new Intent(this, HappyMood.class);
+        setResult(5, returnIntent);
+        finish();
+    }
+    private void AngryDelete() {
+        Intent returnIntent = new Intent(this, AngryMood.class);
+        setResult(5, returnIntent);
+        finish();
+    }
+    private void LonelyDelete() {
+        Intent returnIntent = new Intent(this, LonelyMood.class);
+        setResult(5, returnIntent);
+        finish();
+    }
+    private void SadDelete() {
+        Intent returnIntent = new Intent(this, SadMood.class);
+        setResult(5, returnIntent);
+        finish();
+    }
+    private void TiredDelete() {
+        Intent returnIntent = new Intent(this, TiredMood.class);
+        setResult(5, returnIntent);
+        finish();
+    }
+
+
+    private void returnHappy(Mood mood) {
+        Intent returnIntent = new Intent(this, HappyMood.class);
+        returnIntent.putExtra("mood", mood);
+        setResult(RESULT_OK, returnIntent);
+        finish();
+    }
+
+    private void returnAngry(Mood mood) {
+        Intent returnIntent = new Intent(this, AngryMood.class);
+        returnIntent.putExtra("mood", mood);
+        setResult(RESULT_OK, returnIntent);
+        finish();
+    }
+
+    private void returnLonely(Mood mood) {
+        Intent returnIntent = new Intent(this, LonelyMood.class);
+        returnIntent.putExtra("mood", mood);
+        setResult(RESULT_OK, returnIntent);
+        finish();
+    }
+
+    private void returnSad(Mood mood) {
+        Intent returnIntent = new Intent(this, SadMood.class);
+        returnIntent.putExtra("mood", mood);
+        setResult(RESULT_OK, returnIntent);
+        finish();
+    }
+
+    private void returnTired(Mood mood) {
+        Intent returnIntent = new Intent(this, TiredMood.class);
+        returnIntent.putExtra("mood", mood);
+        setResult(RESULT_OK, returnIntent);
+        finish();
     }
 
     /**
@@ -181,14 +303,14 @@ public class EditMood extends AppCompatActivity {
     public boolean containsSpace(String comment){
         String Comment = comment.trim();
         int numSpace = 0;
-        for(int i =0;i< Comment.length(); i++){
-            if (Character.isWhitespace(Comment.charAt(i))){
+        for (int i =0; i < Comment.length(); i++) {
+            if (Character.isWhitespace(Comment.charAt(i))) {
                 numSpace++;
             }
         }
-        if (numSpace > 2){
+        if (numSpace > 2) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -205,56 +327,68 @@ public class EditMood extends AppCompatActivity {
         emotion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (parent.getItemAtPosition(position).equals("choose an emotion")){
+                if (parent.getItemAtPosition(position).equals("choose an emotion")) {
                     emotionString = "";
                 }
-                else{
+                else {
                     emotionString = parent.getItemAtPosition(position).toString();
-                    switch (emotionString){
+                    View v = findViewById(R.id.editBackground);
+                    ImageView FriendMoodState = v.findViewById(R.id.friendMoodState);
+                    ImageButton backButton = v.findViewById(R.id.back);
+                    switch (emotionString) {
                         case "happy":
-                            view.setBackgroundColor(Color.rgb(253,91,91));
-                            view.getBackground().setAlpha(200);
-                            //Bitmap bMap = BitmapFactory.decodeResource(view.getResources(), R.drawable.happy_marker);
-                            //Bitmap bMapScaled = Bitmap.createScaledBitmap(bMap, 100, 100, true);
-                            //FriendMoodState.setImageBitmap(bMapScaled);
+                            v.setBackgroundColor(Color.rgb(253,91,91));
+                            v.getBackground().setAlpha(200);
+                            backButton.setBackgroundColor(Color.rgb(253,91,91));
+                            backButton.getBackground().setAlpha(0);
+                            Bitmap bMap = BitmapFactory.decodeResource(view.getResources(), R.drawable.happy_marker);
+                            Bitmap bMapScaled = Bitmap.createScaledBitmap(bMap, 100, 100, true);
+                            FriendMoodState.setImageBitmap(bMapScaled);
                             break;
                         case "sad":
-                            view.setBackgroundColor(Color.rgb(106,106,240));
-                            view.getBackground().setAlpha(200);
-                            //Bitmap bMap1 = BitmapFactory.decodeResource(view.getResources(), R.drawable.sad_marker);
-                            //Bitmap bMapScaled1 = Bitmap.createScaledBitmap(bMap1, 100, 100, true);
-                            //FriendMoodState.setImageBitmap(bMapScaled1);
+                            v.setBackgroundColor(Color.rgb(106,106,240));
+                            v.getBackground().setAlpha(200);
+                            backButton.setBackgroundColor(Color.rgb(106,106,240));
+                            backButton.getBackground().setAlpha(0);
+                            Bitmap bMap1 = BitmapFactory.decodeResource(view.getResources(), R.drawable.sad_marker);
+                            Bitmap bMapScaled1 = Bitmap.createScaledBitmap(bMap1, 100, 100, true);
+                            FriendMoodState.setImageBitmap(bMapScaled1);
                             break;
                         case "tired":
-                            view.setBackgroundColor(Color.rgb(121,121,121));
-                            view.getBackground().setAlpha(200);
-                            //Bitmap bMap2 = BitmapFactory.decodeResource(view.getResources(), R.drawable.tired_marker);
-                            //Bitmap bMapScaled2 = Bitmap.createScaledBitmap(bMap2, 100, 100, true);
-                            //FriendMoodState.setImageBitmap(bMapScaled2);
+                            v.setBackgroundColor(Color.rgb(121,121,121));
+                            v.getBackground().setAlpha(200);
+                            backButton.setBackgroundColor(Color.rgb(121,121,121));
+                            backButton.getBackground().setAlpha(0);
+                            Bitmap bMap2 = BitmapFactory.decodeResource(view.getResources(), R.drawable.tired_marker);
+                            Bitmap bMapScaled2 = Bitmap.createScaledBitmap(bMap2, 100, 100, true);
+                            FriendMoodState.setImageBitmap(bMapScaled2);
                             break;
                         case "angry":
-                            view.setBackgroundColor(Color.rgb(250,233,90));
-                            view.getBackground().setAlpha(200);
-                            //Bitmap bMap3 = BitmapFactory.decodeResource(view.getResources(), R.drawable.angry_marker);
-                            //Bitmap bMapScaled3 = Bitmap.createScaledBitmap(bMap3, 100, 100, true);
-                            //FriendMoodState.setImageBitmap(bMapScaled3);
+                            v.setBackgroundColor(Color.rgb(250,233,90));
+                            v.getBackground().setAlpha(200);
+                            backButton.setBackgroundColor(Color.rgb(250,233,90));
+                            backButton.getBackground().setAlpha(0);
+                            Bitmap bMap3 = BitmapFactory.decodeResource(view.getResources(), R.drawable.angry_marker);
+                            Bitmap bMapScaled3 = Bitmap.createScaledBitmap(bMap3, 100, 100, true);
+                            FriendMoodState.setImageBitmap(bMapScaled3);
                             break;
                         case "lonely":
-                            view.setBackgroundColor(Color.rgb(255,152,0));
-                            view.getBackground().setAlpha(200);
-                            //Bitmap bMap4 = BitmapFactory.decodeResource(view.getResources(), R.drawable.loney_marker);
-                            //Bitmap bMapScaled4 = Bitmap.createScaledBitmap(bMap4, 100, 100, true);
-                            //FriendMoodState.setImageBitmap(bMapScaled4);
+                            v.setBackgroundColor(Color.rgb(255,152,0));
+                            v.getBackground().setAlpha(200);
+                            backButton.setBackgroundColor(Color.rgb(255,152,0));
+                            backButton.getBackground().setAlpha(0);
+                            Bitmap bMap4 = BitmapFactory.decodeResource(view.getResources(), R.drawable.loney_marker);
+                            Bitmap bMapScaled4 = Bitmap.createScaledBitmap(bMap4, 100, 100, true);
+                            FriendMoodState.setImageBitmap(bMapScaled4);
                             break;
                     }
                 }
             }
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
+            public void onNothingSelected(AdapterView<?> parent) { }
         });
-
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         if (requestCode == PICK_IMAGE) {
@@ -266,4 +400,5 @@ public class EditMood extends AppCompatActivity {
             }
         }
     }
+
 }

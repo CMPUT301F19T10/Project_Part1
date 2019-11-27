@@ -118,36 +118,12 @@ public class FriendMoodList extends ArrayAdapter<Mood> {
         FriendMoodSocialSituation.setText(mood.getSocialSituation());
         FriendMoodLocation.setText(mood.getLocation());
 
-
-        // Get and display figure
-        // Get storage and image
-        storage = getStorage();
-        if (mood.getUsername().equals("dby123123")){
-            System.out.println("***********11111111*******************");
-            System.out.println(mood.getDatetime().toString());
-        }
-        image = storage.getReference().child("ImageFolder/" + mood.getUsername() + "/" + mood.getDatetime().toString());
-        image.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(final Uri uri) {
-                Picasso.get().load(uri).into(FriendMoodPhoto);
-                System.out.println("******************************");
-                System.out.println(uri);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
-                FriendMoodPhoto.setImageResource(R.drawable.default_photo);
-            }
-        });
-
-
+        updateImage(mood, FriendMoodPhoto);
 
         // Classify the moods by different mood states
         // set the background color by different mood states
         String emotionalState = mood.getEmotionalState();
-        switch (emotionalState){
+        switch (emotionalState) {
             case "happy":
                 view.setBackgroundColor(Color.rgb(253,91,91));
                 view.getBackground().setAlpha(200);
@@ -188,5 +164,10 @@ public class FriendMoodList extends ArrayAdapter<Mood> {
         return view;
     }
 
+    // Get and display figure
+    // Get storage and image
+    public void updateImage(Mood mood, final ImageView FriendMoodPhoto) {
+        Picasso.get().load(mood.getUri()).into(FriendMoodPhoto);
+    }
 
 }

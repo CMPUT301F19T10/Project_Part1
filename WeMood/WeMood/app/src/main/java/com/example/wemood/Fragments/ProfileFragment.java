@@ -186,7 +186,6 @@ public class ProfileFragment extends Fragment {
      */
     public FirebaseFirestore getDatabase() {
         db = FirebaseFirestore.getInstance();
-
         return db;
     }
 
@@ -196,7 +195,6 @@ public class ProfileFragment extends Fragment {
      */
     public FirebaseStorage getStorage() {
         storage = FirebaseStorage.getInstance();
-
         return storage;
     }
 
@@ -205,7 +203,6 @@ public class ProfileFragment extends Fragment {
      * (username, userID, email, phone number, etc.)
      */
     public void displayInfo() {
-
         // Get database and current user
         db = getDatabase();
         user = getUser();
@@ -431,7 +428,6 @@ public class ProfileFragment extends Fragment {
             if (resultCode == RESULT_OK) {
                 imageUri = data.getData();
                 figureView.setImageURI(imageUri);
-
                 // Add figure to storage if it is not null
                 if (imageUri != null) {
                     StorageReference Image = folder.child(userName);

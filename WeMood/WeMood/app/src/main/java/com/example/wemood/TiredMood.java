@@ -37,11 +37,12 @@ public class TiredMood extends AppCompatActivity {
     private ArrayList<Mood> moodDataList;
     private ArrayAdapter<Mood> moodAdapter;
     private String userName;
-
     private FirebaseAuth mAuth;
     private FirebaseUser user;
     private FirebaseFirestore db;
     private CollectionReference collectionReference;
+    private static final int k = 10;
+    private int i;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,50 @@ public class TiredMood extends AppCompatActivity {
             }
         });
 
+        updateList();
+
+        moodList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(TiredMood.this, EditMood.class);
+                intent.putExtra("string", moodDataList.get(position).getEmotionalState());
+                Mood mood = moodDataList.get(position);
+                intent.putExtra("mood", mood);
+                i = position;
+                startActivityForResult(intent, k);
+            }
+        });
+
+        moodList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                new AlertDialog.Builder(TiredMood.this)
+                        .setTitle("Do you want to delete this item?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //remove the corresponding mood
+                                Mood mood = moodDataList.get(position);
+                                db.collection("Users").document(userName).collection("MoodList").document(mood.getDatetime().toString()).delete();
+                                moodDataList.remove(position);
+                                FirebaseStorage storage = FirebaseStorage.getInstance();
+                                StorageReference image = storage.getReference().child("ImageFolder/" + userName + "/" + mood.getDatetime().toString());
+                                image.delete();
+                                moodAdapter = new FriendMoodList(getBaseContext(), moodDataList);
+                                moodList.setAdapter(moodAdapter);
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+                return true;
+            }
+        });
+    }
+
+    /**
+     * Grab the moodList from the FireBase and update the local listView
+     */
+    public void updateList() {
         moodList = findViewById(R.id.moodList);
         moodDataList = new ArrayList<>();
         db = FirebaseFirestore.getInstance();
@@ -76,6 +121,7 @@ public class TiredMood extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Mood mood = document.toObject(Mood.class);
+                                mood.setUsername(userName);
                                 String flag = mood.getEmotionalState();
                                 if (flag.equals("tired")) {
                                     moodDataList.add(mood);
@@ -91,42 +137,37 @@ public class TiredMood extends AppCompatActivity {
                     }
                 });
 
-        moodList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(TiredMood.this, EditMood.class);
-                intent.putExtra("index", position);
-                Mood mood = moodDataList.get(position);
-                intent.putExtra("mood", mood);
-                startActivity(intent);
+    }
+
+    /**
+     * Real-time update
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == k) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                Mood mood = (Mood) data.getSerializableExtra("mood");
+                moodDataList.set(i, mood);
+                if (!mood.getEmotionalState().equals("tired")) {
+                    moodDataList.remove(i);
+                }
+                moodAdapter = new FriendMoodList(getBaseContext(), moodDataList);
+                moodList.setAdapter(moodAdapter);
+            }else if(resultCode == 5){
+                Mood mood = moodDataList.get(i);
+                db.collection("Users").document(userName).collection("MoodList").document(mood.getDatetime().toString()).delete();
+                moodDataList.remove(i);
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference image = storage.getReference().child("ImageFolder/" + userName + "/" + mood.getDatetime().toString());
+                image.delete();
+                moodAdapter = new FriendMoodList(getBaseContext(), moodDataList);
+                moodList.setAdapter(moodAdapter);
             }
-        });
-
-        moodList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                final int which_item = position;
-                new AlertDialog.Builder(TiredMood.this)
-                        .setTitle("Do you want to delete this item?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                //remove the corresponding mood
-                                Mood mood = moodDataList.get(position);
-                                db.collection("Users").document(userName).collection("MoodList").document(mood.getDatetime().toString()).delete();;
-                                moodDataList.remove(position);
-                                FirebaseStorage storage = FirebaseStorage.getInstance();
-                                StorageReference image = storage.getReference().child("ImageFolder/" + userName + "/" + mood.getDatetime().toString());
-                                image.delete();
-
-
-                            }
-                        })
-                        .setNegativeButton("No", null)
-                        .show();
-                return true;
-            }
-        });
+        }
     }
 
 }

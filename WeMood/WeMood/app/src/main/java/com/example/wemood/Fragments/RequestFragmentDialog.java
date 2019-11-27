@@ -30,9 +30,7 @@ import com.example.wemood.R;
  * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
  */
 public class RequestFragmentDialog extends DialogFragment {
-
-    private TextView RequestPermission;
-    private String message;
+    private String requestName;
     private OnFragmentInteractionListener listener;
 
     @Override
@@ -40,25 +38,20 @@ public class RequestFragmentDialog extends DialogFragment {
         super.onAttach(context);
         listener = (OnFragmentInteractionListener)context;
     }
-
     public interface OnFragmentInteractionListener {
-        public void AcceceptRequest(String message);
+        public void AcceptRequest(String message);
         public void DeclineRequest(String message);
 
     }
 
-
-
     public RequestFragmentDialog(String requestMessage) {
-        message = requestMessage;
+        requestName = requestMessage;
     }
 
     // Constructor
     public RequestFragmentDialog() {
         //Empty constructor
     }
-
-
 
     /**
      * Will Create a view of the RequestFragmentDialog
@@ -69,24 +62,20 @@ public class RequestFragmentDialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.friend_request_dialog, null);
-        RequestPermission = view.findViewById(R.id.friend_request_permission_text);
-        RequestPermission.setText( message +" want you to be his/her friend so that he/she are able to follow and view your most the recent mood");
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
-                .setView(view)
                 .setTitle("Friend Request")
+                .setMessage("Do you want " + requestName +" to be your friend ?")
                 .setNegativeButton("Decline", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        listener.DeclineRequest(message);
+                        listener.DeclineRequest(requestName);
                     }
                 })
                 .setPositiveButton("Accept", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        listener.AcceceptRequest(message);
+                        listener.AcceptRequest(requestName);
                     }
                 }).create();
 

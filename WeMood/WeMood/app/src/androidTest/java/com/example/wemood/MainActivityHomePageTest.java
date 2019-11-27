@@ -54,8 +54,8 @@ public class MainActivityHomePageTest {
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
         //initialize the ShowActivity environment before testing
         solo.assertCurrentActivity("Not in LogSignInActivity", LogSignInActivity.class);
-        solo.enterText((EditText) solo.getView(R.id.add_user_name), "winsordby@gmail.com");
-        solo.enterText((EditText) solo.getView(R.id.add_user_password),"dby123");
+        solo.enterText((EditText) solo.getView(R.id.add_user_name), "zoeye@gmail.com");
+        solo.enterText((EditText) solo.getView(R.id.add_user_password),"111222333");
         solo.clickOnView(solo.getView(R.id.sign_in_button));
         solo.waitForActivity(MainActivity.class,2000);
 
@@ -93,7 +93,6 @@ public class MainActivityHomePageTest {
         RadioButton bellButton = (RadioButton) solo.getView(R.id.friend_request_bell);
         solo.clickOnView(bellButton);
         solo.waitForFragmentById(R.id.friend_request_fragment);
-        solo.waitForActivity(FriendRequestMessageActivity.class);
     }
 
     /**
@@ -106,8 +105,8 @@ public class MainActivityHomePageTest {
         solo.waitForFragmentById(R.id.home_fragment);
         RadioButton bellButton = (RadioButton) solo.getView(R.id.friend_request_bell);
         solo.clickOnView(bellButton);
-        solo.waitForActivity(FriendRequestMessageActivity.class);
-        solo.clickInList(0);
+        solo.waitForFragmentById(R.id.friend_request_fragment);
+        solo.clickInList(1);
         solo.waitForFragmentById(R.id.request_message_dialog);
     }
 
@@ -121,8 +120,8 @@ public class MainActivityHomePageTest {
         solo.waitForFragmentById(R.id.home_fragment);
         RadioButton bellButton = (RadioButton) solo.getView(R.id.friend_request_bell);
         solo.clickOnView(bellButton);
-        solo.waitForActivity(FriendRequestMessageActivity.class);
-        solo.clickInList(0);
+        solo.waitForFragmentById(R.id.friend_request_fragment);
+        solo.clickInList(1);
         solo.waitForFragmentById(R.id.request_message_dialog);
         solo.clickOnButton(1);
         solo.waitForDialogToClose();

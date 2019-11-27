@@ -1,23 +1,47 @@
 package com.example.wemood;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import io.opencensus.tags.Tag;
+
 
 /**
  *   This is a activity that allow user to sign in or jump to
@@ -30,8 +54,10 @@ import com.google.firebase.auth.FirebaseAuth;
  *   of this app.If sign-up button is pressed then jump to sign-up activity.
  *
  */
+
 public class LogSignInActivity extends AppCompatActivity implements
         View.OnClickListener{
+
 
     final String TAG = "LogSignInActivity";
     private EditText addEmail;
@@ -54,6 +80,8 @@ public class LogSignInActivity extends AppCompatActivity implements
 
         checkbox = findViewById(R.id.checkbox);
 
+
+        addPassWord.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
         /**
          * This method is to set up a listener to see if check box
          * has been pressed. If checkbox is pressed then we hide password
@@ -65,11 +93,14 @@ public class LogSignInActivity extends AppCompatActivity implements
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(!isChecked) {
-                    addPassWord.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    addPassWord.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
                     checkbox.setText("Hide Password");
+                    addPassWord.setSelection(addPassWord.getText().length());
                 } else {
-                    addPassWord.setInputType(129);
+                    addPassWord.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    //addPassWord.setInputType(129);
                     //checkbox.setText("Show Password");
+                    addPassWord.setSelection(addPassWord.getText().length());
                 }
             }
         });
@@ -80,6 +111,7 @@ public class LogSignInActivity extends AppCompatActivity implements
         // [END initialize_auth]
     }
 
+
     /**
      * In this method, we check which button is pressed
      * by looking at its ID. if pressed button is sign in
@@ -87,6 +119,8 @@ public class LogSignInActivity extends AppCompatActivity implements
      * to check in our firestore. If sign-up button is detect
      * we switch to sign-up activity
      * @param  v*/
+
+
     @Override
     public void onClick(View v) {
         int i = v.getId();
@@ -99,6 +133,7 @@ public class LogSignInActivity extends AppCompatActivity implements
         }
     }
 
+
     /**
      * What this method do is to take two argument: password and email
      * then judge its validation if input is valid, then we log in with
@@ -106,6 +141,8 @@ public class LogSignInActivity extends AppCompatActivity implements
      * toast message : "Login failed"
      * @param email
      * @param password*/
+
+
     private void signIn(String email, String password) {
         Log.d(TAG, "signIn:" + email);
         if (!validateForm(addEmail.getText().toString(),addPassWord.getText().toString())) {
@@ -140,6 +177,7 @@ public class LogSignInActivity extends AppCompatActivity implements
      * EditText are empty, if yes show error message on right
      * hand side accordingly
      * @return Return boolean value*/
+
     public boolean validateForm(String email,String password) {
         boolean valid = true;
 

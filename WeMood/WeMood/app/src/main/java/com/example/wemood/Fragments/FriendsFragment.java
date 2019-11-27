@@ -67,7 +67,6 @@ public class FriendsFragment extends Fragment {
     private String userName;
     private Button searchButton;
 
-
     /**
      * Constructor
      */
@@ -225,9 +224,4 @@ public class FriendsFragment extends Fragment {
                     }
                 });
     }
-
-
-
-
-
 }
