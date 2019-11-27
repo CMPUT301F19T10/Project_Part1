@@ -1,9 +1,11 @@
 package com.example.wemood;
+
 /**
  * @author Alpha Hou
  *
  * @version 1.0
  */
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -50,7 +52,6 @@ import static android.content.ContentValues.TAG;
 public class FriendsNotExist extends AppCompatActivity implements FriendFollowFragmentDialog.OnFragmentInteractionListener{
     private String userName;
     private String searchName;
-    private int numFollowing = 0;
 
     private FirebaseAuth mAuth;
     private FirebaseUser user;
@@ -64,6 +65,15 @@ public class FriendsNotExist extends AppCompatActivity implements FriendFollowFr
     private TextView userNameView;
     private TextView moodsView;
     private TextView followingView;
+
+    /**
+     * Get storage
+     * @return the storage instance
+     */
+    public FirebaseStorage getStorage() {
+        storage = FirebaseStorage.getInstance();
+        return storage;
+    }
 
     /**
      * Initialize the FriendNotExistFragment
@@ -83,6 +93,8 @@ public class FriendsNotExist extends AppCompatActivity implements FriendFollowFr
         user = mAuth.getCurrentUser();
         userName = user.getDisplayName();
 
+        storage = getStorage();
+
         figureView = findViewById(R.id.friend_photo);
         moodsView = findViewById(R.id.mood_num);
         followingView = findViewById(R.id.following_num);
@@ -99,22 +111,20 @@ public class FriendsNotExist extends AppCompatActivity implements FriendFollowFr
     }
 
     public void getPhoto(){
-//        // Get and display figure
-//        // Get storage and image
-//        storage = getStorage();
-//        image = storage.getReference().child("ImageFolder/" + mood.getUsername() + "/" + mood.getDatetime().toString());
-//        image.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//            @Override
-//            public void onSuccess(final Uri uri) {
-//                Picasso.get().load(uri).into(FriendMoodPhoto);
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception exception) {
-//                // Handle any errors
-//                FriendMoodPhoto.setImageResource(R.drawable.default_photo);
-//            }
-//        });
+        // Get and display figure
+        // Get storage and image
+        image = storage.getReference().child("ProfileFolder/" + searchName);
+        image.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(final Uri uri) {
+                Picasso.get().load(uri).into(figureView);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                figureView.setImageResource(R.drawable.default_figure);
+            }
+        });
     }
 
     public void updateMoods() {

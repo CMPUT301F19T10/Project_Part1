@@ -3,6 +3,7 @@ package com.example.wemood;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -53,6 +54,7 @@ public class FriendsExist extends AppCompatActivity implements FriendUnfollowFra
     private DocumentReference documentReference;
     private FirebaseStorage storage;
     private StorageReference image;
+    private StorageReference folder;
 
     private TextView userNameView;
     private String searchName;
@@ -60,6 +62,16 @@ public class FriendsExist extends AppCompatActivity implements FriendUnfollowFra
     private ImageView figureView;
     private TextView moodsView;
     private TextView followingView;
+
+
+    /**
+     * Get storage
+     * @return the storage instance
+     */
+    public FirebaseStorage getStorage() {
+        storage = FirebaseStorage.getInstance();
+        return storage;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,6 +84,7 @@ public class FriendsExist extends AppCompatActivity implements FriendUnfollowFra
         user = mAuth.getCurrentUser();
         userName = user.getDisplayName();
         user = mAuth.getCurrentUser();
+        storage = getStorage();
 
         userNameView = findViewById(R.id.friend_view);
         friendmoodList = findViewById(R.id.mood_list);
@@ -99,22 +112,20 @@ public class FriendsExist extends AppCompatActivity implements FriendUnfollowFra
     }
 
     public void getPhoto(){
-//        // Get and display figure
-//        // Get storage and image
-//        storage = getStorage();
-//        image = storage.getReference().child("ImageFolder/" + mood.getUsername() + "/" + mood.getDatetime().toString());
-//        image.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//            @Override
-//            public void onSuccess(final Uri uri) {
-//                Picasso.get().load(uri).into(FriendMoodPhoto);
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception exception) {
-//                // Handle any errors
-//                FriendMoodPhoto.setImageResource(R.drawable.default_photo);
-//            }
-//        });
+        // Get and display figure
+        // Get storage and image
+        image = storage.getReference().child("ProfileFolder/" + searchName);
+        image.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(final Uri uri) {
+                Picasso.get().load(uri).into(figureView);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                figureView.setImageResource(R.drawable.default_figure);
+            }
+        });
     }
 
     public void updateMoods() {
@@ -187,12 +198,12 @@ public class FriendsExist extends AppCompatActivity implements FriendUnfollowFra
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(FriendsExist.this, "Error!", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, e.toString());
-            }
-        });
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(FriendsExist.this, "Error!", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, e.toString());
+                    }
+                });
     }
 
     public void setSearchName(){
@@ -216,7 +227,6 @@ public class FriendsExist extends AppCompatActivity implements FriendUnfollowFra
             }
         });
     }
-
     @Override
     public void UnfollowRequest(){
         collectionReference = db.collection("Users");

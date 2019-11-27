@@ -39,8 +39,8 @@ public class RequestFragmentDialog extends DialogFragment {
         listener = (OnFragmentInteractionListener)context;
     }
     public interface OnFragmentInteractionListener {
-        public void AcceptRequest(String message);
-        public void DeclineRequest(String message);
+        void AcceptRequest(String message);
+        void DeclineRequest(String message);
 
     }
 

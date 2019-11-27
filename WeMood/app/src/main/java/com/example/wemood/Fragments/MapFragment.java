@@ -298,12 +298,14 @@ public class MapFragment extends Fragment implements View.OnClickListener {
 
         try {
             Location location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            if(location == null){
+                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,mLocationListener);
+            }
             setLongitude(location.getLongitude());
             setLatitude(location.getLatitude());
             // get the location every 2 seconds
             lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 8, mLocationListener);
         }catch (Exception e){
-            Toast.makeText(getActivity(), "Unknown error! Please try again", Toast.LENGTH_SHORT).show();
         }
 
     }

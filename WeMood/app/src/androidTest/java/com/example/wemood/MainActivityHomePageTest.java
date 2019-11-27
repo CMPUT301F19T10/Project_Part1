@@ -2,10 +2,11 @@ package com.example.wemood;
 /**
  * @author Boyuan Dong
  *
- * @version 1.0
+ * @version 2.0
  */
 
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.RadioButton;
 
 import com.robotium.solo.Solo;
@@ -25,9 +26,9 @@ import static org.junit.Assert.assertFalse;
 /**
  * Class name: MainActivityFriendPageTest
  *
- * Version 1.0
+ * Version 2.0
  *
- * Date: November 7, 2019
+ * Date: November 26, 2019
  *
  * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
  */
@@ -54,8 +55,8 @@ public class MainActivityHomePageTest {
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
         //initialize the ShowActivity environment before testing
         solo.assertCurrentActivity("Not in LogSignInActivity", LogSignInActivity.class);
-        solo.enterText((EditText) solo.getView(R.id.add_user_name), "zoeye@gmail.com");
-        solo.enterText((EditText) solo.getView(R.id.add_user_password),"111222333");
+        solo.enterText((EditText) solo.getView(R.id.add_user_name), "winsordby1@gmail.com");
+        solo.enterText((EditText) solo.getView(R.id.add_user_password),"dby123");
         solo.clickOnView(solo.getView(R.id.sign_in_button));
         solo.waitForActivity(MainActivity.class,2000);
 
@@ -81,6 +82,21 @@ public class MainActivityHomePageTest {
         solo.waitForFragmentById(R.id.home_fragment);
     }
 
+
+    /**
+     * Check whether the MoodDetailClicked Activity opens by clicking on the item in the list.
+     */
+
+    @Test
+    public void checkMoodDetailClickedActivityOpen() {
+        RadioButton HomeButton = (RadioButton) solo.getView(R.id.home_tab);
+        solo.clickOnView(HomeButton);
+        solo.waitForFragmentById(R.id.home_fragment,2000);
+        solo.clickInList(0);
+        solo.waitForActivity(MoodDetailClicked.class,2000);
+        solo.assertCurrentActivity("Not in MoodDetailClicked",MoodDetailClicked.class);
+    }
+
     /**
      * Check whether the FriendRequestMessageFragment opens by clicking on the bell RadioButton.
      */
@@ -89,11 +105,13 @@ public class MainActivityHomePageTest {
     public void checkFriendRequestMessageFragmentChange() {
         RadioButton HomeButton = (RadioButton) solo.getView(R.id.home_tab);
         solo.clickOnView(HomeButton);
-        solo.waitForFragmentById(R.id.home_fragment);
+        solo.waitForFragmentById(R.id.home_fragment,2000);
         RadioButton bellButton = (RadioButton) solo.getView(R.id.friend_request_bell);
         solo.clickOnView(bellButton);
-        solo.waitForFragmentById(R.id.friend_request_fragment);
+        solo.waitForActivity(FriendRequestMessageActivity.class,2000);
+        solo.assertCurrentActivity("Not in FriendRequestMessage",FriendRequestMessageActivity.class);
     }
+
 
     /**
      * Check whether the FriendRequestFragmentDialog opens by clicking on one message.
@@ -105,29 +123,9 @@ public class MainActivityHomePageTest {
         solo.waitForFragmentById(R.id.home_fragment);
         RadioButton bellButton = (RadioButton) solo.getView(R.id.friend_request_bell);
         solo.clickOnView(bellButton);
-        solo.waitForFragmentById(R.id.friend_request_fragment);
+        solo.waitForActivity(FriendRequestMessageActivity.class,2000);
         solo.clickInList(1);
-        solo.waitForFragmentById(R.id.request_message_dialog);
+        solo.waitForFragmentById(R.id.request_message_dialog,2000);
     }
-
-    /**
-     * Check whether the FriendRequestFragmentDialog close by clicking on Decline Button.
-     */
-    @Test
-    public void checkFriendRequestFragmentDialogClose() {
-        RadioButton HomeButton = (RadioButton) solo.getView(R.id.home_tab);
-        solo.clickOnView(HomeButton);
-        solo.waitForFragmentById(R.id.home_fragment);
-        RadioButton bellButton = (RadioButton) solo.getView(R.id.friend_request_bell);
-        solo.clickOnView(bellButton);
-        solo.waitForFragmentById(R.id.friend_request_fragment);
-        solo.clickInList(1);
-        solo.waitForFragmentById(R.id.request_message_dialog);
-        solo.clickOnButton(1);
-        solo.waitForDialogToClose();
-    }
-
-
-
 
 }

@@ -9,8 +9,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
+import android.net.IpSecManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -114,7 +116,16 @@ public class HomeFragment extends Fragment {
 
     }
 
-
+    public void refresh(int millionSeconds) {
+        final Handler handler = new Handler();
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                getMoodList();
+            }
+        };
+        handler.postDelayed(runnable,millionSeconds);
+    }
 
     /**
      * Create a view of the HomeFragment to display friends' most recent moods.
@@ -145,29 +156,30 @@ public class HomeFragment extends Fragment {
         moodDataList = new ArrayList<>();
         getMoodList();
 
+
         return rootView;
     }
-//
+
 //    @Override
 //    public void onResume(){
 //        super.onResume();
 //        moodDataList = new ArrayList<>();
-//        getMoodList();
-//
+////        getMoodList();
+//        refresh(1000);
 //    }
 
 
-    public void getMoodList(){
+    public void getMoodList() {
         collectionReference = db.collection("Users");
-
-        collectionReference.document(userName).get()
+        collectionReference.document(userName)
+                .get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         User user = documentSnapshot.toObject(User.class);
                         ArrayList<String> friendList = user.getFriendList();
-                        if(!friendList.isEmpty()){
-                            for (String friend: friendList){
+                        if (!friendList.isEmpty()) {
+                            for (String friend: friendList) {
                                 collectionReference.document(friend).get()
                                         .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                             @Override
@@ -175,18 +187,16 @@ public class HomeFragment extends Fragment {
                                                 User friend = documentSnapshot.toObject(User.class);
                                                 String friendName = friend.getUserName();
                                                 getMostRecentMood(friendName);
-
-
                                             }
                                         });
-
                             }
-                        }else{
+                        } else {
                             Collections.sort(moodDataList, Collections.reverseOrder());
-                            moodAdapter = new FriendMoodList(getContext(), moodDataList);
-                            friendmoodList.setAdapter(moodAdapter);
+                            if (getContext() != null) {
+                                moodAdapter = new FriendMoodList(getContext(), moodDataList);
+                                friendmoodList.setAdapter(moodAdapter);
+                            }
                         }
-
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -195,13 +205,10 @@ public class HomeFragment extends Fragment {
                 Log.d(TAG, e.toString());
             }
         });
-
-
     }
 
 
-    public void getMostRecentMood(final String friendUserName){
-
+    public void getMostRecentMood(final String friendUserName) {
         collectionReference = db.collection("Users")
                 .document(friendUserName)
                 .collection("MoodList");
@@ -212,19 +219,16 @@ public class HomeFragment extends Fragment {
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                             Mood mood = document.toObject(Mood.class);
                             mood.setUsername(friendUserName);
                             moodDataList.add(mood);
-
                         }
-
                         Collections.sort(moodDataList, Collections.reverseOrder());
-                        moodAdapter = new FriendMoodList(getContext(), moodDataList);
-                        friendmoodList.setAdapter(moodAdapter);
-
-
+                        if (getContext() != null) {
+                            moodAdapter = new FriendMoodList(getContext(), moodDataList);
+                            friendmoodList.setAdapter(moodAdapter);
+                        }
                         friendmoodList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

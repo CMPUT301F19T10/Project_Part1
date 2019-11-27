@@ -17,6 +17,7 @@ public class  User {
     private String userName;
     private String phone;
     private String userId;
+    private String figure;
     private ArrayList<String> friendList;
     private ArrayList<String> waitFriendList;
 
@@ -36,11 +37,12 @@ public class  User {
      * @param userId
      * user's unique id
      */
-    public User(String email, String userName, String phone, String userId) {
+    public User(String email, String userName, String phone, String userId, String figure) {
         this.email = email;
         this.userName = userName;
         this.phone = phone;
         this.userId = userId;
+        this.figure = figure;
         this.friendList = new ArrayList<>();
         this.waitFriendList = new ArrayList<>();
     }
@@ -76,6 +78,10 @@ public class  User {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
+    public String getFigure() { return figure; }
+
+    public void setFigure(String figure) { this.figure = figure; }
 
     public ArrayList<String> getFriendList() {
         return friendList;

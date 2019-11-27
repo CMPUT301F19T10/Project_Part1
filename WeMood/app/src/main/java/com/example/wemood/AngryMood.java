@@ -83,7 +83,6 @@ public class AngryMood extends AppCompatActivity {
                                 //remove the corresponding mood
                                 Mood mood = moodDataList.get(position);
                                 db.collection("Users").document(userName).collection("MoodList").document(mood.getDatetime().toString()).delete();
-                                ;
                                 moodDataList.remove(position);
                                 FirebaseStorage storage = FirebaseStorage.getInstance();
                                 StorageReference image = storage.getReference().child("ImageFolder/" + userName + "/" + mood.getDatetime().toString());
@@ -157,6 +156,16 @@ public class AngryMood extends AppCompatActivity {
                 if (!mood.getEmotionalState().equals("angry")) {
                     moodDataList.remove(i);
                 }
+                moodAdapter = new FriendMoodList(getBaseContext(), moodDataList);
+                moodList.setAdapter(moodAdapter);
+            }else if(resultCode == 5){
+                System.out.println("delete");
+                Mood mood = moodDataList.get(i);
+                db.collection("Users").document(userName).collection("MoodList").document(mood.getDatetime().toString()).delete();
+                moodDataList.remove(i);
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference image = storage.getReference().child("ImageFolder/" + userName + "/" + mood.getDatetime().toString());
+                image.delete();
                 moodAdapter = new FriendMoodList(getBaseContext(), moodDataList);
                 moodList.setAdapter(moodAdapter);
             }

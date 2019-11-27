@@ -1,8 +1,9 @@
 package com.example.wemood;
+
 /**
  * @author Boyuan Dong
  *
- * @version 1.0
+ * @version 2.0
  */
 
 import android.widget.EditText;
@@ -20,9 +21,9 @@ import androidx.test.rule.ActivityTestRule;
 /**
  * Class name: MainActivityFriendPageTest
  *
- * Version 1.0
+ * Version 2.0
  *
- * Date: November 7, 2019
+ * Date: November 26, 2019
  *
  * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
  */
@@ -50,12 +51,11 @@ public class MainActivityFriendPageTest {
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
         //initialize the ShowActivity environment before testing
         solo.assertCurrentActivity("Not in LogSignInActivity", LogSignInActivity.class);
-        solo.enterText((EditText) solo.getView(R.id.add_user_name), "zoeye@gmail.com");
-        solo.enterText((EditText) solo.getView(R.id.add_user_password),"111222333");
+        solo.enterText((EditText) solo.getView(R.id.add_user_name), "winsordby@gmail.com");
+        solo.enterText((EditText) solo.getView(R.id.add_user_password),"dby123");
         solo.clickOnView(solo.getView(R.id.sign_in_button));
         solo.waitForActivity(MainActivity.class,2000);
-//        solo.assertCurrentActivity("Not in MainActivity", MainActivity.class);
-//        solo.waitForFragmentById(R.id.request_fragment_dialog);
+
     }
 
     /**
@@ -84,9 +84,10 @@ public class MainActivityFriendPageTest {
         RadioButton FriendButton = (RadioButton) solo.getView(R.id.friends_tab);
         solo.clickOnView(FriendButton);
         solo.waitForFragmentById(R.id.friend_fragment);
-        solo.enterText((EditText) solo.getView(R.id.friend_input), "Lee");
+        solo.enterText((EditText) solo.getView(R.id.friend_input), "dby123");
         solo.clickOnButton("Search");
-        solo.waitForFragmentById(R.id.friend_locked_fragment);
+        solo.waitForActivity(FriendsNotExist.class,2000);
+        solo.assertCurrentActivity("Not this Activity", FriendsNotExist.class);
 
     }
 
@@ -98,32 +99,14 @@ public class MainActivityFriendPageTest {
         RadioButton FriendButton = (RadioButton) solo.getView(R.id.friends_tab);
         solo.clickOnView(FriendButton);
         solo.waitForFragmentById(R.id.friend_fragment);
-        solo.enterText((EditText) solo.getView(R.id.friend_input), "Lee");
+        solo.enterText((EditText) solo.getView(R.id.friend_input), "dby123");
         solo.clickOnButton("Search");
-        solo.waitForFragmentById(R.id.friend_locked_fragment);
+        solo.waitForActivity(FriendsNotExist.class,2000);
         solo.clickOnButton("Follow");
         solo.waitForDialogToOpen();
 
     }
 
-
-    /**
-     * Check whether the FriendNotExistFollowDialog close by click on Yes button
-     */
-    @Test
-    public void checkFriendNotExistFollowDialogYesClose() {
-        RadioButton FriendButton = (RadioButton) solo.getView(R.id.friends_tab);
-        solo.clickOnView(FriendButton);
-        solo.waitForFragmentById(R.id.friend_fragment);
-        solo.enterText((EditText) solo.getView(R.id.friend_input), "Lee");
-        solo.clickOnButton("Search");
-        solo.waitForFragmentById(R.id.friend_locked_fragment);
-        solo.clickOnButton("Follow");
-        solo.waitForDialogToOpen();
-        solo.clickOnButton(2);
-        solo.waitForDialogToClose();
-
-    }
 
     /**
      * Check whether the FriendNotExistFollowDialog close by click on No button
@@ -134,9 +117,9 @@ public class MainActivityFriendPageTest {
         RadioButton FriendButton = (RadioButton) solo.getView(R.id.friends_tab);
         solo.clickOnView(FriendButton);
         solo.waitForFragmentById(R.id.friend_fragment);
-        solo.enterText((EditText) solo.getView(R.id.friend_input), "Lee");
+        solo.enterText((EditText) solo.getView(R.id.friend_input), "dby123");
         solo.clickOnButton("Search");
-        solo.waitForFragmentById(R.id.friend_locked_fragment);
+        solo.waitForActivity(FriendsNotExist.class,2000);
         solo.clickOnButton("Follow");
         solo.waitForDialogToOpen();
         solo.clickOnButton(1);
@@ -154,9 +137,9 @@ public class MainActivityFriendPageTest {
         RadioButton FriendButton = (RadioButton) solo.getView(R.id.friends_tab);
         solo.clickOnView(FriendButton);
         solo.waitForFragmentById(R.id.friend_fragment);
-        solo.enterText((EditText) solo.getView(R.id.friend_input), "Lee");
+        solo.enterText((EditText) solo.getView(R.id.friend_input), "dby123");
         solo.clickOnButton("Search");
-        solo.waitForFragmentById(R.id.friend_locked_fragment);
+        solo.waitForActivity(FriendsNotExist.class,2000);
         solo.clickOnButton("Cancel");
         solo.waitForFragmentById(R.id.friend_fragment);
 
@@ -171,8 +154,10 @@ public class MainActivityFriendPageTest {
         RadioButton FriendButton = (RadioButton) solo.getView(R.id.friends_tab);
         solo.clickOnView(FriendButton);
         solo.waitForFragmentById(R.id.friend_fragment);
-        solo.clickInList(1);
-        solo.waitForFragmentById(R.id.exist_id);
+        solo.enterText((EditText) solo.getView(R.id.friend_input), "hubdby");
+        solo.clickOnButton("Search");
+        solo.waitForActivity(FriendsExist.class,2000);
+        solo.assertCurrentActivity("Not FriendsExist Activity", FriendsExist.class);
     }
 
 
@@ -185,26 +170,11 @@ public class MainActivityFriendPageTest {
         RadioButton FriendButton = (RadioButton) solo.getView(R.id.friends_tab);
         solo.clickOnView(FriendButton);
         solo.waitForFragmentById(R.id.friend_fragment);
-        solo.clickInList(1);
-        solo.waitForFragmentById(R.id.exist_id);
+        solo.enterText((EditText) solo.getView(R.id.friend_input), "hubdby");
+        solo.clickOnButton("Search");
+        solo.waitForActivity(FriendsExist.class,2000);
         solo.clickOnButton("Unfollow");
         solo.waitForDialogToOpen();
-    }
-
-    /**
-     * Check whether the FriendUnfollowFragmentDialog close by click on Yes button
-     */
-    @Test
-    public void checkFriendUnfollowFragmentDialogYesClose() {
-        RadioButton FriendButton = (RadioButton) solo.getView(R.id.friends_tab);
-        solo.clickOnView(FriendButton);
-        solo.waitForFragmentById(R.id.friend_fragment);
-        solo.clickInList(1);
-        solo.waitForFragmentById(R.id.exist_id);
-        solo.clickOnButton("Unfollow");
-        solo.waitForDialogToOpen();
-        solo.clickOnButton(2);
-        solo.waitForDialogToClose();
     }
 
 
@@ -216,8 +186,9 @@ public class MainActivityFriendPageTest {
         RadioButton FriendButton = (RadioButton) solo.getView(R.id.friends_tab);
         solo.clickOnView(FriendButton);
         solo.waitForFragmentById(R.id.friend_fragment);
-        solo.clickInList(1);
-        solo.waitForFragmentById(R.id.exist_id);
+        solo.enterText((EditText) solo.getView(R.id.friend_input), "hubdby");
+        solo.clickOnButton("Search");
+        solo.waitForActivity(FriendsExist.class,2000);
         solo.clickOnButton("Unfollow");
         solo.waitForDialogToOpen();
         solo.clickOnButton(1);
@@ -234,12 +205,11 @@ public class MainActivityFriendPageTest {
         RadioButton FriendButton = (RadioButton) solo.getView(R.id.friends_tab);
         solo.clickOnView(FriendButton);
         solo.waitForFragmentById(R.id.friend_fragment);
-        solo.clickInList(1);
-        solo.waitForFragmentById(R.id.exist_id);
+        solo.enterText((EditText) solo.getView(R.id.friend_input), "hubdby");
+        solo.clickOnButton("Search");
+        solo.waitForActivity(FriendsExist.class,2000);
         solo.clickOnButton("Back");
-        solo.waitForFragmentById(R.id.exist_id);
+        solo.waitForActivity(FriendsExist.class,2000);
     }
-
-
 
 }

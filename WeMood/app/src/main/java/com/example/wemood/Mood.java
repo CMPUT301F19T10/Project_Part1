@@ -1,5 +1,7 @@
 package com.example.wemood;
 
+import android.net.Uri;
+
 import java.io.Serializable;
 import java.util.Date;
 /**
@@ -25,6 +27,7 @@ public class Mood implements Comparable<Mood>, Serializable {
     private String username;
     private double longitude;
     private double latitude;
+    private String uri;
 
     public double getLongitude() {
         return longitude;
@@ -53,7 +56,7 @@ public class Mood implements Comparable<Mood>, Serializable {
      * @param socialSituation
      * @param title
      */
-    public Mood(Date datetime, String emotionalState, String comment, String socialSituation, String title, double longitude, double latitude, String location) {
+    public Mood(Date datetime, String emotionalState, String comment, String socialSituation, String title, double longitude, double latitude, String location, String uri) {
         this.datetime = datetime;
         this.emotionalState = emotionalState;
         this.comment = comment;
@@ -62,9 +65,16 @@ public class Mood implements Comparable<Mood>, Serializable {
         this.latitude = latitude;
         this.longitude = longitude;
         this.location = location;
-
+        this.uri = uri;
     }
 
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
 
     /**
      * construct a mood

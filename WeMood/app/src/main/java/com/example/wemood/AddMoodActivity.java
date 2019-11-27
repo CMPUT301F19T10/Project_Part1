@@ -32,8 +32,12 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -41,6 +45,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -68,7 +73,7 @@ public class AddMoodActivity extends AppCompatActivity{
     private StorageReference Folder;
     ImageView imageView;
     Uri imageUri;
-
+    String downloadUri;
     private static final int PICK_IMAGE = 100;
     String situationString, emotionString;
     private FirebaseFirestore db;
@@ -124,9 +129,9 @@ public class AddMoodActivity extends AppCompatActivity{
             public void onClick(View v) {
 
                 EditText exp = findViewById(R.id.reason);
-                String explanation = exp.getText().toString();
+                final String explanation = exp.getText().toString();
                 EditText titl = findViewById(R.id.title);
-                String title = titl.getText().toString();
+                final String title = titl.getText().toString();
 
                 if (containsSpace(title)) {
                     Toast.makeText(AddMoodActivity.this, "Title has no more than 3 words", Toast.LENGTH_SHORT).show();
@@ -136,16 +141,33 @@ public class AddMoodActivity extends AppCompatActivity{
                     Toast.makeText(AddMoodActivity.this, "You must enter a title!", Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    DocumentReference docRef = db.collection("Users").document(name);
+                    final DocumentReference docRef = db.collection("Users").document(name);
                     db = FirebaseFirestore.getInstance();
 
                     //add image to storage if it is not null
                     if (imageUri != null){
-                        StorageReference Image = Folder.child(currentTime.toString());
-                        Image.putFile(imageUri);
+                        final StorageReference Image = Folder.child(currentTime.toString());
+                        Image.putFile(imageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                            @Override
+                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                if (!task.isSuccessful()) {
+                                    throw task.getException();
+                                }
+                                return Image.getDownloadUrl();
+                            }
+                        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                if (task.isSuccessful()) {
+                                    downloadUri = task.getResult().toString();
+                                    addMood(currentTime, emotionString, explanation, situationString, title, docRef, downloadUri);
+
+                                }
+                            }
+                        });
                     }
 
-                    addMood(currentTime, emotionString, explanation, situationString, title, docRef);
+
                     finish();
                 }
             }
@@ -217,8 +239,8 @@ public class AddMoodActivity extends AppCompatActivity{
      * @param title
      * @param docRef
      */
-    public void addMood(Date currentTime, String emotionString, String explanation, String situationString, String title, DocumentReference docRef){
-        mood = new Mood(currentTime, emotionString, explanation, situationString, title, longitude,latitude,locationMessage.getText().toString());
+    public void addMood(Date currentTime, String emotionString, String explanation, String situationString, String title, DocumentReference docRef, String downloadUri){
+        mood = new Mood(currentTime, emotionString, explanation, situationString, title, longitude,latitude,locationMessage.getText().toString(), downloadUri);
         //put the mood to fireBase
         docRef.collection("MoodList").document(currentTime.toString()).set(mood);
 

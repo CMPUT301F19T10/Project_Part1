@@ -86,6 +86,7 @@ public class SignUpActivity extends AppCompatActivity implements
             final String email = addEmail.getText().toString();
             final String phone = addPhone.getText().toString();
             final String userName = addUserName.getText().toString();
+            final String figure = "";
 
             if (email.isEmpty() || userName.isEmpty() || password.isEmpty()|| phone.isEmpty()) {
                 Toast.makeText(SignUpActivity.this, "Cannot leave empty",
@@ -109,7 +110,7 @@ public class SignUpActivity extends AppCompatActivity implements
                             if (user != null){
                                 addUserName.setError("Username already exist!");
                             } else{
-                                createAccount(userName, email, password, phone);
+                                createAccount(userName, email, password, phone, figure);
                             }
                         }
                     }).addOnFailureListener(new OnFailureListener() {
@@ -132,7 +133,7 @@ public class SignUpActivity extends AppCompatActivity implements
      * @param email
      * @param password
      * @param phone*/
-    public void createAccount(final String username, final String email, final String password, final String phone) {
+    public void createAccount(final String username, final String email, final String password, final String phone, final String figure) {
         Log.d(TAG, "createAccount:" + email);
         if (!validateForm()) {
             return;
@@ -144,7 +145,7 @@ public class SignUpActivity extends AppCompatActivity implements
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             final FirebaseUser user = mAuth.getCurrentUser();
-                            setUserFireBase(user.getUid(), username, email, phone);
+                            setUserFireBase(user.getUid(), username, email, phone, figure);
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             Toast.makeText(SignUpActivity.this, "Success",
@@ -187,8 +188,8 @@ public class SignUpActivity extends AppCompatActivity implements
      * @param userId
      * @param phone*/
 
-    private void setUserFireBase(String userId, String username, String email, String phone) {
-        User user = new User(email, username, phone, userId);
+    private void setUserFireBase(String userId, String username, String email, String phone, String figure) {
+        User user = new User(email, username, phone, userId, figure);
         collectionReference.document(username).set(user);
     }
 

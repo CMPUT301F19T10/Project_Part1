@@ -151,10 +151,20 @@ public class LonelyMood extends AppCompatActivity {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
                 Mood mood = (Mood) data.getSerializableExtra("mood");
+                mood.setUsername(userName);
                 moodDataList.set(i, mood);
                 if (!mood.getEmotionalState().equals("lonely")) {
                     moodDataList.remove(i);
                 }
+                moodAdapter = new FriendMoodList(getBaseContext(), moodDataList);
+                moodList.setAdapter(moodAdapter);
+            }else if(resultCode == 5){
+                Mood mood = moodDataList.get(i);
+                db.collection("Users").document(userName).collection("MoodList").document(mood.getDatetime().toString()).delete();
+                moodDataList.remove(i);
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference image = storage.getReference().child("ImageFolder/" + userName + "/" + mood.getDatetime().toString());
+                image.delete();
                 moodAdapter = new FriendMoodList(getBaseContext(), moodDataList);
                 moodList.setAdapter(moodAdapter);
             }

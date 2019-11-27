@@ -167,20 +167,7 @@ public class FriendMoodList extends ArrayAdapter<Mood> {
     // Get and display figure
     // Get storage and image
     public void updateImage(Mood mood, final ImageView FriendMoodPhoto) {
-        storage = getStorage();
-        image = storage.getReference().child("ImageFolder/" + mood.getUsername() + "/" + mood.getDatetime().toString());
-        image.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(final Uri uri) {
-                Picasso.get().load(uri).into(FriendMoodPhoto);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
-                FriendMoodPhoto.setImageResource(R.drawable.default_photo);
-            }
-        });
+        Picasso.get().load(mood.getUri()).into(FriendMoodPhoto);
     }
 
 }

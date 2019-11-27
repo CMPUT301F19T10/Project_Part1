@@ -72,6 +72,7 @@ public class ProfileFragment extends Fragment {
     private String email;
     private String phone;
     private String newPhone;
+    private String figure;
 
     private FirebaseAuth mAuth;
     private FirebaseUser user;
@@ -427,11 +428,54 @@ public class ProfileFragment extends Fragment {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
                 imageUri = data.getData();
-                figureView.setImageURI(imageUri);
                 // Add figure to storage if it is not null
                 if (imageUri != null) {
                     StorageReference Image = folder.child(userName);
                     Image.putFile(imageUri);
+
+                    // Get database and current user
+                    db = getDatabase();
+                    user = getUser();
+
+                    // Get username for later reference
+                    userName = user.getDisplayName();
+
+                    // Get document reference
+                    documentReference = db.collection("Users")
+                            .document(userName);
+
+                    // Update figure online
+                    documentReference
+                            .update("figure", imageUri.toString())
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d(TAG, "DocumentSnapshot successfully updated!");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w(TAG, "Error updating document", e);
+                                }
+                            });
+                    
+                    // Update figure locally
+                    documentReference
+                            .get()
+                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    User user = documentSnapshot.toObject(User.class);
+                                    Picasso.get().load(user.getFigure()).into(figureView);
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getActivity(), "Error!", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, e.toString());
+                        }
+                    });
                 }
             }
         }
