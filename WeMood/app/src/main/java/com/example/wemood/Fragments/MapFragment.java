@@ -3,13 +3,14 @@ package com.example.wemood.Fragments;
 /**
  * Class name: MapFragment
  *
- * version 1.0
+ * version 2.0
  *
  * Date: November 3, 2019
  *
  * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
  */
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -20,11 +21,13 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +36,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.example.wemood.Mood;
 import com.example.wemood.R;
+import com.example.wemood.User;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -44,33 +49,55 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static androidx.constraintlayout.widget.Constraints.TAG;
 
 /**
  * @author ChengZhang Dong
  *
- * @version 1.0
+ * @version 2.0
  */
-public class MapFragment extends Fragment implements View.OnClickListener{
+public class MapFragment extends Fragment implements View.OnClickListener {
 
     private SupportMapFragment mapFragment;
     private Button myMap;
     private Button friendsMap;
-
+    private FirebaseUser user;
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+    private CollectionReference collectionReference;
+    private String userName;
     private LocationManager lm;
     private double longitude;
     private double latitude;
 
+    private int statusNumber;
+
     /**
      * Required empty public constructor
      */
-    public MapFragment() {}
+    public MapFragment() {
+    }
 
     /**
      * constructor
-     * @return map fragment
      *
+     * @return map fragment
      */
     public static MapFragment newInstance() {
         MapFragment fragment = new MapFragment();
@@ -79,17 +106,28 @@ public class MapFragment extends Fragment implements View.OnClickListener{
 
     /**
      * initialize the location manager and update the location
+     *
      * @param savedInstanceState
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        this.statusNumber = 0;
+        // Initialize FireBase Auth
+        mAuth = FirebaseAuth.getInstance();
+        // Initialize Database
+        db = FirebaseFirestore.getInstance();
+        user = mAuth.getCurrentUser();
+        userName = user.getDisplayName();
+        user = mAuth.getCurrentUser();
         lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         locationUpdate();
     }
 
     /**
      * Inflate the layout for this fragment
+     *
      * @param inflater
      * @param container
      * @param savedInstanceState
@@ -107,14 +145,15 @@ public class MapFragment extends Fragment implements View.OnClickListener{
         friendsMap.setOnClickListener(this);
 
         // create the map
+
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
-            public void onMapReady(GoogleMap googleMap) {
+            public void onMapReady(final GoogleMap googleMap) {
                 googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-                try{
+                try {
                     googleMap.setMyLocationEnabled(true);
-                }catch (Exception e){
+                } catch (Exception e) {
 
                 }
 
@@ -127,13 +166,8 @@ public class MapFragment extends Fragment implements View.OnClickListener{
                         .bearing(0)
                         .tilt(45)
                         .build();
-                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(camera),null);
-
-                // add a mock mood marker
-                googleMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(37.4219999, -122.0862462))
-                        .title("2019-11-3 10:44")
-                        .snippet("happy : yooooo!"));
+                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(camera), null);
+                setMoodMarker(googleMap,userName);
             }
         });
         return rootView;
@@ -141,6 +175,7 @@ public class MapFragment extends Fragment implements View.OnClickListener{
 
     /**
      * set the feature of 2 buttons
+     *
      * @param view
      */
     @Override
@@ -148,34 +183,23 @@ public class MapFragment extends Fragment implements View.OnClickListener{
         switch (view.getId()) {
             // tap this button will show all moods of the current user on the map
             case R.id.myMap:
+                this.statusNumber = 1;
                 mapFragment.getMapAsync(new OnMapReadyCallback() {
                     @Override
                     public void onMapReady(GoogleMap googleMap) {
                         googleMap.clear();
-                        googleMap.addMarker(new MarkerOptions()
-                                .position(new LatLng(37.4219999, -122.0862462))
-                                .title("2019-11-3 10:44")
-                                .snippet("happy : yooooo!"));
+                        setMoodMarker(googleMap,userName);
                     }
                 });
                 break;
             // tap this button will show all friends' moods of the current user on the map
             case R.id.friendsMap:
+                this.statusNumber = 2;
                 mapFragment.getMapAsync(new OnMapReadyCallback() {
                     @Override
                     public void onMapReady(GoogleMap googleMap) {
                         googleMap.clear();
-
-                        googleMap.addMarker(new MarkerOptions()
-                                .position(new LatLng(37.4629101, -122.2449094))
-                                .title("2019-11-3 1:22")
-                                .snippet("sad : noooo!"));
-
-                        googleMap.addMarker(new MarkerOptions()
-                                .position(new LatLng(37.3092293, -122.1136845))
-                                .title("2019-11-6 11:44")
-                                .snippet("tired : ohhhhh!"));
-
+                        setFriendsMapMarker(googleMap);
                     }
                 });
                 break;
@@ -198,7 +222,7 @@ public class MapFragment extends Fragment implements View.OnClickListener{
         // update location if GPS is allowed
         @Override
         public void onProviderEnabled(String provider) {
-            if ( getActivity().checkCallingOrSelfPermission(ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (getActivity().checkCallingOrSelfPermission(ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(getActivity(), "Need GPS Permission!", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -215,40 +239,80 @@ public class MapFragment extends Fragment implements View.OnClickListener{
     /**
      * update location
      */
+    @Override
     public void onResume() {
         super.onResume();
         locationUpdate();
+        switch (this.statusNumber){
+            case 0:
+                mapFragment.getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(GoogleMap googleMap) {
+                        googleMap.clear();
+                        setMoodMarker(googleMap,userName);
+                    }
+                });
+            case 1:
+                mapFragment.getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(GoogleMap googleMap) {
+                        googleMap.clear();
+                        setMoodMarker(googleMap,userName);
+                    }
+                });
+            case 2:
+                mapFragment.getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(GoogleMap googleMap) {
+                        googleMap.clear();
+                        setFriendsMapMarker(googleMap);
+                    }
+                });
+        }
     }
 
     /**
      * stop updating location
      */
+    @Override
     public void onPause() {
         super.onPause();
         lm.removeUpdates(mLocationListener);
     }
 
+   /* @Override
+    public void onStop(){
+        super.onStop();
+        locationUpdate();
+    }*/
     /**
      * update location
      */
     public void locationUpdate() {
 
         // if no permission
-        if ( getActivity().checkCallingOrSelfPermission(ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (getActivity().checkCallingOrSelfPermission(ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(getActivity(), "Need GPS Permission!", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Location location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        setLongitude(location.getLongitude());
-        setLatitude(location.getLatitude());
+        try {
+            Location location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            if(location == null){
+                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,mLocationListener);
+            }
+            setLongitude(location.getLongitude());
+            setLatitude(location.getLatitude());
+            // get the location every 2 seconds
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 8, mLocationListener);
+        }catch (Exception e){
+        }
 
-        // get the location every 2 seconds
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 8,mLocationListener);
     }
 
     /**
      * get current longitude
+     *
      * @return current longitude
      */
     public double getLongitude() {
@@ -257,8 +321,8 @@ public class MapFragment extends Fragment implements View.OnClickListener{
 
     /**
      * set current longitude
-     * @param longitude
-     * current location information
+     *
+     * @param longitude current location information
      */
     public void setLongitude(double longitude) {
         this.longitude = longitude;
@@ -266,6 +330,7 @@ public class MapFragment extends Fragment implements View.OnClickListener{
 
     /**
      * get current latitude
+     *
      * @return current latitude
      */
     public double getLatitude() {
@@ -274,10 +339,93 @@ public class MapFragment extends Fragment implements View.OnClickListener{
 
     /**
      * set current latitude
-     * @param latitude
-     * current location information
+     *
+     * @param latitude current location information
      */
     public void setLatitude(double latitude) {
         this.latitude = latitude;
+    }
+
+    public void setMoodMarker(final GoogleMap googleMap,final String userName) {
+        collectionReference = db.collection("Users")
+                .document(userName)
+                .collection("MoodList");
+        collectionReference
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Mood mood = document.toObject(Mood.class);
+                                if (mood.getLatitude() != 0 && mood.getLongitude() != 0){
+                                    switch (mood.getEmotionalState()) {
+                                        case "angry":
+                                            googleMap.addMarker(new MarkerOptions()
+                                                    .position(new LatLng(mood.getLatitude(),mood.getLongitude()))
+                                                    .title(mood.getDatetime().toString())
+                                                    .snippet(userName + ": " + mood.getComment())
+                                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.angry_marker)));
+                                            break;
+                                        case "sad":
+                                            googleMap.addMarker(new MarkerOptions()
+                                                    .position(new LatLng(mood.getLatitude(),mood.getLongitude()))
+                                                    .title(mood.getDatetime().toString())
+                                                    .snippet(userName + ": " + mood.getComment())
+                                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.sad_marker)));
+                                            break;
+                                        case "happy":
+                                            googleMap.addMarker(new MarkerOptions()
+                                                    .position(new LatLng(mood.getLatitude(),mood.getLongitude()))
+                                                    .title(mood.getDatetime().toString())
+                                                    .snippet(userName + ": " + mood.getComment())
+                                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.happy_marker)));
+                                            break;
+                                        case "tired":
+                                            googleMap.addMarker(new MarkerOptions()
+                                                    .position(new LatLng(mood.getLatitude(),mood.getLongitude()))
+                                                    .title(mood.getDatetime().toString())
+                                                    .snippet(userName + ": " + mood.getComment())
+                                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.tired_marker)));
+                                            break;
+                                    }
+                                }
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+    }
+
+    public void setFriendsMapMarker(final GoogleMap googleMap) {
+        collectionReference = db.collection("Users");
+        collectionReference.document(userName).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        User user = documentSnapshot.toObject(User.class);
+                        ArrayList<String> friendList = user.getFriendList();
+                        if (!friendList.isEmpty()){
+                            for (String friend:friendList){
+                                collectionReference.document(friend).get()
+                                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                User friend = documentSnapshot.toObject(User.class);
+                                                String friendName = friend.getUserName();
+                                                setMoodMarker(googleMap,friendName);
+                                            }
+                                        });
+                            }
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getActivity(), "Error!", Toast.LENGTH_SHORT).show();
+                Log.d(ContentValues.TAG, e.toString());
+            }
+        });
     }
 }
