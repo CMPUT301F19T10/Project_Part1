@@ -391,7 +391,7 @@ public class ProfileFragment extends Fragment {
      * (username, userID, email, phone number, etc.)
      */
     public void displayInfo() {
-        // Get and display username
+        // Display username
         userNameView.setText(userName);
 
         // Get and display userID
