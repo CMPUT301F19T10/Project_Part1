@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/home_background1"
+    android:background="@drawable/background"
     tools:context=".Fragments.HomeFragment">
 
     <LinearLayout
@@ -21,10 +21,10 @@
 
             <TextView
                 android:id="@+id/home_title_text"
-                android:layout_width="201dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_marginLeft="100dp"
+                android:layout_marginLeft="130dp"
                 android:gravity="right"
                 android:text="WeMood"
                 android:textColor="#E91E63"
@@ -47,13 +47,20 @@
 
         </LinearLayout>
 
-        <ListView
-            android:id="@+id/home_friend_moods"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:dividerHeight="30dp">
 
-        </ListView>
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/home_swipe_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ListView
+                android:id="@+id/home_friend_moods"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:dividerHeight="30dp">
+
+            </ListView>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </LinearLayout>
 

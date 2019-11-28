@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E9C4C4"
+    android:background="@drawable/background"
     tools:context=".HappyMood">
 
     <ImageButton
@@ -15,7 +15,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
-        android:background="#E9C4C4"
+        android:background="#FECFD0"
         android:src="@drawable/betterback"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -28,7 +28,7 @@
         android:layout_marginLeft="25dp"
         android:layout_marginEnd="25dp"
         android:layout_marginRight="25dp"
-        android:gravity="center"
+        android:gravity="center|left"
         android:text="My Happy Moods"
         android:textColor="#000000"
         android:textSize="32sp"

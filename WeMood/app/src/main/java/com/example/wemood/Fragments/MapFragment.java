@@ -242,7 +242,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         super.onResume();
         locationUpdate();
         switch (this.statusNumber){
-                // My mood markers
+            // My mood markers
             case 0:
                 mapFragment.getMapAsync(new OnMapReadyCallback() {
                     @Override

@@ -2,7 +2,7 @@ package com.example.wemood.Fragments;
 /**
  * @author Boyuan Dong
  *
- * @version 1.0
+ * @version 2.0
  */
 
 import android.app.Activity;
@@ -52,12 +52,13 @@ import java.util.Date;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import static android.content.ContentValues.TAG;
 /**
  * Class name: HomeFragment
  *
- * Version 1.0
+ * Version 2.0
  *
  * Date: November 7, 2019
  *
@@ -79,6 +80,8 @@ public class HomeFragment extends Fragment {
     private FirebaseFirestore db;
     private CollectionReference collectionReference;
     private DocumentReference documentReference;
+
+    SwipeRefreshLayout swipeRefreshLayout;
 
 
     private String userName;
@@ -116,16 +119,6 @@ public class HomeFragment extends Fragment {
 
     }
 
-    public void refresh(int millionSeconds) {
-        final Handler handler = new Handler();
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                getMoodList();
-            }
-        };
-        handler.postDelayed(runnable,millionSeconds);
-    }
 
     /**
      * Create a view of the HomeFragment to display friends' most recent moods.
@@ -153,6 +146,21 @@ public class HomeFragment extends Fragment {
 
         friendmoodList = (ListView) rootView.findViewById(R.id.home_friend_moods);
 
+        swipeRefreshLayout = rootView.findViewById(R.id.home_swipe_container);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                moodDataList = new ArrayList<>();
+                getMoodList();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                },2000);
+            }
+        });
+
         moodDataList = new ArrayList<>();
         getMoodList();
 
@@ -160,15 +168,10 @@ public class HomeFragment extends Fragment {
         return rootView;
     }
 
-//    @Override
-//    public void onResume(){
-//        super.onResume();
-//        moodDataList = new ArrayList<>();
-////        getMoodList();
-//        refresh(1000);
-//    }
 
-
+    /**
+     * This function get user's friend list and then get each friend's most recent mood
+     */
     public void getMoodList() {
         collectionReference = db.collection("Users");
         collectionReference.document(userName)
@@ -208,6 +211,10 @@ public class HomeFragment extends Fragment {
     }
 
 
+    /**
+     * This method get each friend's most recent mood
+     * @param friendUserName
+     */
     public void getMostRecentMood(final String friendUserName) {
         collectionReference = db.collection("Users")
                 .document(friendUserName)
@@ -238,7 +245,6 @@ public class HomeFragment extends Fragment {
                                 startActivity(intent);
                                 ((Activity) getActivity()).overridePendingTransition(0, 0);
                             }
-
                         });
                     }
                 });

@@ -33,11 +33,16 @@ public class MoodHistory extends AppCompatActivity {
     private Button angryButton;
     private Button tiredButton;
 
+    /**
+     * Initialize the activity
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mood_history);
 
+        // Create references of the buttons
         backButton = findViewById(R.id.back);
         happyButton = findViewById(R.id.happy);
         sadButton = findViewById(R.id.sad);
@@ -45,6 +50,29 @@ public class MoodHistory extends AppCompatActivity {
         angryButton = findViewById(R.id.angry);
         tiredButton = findViewById(R.id.tired);
 
+        // Go back to ProfileFragment Fragment
+        backProfile();
+
+        // Go to HappyMood Activity
+        goHappy();
+
+        // Go to SadMood Activity
+        goSad();
+
+        // Go to LonelyMood Activity
+        goLonely();
+
+        // Go to AngryMood Activity
+        goAngry();
+
+        // Go to TiredMood Activity
+        goTired();
+    }
+
+    /**
+     * Go back to ProfileFragment Fragment
+     */
+    public void backProfile() {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -52,7 +80,12 @@ public class MoodHistory extends AppCompatActivity {
                 finish();
             }
         });
+    }
 
+    /**
+     * Go to HappyMood Activity
+     */
+    public void goHappy() {
         happyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -61,7 +94,12 @@ public class MoodHistory extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
 
+    /**
+     * Go to SadMood Activity
+     */
+    public void goSad() {
         sadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -70,7 +108,12 @@ public class MoodHistory extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
 
+    /**
+     * Go to LonelyMood Activity
+     */
+    public void goLonely() {
         lonelyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -79,7 +122,12 @@ public class MoodHistory extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
 
+    /**
+     * Go to AngryMood Activity
+     */
+    public void goAngry() {
         angryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,7 +136,12 @@ public class MoodHistory extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
 
+    /**
+     * Go to TiredMood Activity
+     */
+    public void goTired() {
         tiredButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

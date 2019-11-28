@@ -2,7 +2,7 @@ package com.example.wemood;
 /**
  * @author Boyuan Dong
  *
- * @version 1.0
+ * @version 2.0
  */
 
 import android.content.Context;
@@ -32,9 +32,9 @@ import java.util.ArrayList;
 /**
  * Class name: FriendMoodList
  *
- * Version 1.0
+ * Version 2.0
  *
- * Date: November 7, 2019
+ * Date: November 26, 2019
  *
  * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
  */
@@ -167,7 +167,11 @@ public class FriendMoodList extends ArrayAdapter<Mood> {
     // Get and display figure
     // Get storage and image
     public void updateImage(Mood mood, final ImageView FriendMoodPhoto) {
-        Picasso.get().load(mood.getUri()).into(FriendMoodPhoto);
+        if (mood.getUri() != null){
+            Picasso.get().load(mood.getUri()).fit().into(FriendMoodPhoto);
+        }else{
+            FriendMoodPhoto.setImageResource(R.drawable.default_photo);
+        }
     }
 
 }
