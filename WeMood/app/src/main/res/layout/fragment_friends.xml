@@ -18,8 +18,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:hint="Please enter 'Lee' at this moment"/>
+            android:hint="Please enter a UserID"
+            android:inputType="textPersonName" />
 
         <Button
             android:id="@+id/friend_search"
@@ -35,8 +35,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
-        android:textSize="15sp"
-        android:text="Your Friend: " />
+        android:text="Your Friends: "
+        android:textSize="15sp" />
     <ListView
         android:id="@+id/friend_list_content"
         android:layout_width="match_parent"

@@ -1,5 +1,7 @@
+
 package com.example.wemood;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,6 +20,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.Continuation;
@@ -29,14 +32,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
-
-import java.util.Date;
 
 public class EditMood extends AppCompatActivity {
     String emotion;
@@ -48,7 +47,6 @@ public class EditMood extends AppCompatActivity {
     private CollectionReference collectionReference;
     private FirebaseAuth mAuth;
     String situationString, emotionString;
-    Date date;
     String downloadUri;
     private static final int PICK_IMAGE = 100;
     private ImageButton backButton;
@@ -73,7 +71,6 @@ public class EditMood extends AppCompatActivity {
         emotion = intent.getStringExtra("string");
         db = FirebaseFirestore.getInstance();
         mood = (Mood) intent.getSerializableExtra("mood");
-        date = mood.getDatetime();
 
         mAuth = FirebaseAuth.getInstance();
         final FirebaseUser user = mAuth.getCurrentUser();
@@ -95,144 +92,141 @@ public class EditMood extends AppCompatActivity {
                 .document(userName)
                 .collection("MoodList");
 
-        collectionReference
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                mood = document.toObject(Mood.class);
-                                final Date d = mood.getDatetime();
-                                if (d.equals(date)) {
-                                    //get text
-                                    EditText reason = findViewById(R.id.reason);
-                                    reason.setText(mood.getComment());
-                                    EditText title = findViewById(R.id.title);
-                                    title.setText(mood.getExplanation());
 
-                                    //get image if it exists
-                                    FirebaseStorage storage = FirebaseStorage.getInstance();
-                                    final StorageReference image = storage.getReference().child("ImageFolder/" + userName + "/" + mood.getDatetime().toString());
-                                    if (image != null) {
-                                        Picasso.get().load(mood.getUri()).into(imageView);
-                                    }
+        //get edit text
+        EditText reason = findViewById(R.id.reason);
+        reason.setText(mood.getComment());
+        EditText title = findViewById(R.id.title);
+        title.setText(mood.getExplanation());
 
-                                    Button Edit = findViewById(R.id.add);
-                                    Edit.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            //set
+        //get image if it exists
+
+        if (mood.getUri() != null) {
+            Picasso.get().load(mood.getUri()).into(imageView);
+        }else{
+            imageView.setImageResource(R.drawable.default_photo);
+        }
 
 
-                                            EditText r = findViewById(R.id.reason);
-                                            final String newReason = r.getText().toString();
-                                            EditText t = findViewById(R.id.title);
-                                            final String newTitle = t.getText().toString();
-                                            if (containsSpace(newTitle)) {
-                                                Toast.makeText(EditMood.this, "Title has no more than 3 words", Toast.LENGTH_SHORT).show();
-                                            } else if (emotionString.equals("")) {
-                                                Toast.makeText(EditMood.this, "You must select an emotion!", Toast.LENGTH_SHORT).show();
-                                            } else if (newTitle.equals("")) {
-                                                Toast.makeText(EditMood.this, "You must enter a title!", Toast.LENGTH_SHORT).show();
-                                            }
-                                            else {
-                                                final DocumentReference docRef = db.collection("Users").document(userName);
+        Button Edit = findViewById(R.id.add);
+        Edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //set
+                EditText r = findViewById(R.id.reason);
+                final String newReason = r.getText().toString();
+                EditText t = findViewById(R.id.title);
+                final String newTitle = t.getText().toString();
+                if (containsSpace(newTitle)) {
+                    Toast.makeText(EditMood.this, "Title has no more than 3 words", Toast.LENGTH_SHORT).show();
+                } else if (emotionString.equals("")) {
+                    Toast.makeText(EditMood.this, "You must select an emotion!", Toast.LENGTH_SHORT).show();
+                } else if (newTitle.equals("")) {
+                    Toast.makeText(EditMood.this, "You must enter a title!", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    final DocumentReference docRef = db.collection("Users").document(userName);
 
-                                                if (imageUri != null) {
-                                                    final StorageReference Image = Folder.child(mood.getDatetime().toString());
-                                                    Image.putFile(imageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                                                        @Override
-                                                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                                                            if (!task.isSuccessful()) {
-                                                                throw task.getException();
-                                                            }
-                                                            return Image.getDownloadUrl();
-                                                        }
-                                                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Uri> task) {
-                                                            if (task.isSuccessful()) {
-                                                                downloadUri = task.getResult().toString();
-                                                                mood.setUri(downloadUri);
-                                                                mood.setComment(newReason);
-                                                                mood.setExplanation(newTitle);
-                                                                mood.setEmotionalState(emotionString);
-                                                                mood.setSocialSituation(situationString);
-                                                                db.collection("MoodList").document(mood.getDatetime().toString())
-                                                                        .delete()
-                                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                            @Override
-                                                                            public void onSuccess(Void aVoid) {
-                                                                                docRef.collection("MoodList").document(d.toString()).set(mood);
-                                                                            }
-                                                                        });
-                                                                if (emotion.equals("happy")) {
-                                                                    returnHappy(mood);
-                                                                } else if (emotion.equals("angry")) {
-                                                                    returnAngry(mood);
-                                                                } else if (emotion.equals("lonely")) {
-                                                                    returnLonely(mood);
-                                                                } else if (emotion.equals("sad")) {
-                                                                    returnSad(mood);
-                                                                } else if (emotion.equals("tired")) {
-                                                                    returnTired(mood);
-                                                                }
-                                                            }
-                                                        }
-                                                    });
-                                                }else{
-                                                    mood.setComment(newReason);
-                                                    mood.setExplanation(newTitle);
-                                                    mood.setEmotionalState(emotionString);
-                                                    mood.setSocialSituation(situationString);
-                                                    db.collection("MoodList").document(mood.getDatetime().toString())
-                                                            .delete()
-                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                @Override
-                                                                public void onSuccess(Void aVoid) {
-                                                                    docRef.collection("MoodList").document(d.toString()).set(mood);
-                                                                }
-                                                            });
-                                                    if (emotion.equals("happy")) {
-                                                        returnHappy(mood);
-                                                    } else if (emotion.equals("angry")) {
-                                                        returnAngry(mood);
-                                                    } else if (emotion.equals("lonely")) {
-                                                        returnLonely(mood);
-                                                    } else if (emotion.equals("sad")) {
-                                                        returnSad(mood);
-                                                    } else if (emotion.equals("tired")) {
-                                                        returnTired(mood);
-                                                    }
+                    if (imageUri != null) {
+                        System.out.println("not null");
+                        final StorageReference Image = Folder.child(mood.getDatetime().toString());
+                        Image.putFile(imageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                            @Override
+                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+
+                                return Image.getDownloadUrl();
+                            }
+                        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                if (task.isSuccessful()) {
+                                    downloadUri = task.getResult().toString();
+                                    mood.setUri(downloadUri);
+                                    mood.setComment(newReason);
+                                    mood.setExplanation(newTitle);
+                                    mood.setEmotionalState(emotionString);
+                                    mood.setSocialSituation(situationString);
+                                    db.collection("MoodList").document(mood.getDatetime().toString())
+                                            .delete()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    docRef.collection("MoodList").document(mood.getDatetime().toString()).set(mood);
                                                 }
-
-                                            }
-                                        }
-                                    });
-
-                                    Button Delete = findViewById(R.id.delete);
-                                    Delete.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            if (emotion.equals("happy")) {
-                                                HappyDelete();
-                                            } else if (emotion.equals("angry")) {
-                                                AngryDelete();
-                                            } else if (emotion.equals("lonely")) {
-                                                LonelyDelete();
-                                            } else if (emotion.equals("sad")) {
-                                                SadDelete();
-                                            } else if (emotion.equals("tired")) {
-                                                TiredDelete();
-                                            }
-                                        }
-                                    });
-
+                                            });
+                                    if (emotion.equals("happy")) {
+                                        returnHappy(mood);
+                                    } else if (emotion.equals("angry")) {
+                                        returnAngry(mood);
+                                    } else if (emotion.equals("lonely")) {
+                                        returnLonely(mood);
+                                    } else if (emotion.equals("sad")) {
+                                        returnSad(mood);
+                                    } else if (emotion.equals("tired")) {
+                                        returnTired(mood);
+                                    }
                                 }
                             }
+                        });
+                    }else{
+
+                        mood.setComment(newReason);
+                        mood.setExplanation(newTitle);
+                        mood.setEmotionalState(emotionString);
+                        mood.setSocialSituation(situationString);
+                        db.collection("MoodList").document(mood.getDatetime().toString())
+                                .delete()
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        docRef.collection("MoodList").document(mood.getDatetime().toString()).set(mood);
+                                    }
+                                });
+                        if (emotion.equals("happy")) {
+                            returnHappy(mood);
+                        } else if (emotion.equals("angry")) {
+                            returnAngry(mood);
+                        } else if (emotion.equals("lonely")) {
+                            returnLonely(mood);
+                        } else if (emotion.equals("sad")) {
+                            returnSad(mood);
+                        } else if (emotion.equals("tired")) {
+                            returnTired(mood);
                         }
-                    }});
+                    }
+
+                }
+            }
+        });
+
+        Button Delete = findViewById(R.id.delete);
+        Delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(EditMood.this)
+                        .setTitle("Do you want to delete this item?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (emotion.equals("happy")) {
+                                    HappyDelete();
+                                } else if (emotion.equals("angry")) {
+                                    AngryDelete();
+                                } else if (emotion.equals("lonely")) {
+                                    LonelyDelete();
+                                } else if (emotion.equals("sad")) {
+                                    SadDelete();
+                                } else if (emotion.equals("tired")) {
+                                    TiredDelete();
+                                }
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+            }
+        });
+
+
     }
 
     private void setSituationSpinner() {

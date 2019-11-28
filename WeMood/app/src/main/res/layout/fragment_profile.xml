@@ -14,8 +14,6 @@
         android:layout_height="170dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
-        android:background="#000000"
-        android:padding="1dp"
         android:src="@drawable/default_figure"
         app:layout_constraintBottom_toTopOf="@+id/camera"
         app:layout_constraintEnd_toStartOf="@+id/username"

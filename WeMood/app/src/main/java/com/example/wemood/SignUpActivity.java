@@ -86,7 +86,7 @@ public class SignUpActivity extends AppCompatActivity implements
             final String email = addEmail.getText().toString();
             final String phone = addPhone.getText().toString();
             final String userName = addUserName.getText().toString();
-            final String figure = "";
+            final String figure = null;
 
             if (email.isEmpty() || userName.isEmpty() || password.isEmpty()|| phone.isEmpty()) {
                 Toast.makeText(SignUpActivity.this, "Cannot leave empty",
