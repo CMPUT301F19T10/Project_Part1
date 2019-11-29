@@ -41,7 +41,7 @@
     <ListView
         android:id="@+id/moodList"
         android:layout_width="420dp"
-        android:layout_height="680dp"
+        android:layout_height="645dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
