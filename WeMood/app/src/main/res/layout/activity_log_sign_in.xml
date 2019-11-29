@@ -75,7 +75,7 @@
         android:layout_height="40dp"
         android:layout_marginLeft="30dp"
         android:layout_marginTop="228dp"
-        android:background="#FFFF00"
+
         android:layout_marginRight="30dp"
         android:ems="7"
         android:onClick="onClick"
@@ -94,7 +94,7 @@
         android:layout_marginRight="30dp"
         android:onClick="onClick"
         android:text="Sign up"
-        android:background="#FFFF00"
+
         app:layout_constraintHorizontal_bias="0.50"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
