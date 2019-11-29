@@ -8,7 +8,6 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <!-- 自定义控件风格-->
     <style name="Custom" />
 
     <style name="Custom.TabRadioButton">
