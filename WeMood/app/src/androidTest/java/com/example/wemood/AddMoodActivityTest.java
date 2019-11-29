@@ -26,8 +26,8 @@ public class AddMoodActivityTest {
     public void setUp() throws Exception{
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
         solo.assertCurrentActivity("Wrong Activity", LogSignInActivity.class);
-        solo.enterText((EditText) solo.getView(R.id.add_user_name), "zoeye@gmail.com");
-        solo.enterText((EditText) solo.getView(R.id.add_user_password), "111222333");
+        solo.enterText((EditText) solo.getView(R.id.add_user_name), "dbytest@gmail.com");
+        solo.enterText((EditText) solo.getView(R.id.add_user_password), "dby123");
         solo.clickOnButton("Sign in");
         solo.waitForActivity(MainActivity.class,10000);
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
