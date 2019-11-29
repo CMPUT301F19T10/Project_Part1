@@ -30,8 +30,8 @@ public class MapFragmentUITest {
     public void setUp() throws Exception {
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
         solo.assertCurrentActivity("Wrong Activity", LogSignInActivity.class);
-        solo.enterText((EditText) solo.getView(R.id.add_user_name), "willy990521@qq.com");
-        solo.enterText((EditText) solo.getView(R.id.add_user_password), "willy990521");
+        solo.enterText((EditText) solo.getView(R.id.add_user_name), "314601593@qq.com");
+        solo.enterText((EditText) solo.getView(R.id.add_user_password), "abcd1234");
         solo.clickOnButton("Sign in");
         solo.waitForActivity(MainActivity.class,10000);
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
