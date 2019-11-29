@@ -64,9 +64,6 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
  * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
  */
 
-/**
- * Still need to add mandatory choose emotion, background color and emoji.
- */
 
 public class AddMoodActivity extends AppCompatActivity{
     Mood mood;
@@ -144,8 +141,9 @@ public class AddMoodActivity extends AppCompatActivity{
                     final DocumentReference docRef = db.collection("Users").document(name);
                     db = FirebaseFirestore.getInstance();
 
-                    //add image to storage if it is not null
+                    //add imageUri to the mood if it is not null
                     if (imageUri != null){
+                        //add image to storage
                         final StorageReference Image = Folder.child(currentTime.toString());
                         Image.putFile(imageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                             @Override
@@ -166,10 +164,9 @@ public class AddMoodActivity extends AppCompatActivity{
                             }
                         });
                     }else{
+                        //if image is null then no need to add uri attribute
                         addMood(currentTime, emotionString, explanation, situationString, title, docRef, downloadUri);
                     }
-
-
                     finish();
                 }
             }
