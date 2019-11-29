@@ -6,6 +6,7 @@ package com.example.wemood.Fragments;
  */
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.wemood.FriendNameList;
 import com.example.wemood.FriendsExist;
@@ -66,6 +68,7 @@ public class FriendsFragment extends Fragment {
 
     private String userName;
     private Button searchButton;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     /**
      * Constructor
@@ -119,6 +122,21 @@ public class FriendsFragment extends Fragment {
 
         friendList = (ListView) rootView.findViewById(R.id.friend_list_content);
 
+        swipeRefreshLayout = rootView.findViewById(R.id.friend_swipe_container);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                friendDataList = new ArrayList<>();
+                getFriendNameList();
+                setSearchButton(searchButton);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                },100);
+            }
+        });
         return rootView;
     }
 
