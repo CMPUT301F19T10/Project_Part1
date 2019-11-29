@@ -39,7 +39,6 @@ public class LogSignInActivityTest {
      * Gets the Activity
      * @throws Exception
      * */
-
     @Test
     public void start() throws Exception{
         Activity activity = rule.getActivity();
@@ -53,9 +52,9 @@ public class LogSignInActivityTest {
     public  void checkEmptyLogin(){
         solo.assertCurrentActivity("Wrong Activity", LogSignInActivity.class);
 
-        solo.clickOnButton("Sign up");
+        solo.clickOnButton("Sign in");
 
-        solo.assertCurrentActivity("Wrong Activity", SignUpActivity.class);
+        solo.assertCurrentActivity("Wrong Activity", LogSignInActivity.class);
     }
 
     /**
@@ -70,7 +69,7 @@ public class LogSignInActivityTest {
 
 
 
-        solo.enterText((EditText) solo.getView(R.id.add_user_name), "123@qq.com");
+        solo.enterText((EditText) solo.getView(R.id.add_user_name), "314601593@qq.com");
         solo.enterText((EditText) solo.getView(R.id.add_user_password), "abcd1234");
 
         solo.clickOnButton("Sign in");
