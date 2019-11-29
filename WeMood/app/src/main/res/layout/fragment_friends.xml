@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:padding="5dp"
         android:text="Your Friends: "
-        android:textSize="15sp" />
+        android:textSize="23sp" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/friend_swipe_container"
