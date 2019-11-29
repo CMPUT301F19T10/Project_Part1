@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.wemood.Fragments.FriendUnfollowFragmentDialog;
+import com.example.wemood.Fragments.FriendsFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -118,7 +119,7 @@ public class FriendsExist extends AppCompatActivity implements FriendUnfollowFra
         image.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(final Uri uri) {
-                Picasso.get().load(uri).into(figureView);
+                Picasso.get().load(uri).fit().into(figureView);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -232,5 +233,10 @@ public class FriendsExist extends AppCompatActivity implements FriendUnfollowFra
         collectionReference = db.collection("Users");
         collectionReference.document(userName)
                 .update("friendList", FieldValue.arrayRemove(searchName));
+
+        Intent myIntent = new Intent(FriendsExist.this, FriendsNotExist.class);
+        myIntent.putExtra("searchName", searchName);
+        FriendsExist.this.startActivity(myIntent);
+        finish();
     }
 }
