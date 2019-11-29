@@ -135,7 +135,7 @@ public class MoodDetailClicked extends AppCompatActivity {
             case "lonely":
                 view.setBackgroundColor(Color.rgb(255,152,0));
                 view.getBackground().setAlpha(200);
-                Bitmap bMap4 = BitmapFactory.decodeResource(view.getResources(), R.drawable.tired_marker);
+                Bitmap bMap4 = BitmapFactory.decodeResource(view.getResources(), R.drawable.loney_marker);
                 Bitmap bMapScaled4 = Bitmap.createScaledBitmap(bMap4, 100, 100, true);
                 FriendMoodState.setImageBitmap(bMapScaled4);
                 break;
