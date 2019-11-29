@@ -2,7 +2,7 @@ package com.example.wemood;
 /**
  * @author Boyuan Dong
  *
- * @version 1.0
+ * @version 2.0
  */
 
 import android.content.Context;
@@ -20,7 +20,7 @@ import androidx.annotation.Nullable;
 /**
  * Class name: FriendRequestList
  *
- * Version 1.0
+ * Version 2.0
  *
  * Date: November 7, 2019
  *
@@ -48,7 +48,7 @@ public class FriendRequestList extends ArrayAdapter<String> {
      * @param position
      * @param convertView
      * @param parent
-     * @return
+     * @return view
      */
     @NonNull
     @Override
@@ -58,9 +58,9 @@ public class FriendRequestList extends ArrayAdapter<String> {
             view = LayoutInflater.from(context).inflate(R.layout.friend_request_content, parent, false);
         }
 
-        // for each message get the textview and find by id's
+        // for each message get the TextView and find by id's
         String message = messages.get(position);
-        TextView MessageView = view.findViewById(R.id.friend_request_message); //get the messageview
+        TextView MessageView = view.findViewById(R.id.friend_request_message); //get the messageView
         // set the message view
         MessageView.setText(message);
 

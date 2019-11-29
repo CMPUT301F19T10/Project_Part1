@@ -142,7 +142,7 @@
         android:layout_width="250dp"
         android:layout_height="50dp"
         android:layout_marginBottom="85dp"
-
+        android:background="#F8E754"
         android:gravity="center"
         android:text="My Moods History"
         android:textAllCaps="false"

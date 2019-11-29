@@ -2,7 +2,7 @@ package com.example.wemood.Fragments;
 /**
  * @author Alpha Hou
  *
- * @version 1.0
+ * @version 2.0
  */
 
 import android.app.AlertDialog;
@@ -10,19 +10,14 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentTransaction;
-
-import com.example.wemood.R;
 
 /**
  * Class name: FriendUnfollowFragmentDialog
  *
- * Version 1.0
+ * Version 2.0
  *
  * Date: November 7, 2019
  *
@@ -31,9 +26,7 @@ import com.example.wemood.R;
 
 public class FriendUnfollowFragmentDialog extends DialogFragment {
 
-    private TextView information;
     private OnFragmentInteractionListener listener;
-    private String message;
 
     @Override
     public void onAttach(Context context) {
@@ -42,7 +35,7 @@ public class FriendUnfollowFragmentDialog extends DialogFragment {
     }
 
     public interface OnFragmentInteractionListener {
-        public void UnfollowRequest();
+        void UnfollowRequest();
 
     }
 
@@ -55,7 +48,6 @@ public class FriendUnfollowFragmentDialog extends DialogFragment {
     /**
      * Create the UnfollowFragment Dialog for the already exist friend of the user choose to unfollow this friend
      * @param savedInstanceState
-     * @return
      */
     @NonNull
     @Override

@@ -20,7 +20,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -38,11 +37,10 @@ public class FriendRequestMessageActivity extends AppCompatActivity implements R
     private FirebaseUser user;
     private FirebaseFirestore db;
     private CollectionReference collectionReference;
-    private DocumentReference documentReference;
 
     private String userName;
-    public  ArrayList<String> waitfriendList;
-    SwipeRefreshLayout swipeRefreshLayout;
+    public  ArrayList<String> waitFriendList;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +87,7 @@ public class FriendRequestMessageActivity extends AppCompatActivity implements R
 
 
     /**
-     * This function get user's waitfriendlist and display wait user to give the permission to
+     * This function get user's waitFriendList and display wait user to give the permission to
      * be accepted or declined to add user as a friend.
      */
     public void getWaitList(){
@@ -100,8 +98,8 @@ public class FriendRequestMessageActivity extends AppCompatActivity implements R
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if(documentSnapshot!=null){
                             User user = documentSnapshot.toObject(User.class);
-                            waitfriendList = user.getWaitFriendList();
-                            dataMessageList.addAll(waitfriendList);
+                            waitFriendList = user.getWaitFriendList();
+                            dataMessageList.addAll(waitFriendList);
                         }
                         messageAdapter = new FriendRequestList(getBaseContext(), dataMessageList);
                         messageList.setAdapter(messageAdapter);
@@ -116,8 +114,6 @@ public class FriendRequestMessageActivity extends AppCompatActivity implements R
                 });
     }
 
-
-    // Will implement later
     @Override
     // Decline the friend request
     public void DeclineRequest(String message){

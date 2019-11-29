@@ -1,63 +1,50 @@
 package com.example.wemood;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+/**
+ * Class name: LogSignInActivity
+ *
+ * version 2.0
+ *
+ * Date: November 5, 2019
+ *
+ * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
+ */
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Toast;
-
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import io.opencensus.tags.Tag;
-
 
 /**
  *   This is a activity that allow user to sign in or jump to
  *   sign-up activity to sign up. In this activity we check whether
  *   user has enter the correct email address and password and check
  *   it in our app database by pressing sign in button, which is
- *   firebase and also in order to protect user privacy we set up
+ *   FireBase and also in order to protect user privacy we set up
  *   a hiding password function. If user-input email address and
- *   password are match we switch to main activity w    hich is homepage
+ *   password are match we switch to main activity which is homepage
  *   of this app.If sign-up button is pressed then jump to sign-up activity.
  *
+ * @author ChengZhang Dong & RuoChen Lin
+ *
+ * @version 2.0
  */
 
 public class LogSignInActivity extends AppCompatActivity implements
         View.OnClickListener{
-
 
     final String TAG = "LogSignInActivity";
     private EditText addEmail;
@@ -98,17 +85,13 @@ public class LogSignInActivity extends AppCompatActivity implements
                     addPassWord.setSelection(addPassWord.getText().length());
                 } else {
                     addPassWord.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                    //addPassWord.setInputType(129);
-                    //checkbox.setText("Show Password");
                     addPassWord.setSelection(addPassWord.getText().length());
                 }
             }
         });
 
-        // [START initialize_auth]
-        // Initialize Firebase Auth
+        // Initialize FireBase Auth
         mAuth = FirebaseAuth.getInstance();
-        // [END initialize_auth]
     }
 
 
@@ -116,10 +99,9 @@ public class LogSignInActivity extends AppCompatActivity implements
      * In this method, we check which button is pressed
      * by looking at its ID. if pressed button is sign in
      * then we take user input both email and password
-     * to check in our firestore. If sign-up button is detect
+     * to check in our FireStore. If sign-up button is detect
      * we switch to sign-up activity
      * @param  v*/
-
 
     @Override
     public void onClick(View v) {
@@ -133,7 +115,6 @@ public class LogSignInActivity extends AppCompatActivity implements
         }
     }
 
-
     /**
      * What this method do is to take two argument: password and email
      * then judge its validation if input is valid, then we log in with
@@ -141,7 +122,6 @@ public class LogSignInActivity extends AppCompatActivity implements
      * toast message : "Login failed"
      * @param email
      * @param password*/
-
 
     private void signIn(String email, String password) {
         Log.d(TAG, "signIn:" + email);
@@ -196,8 +176,6 @@ public class LogSignInActivity extends AppCompatActivity implements
         } else {
             addPassWord.setError(null);
         }
-
         return valid;
     }
-
 }

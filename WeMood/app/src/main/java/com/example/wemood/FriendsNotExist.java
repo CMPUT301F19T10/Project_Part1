@@ -18,11 +18,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
-
 import com.example.wemood.Fragments.FriendFollowFragmentDialog;
-import com.example.wemood.Fragments.FriendUnfollowFragmentDialog;
-import com.example.wemood.Fragments.FriendsFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;

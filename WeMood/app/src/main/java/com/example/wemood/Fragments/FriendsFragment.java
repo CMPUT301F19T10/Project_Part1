@@ -2,7 +2,7 @@ package com.example.wemood.Fragments;
 /**
  * @author Alpha Hou
  *
- * @version 1.0
+ * @version 2.0
  */
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,7 +33,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -52,7 +51,7 @@ import static android.content.ContentValues.TAG;
  */
 
 /**
- * Will connect to the firebase later
+ * Will connect to the FireBase later
  */
 public class FriendsFragment extends Fragment {
     ListView friendList;
@@ -64,7 +63,6 @@ public class FriendsFragment extends Fragment {
     private FirebaseUser user;
     private FirebaseFirestore db;
     private CollectionReference collectionReference;
-    private DocumentReference documentReference;
 
     private String userName;
     private Button searchButton;
@@ -79,7 +77,7 @@ public class FriendsFragment extends Fragment {
 
     /**
      * Constructor
-     * @return
+     * @return fragment
      */
     public static FriendsFragment newInstance() {
         FriendsFragment fragment = new FriendsFragment();
@@ -109,7 +107,7 @@ public class FriendsFragment extends Fragment {
      * @param inflater
      * @param container
      * @param savedInstanceState
-     * @return
+     * @return rootView
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -117,10 +115,10 @@ public class FriendsFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_friends, container, false);
 
-        searchTextView = (EditText) rootView.findViewById(R.id.friend_input);
+        searchTextView = rootView.findViewById(R.id.friend_input);
         searchButton = rootView.findViewById(R.id.friend_search);
 
-        friendList = (ListView) rootView.findViewById(R.id.friend_list_content);
+        friendList = rootView.findViewById(R.id.friend_list_content);
 
         swipeRefreshLayout = rootView.findViewById(R.id.friend_swipe_container);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -156,7 +154,7 @@ public class FriendsFragment extends Fragment {
             public void onClick(View v) {
                 final String searchName = searchTextView.getText().toString();
                 collectionReference = db.collection("Users");
-                collectionReference.document(searchName).get()/////////////////////////////////////////////
+                collectionReference.document(searchName).get()
                         .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -164,7 +162,7 @@ public class FriendsFragment extends Fragment {
                                     DocumentSnapshot documentSnapshot = task.getResult();
                                     if(documentSnapshot.getData() != null){
                                         collectionReference = db.collection("Users");
-                                        collectionReference.document(userName).get()/////////////////////////////////////////////
+                                        collectionReference.document(userName).get()
                                                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                                     @Override
                                                     public void onSuccess(DocumentSnapshot documentSnapshot) {

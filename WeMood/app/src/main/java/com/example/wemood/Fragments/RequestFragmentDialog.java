@@ -2,28 +2,22 @@ package com.example.wemood.Fragments;
 /**
  * @author Boyuan Dong
  *
- * @version 1.0
+ * @version 2.0
  */
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.example.wemood.R;
 /**
  * Class name: RequestFragmentDialog
  *
- * Version 1.0
+ * Version 2.0
  *
  * Date: November 7, 2019
  *
@@ -57,7 +51,6 @@ public class RequestFragmentDialog extends DialogFragment {
      * Will Create a view of the RequestFragmentDialog
      * so that user can choose to accept the friend request or decline this request message.
      * @param savedInstanceState
-     * @return
      */
     @NonNull
     @Override
@@ -78,7 +71,5 @@ public class RequestFragmentDialog extends DialogFragment {
                         listener.AcceptRequest(requestName);
                     }
                 }).create();
-
     }
-
 }

@@ -2,7 +2,7 @@ package com.example.wemood;
 /**
  * @author Ziyi Ye
  *
- * @version 1.0
+ * @version 2.0
  */
 
 import android.content.Context;
@@ -40,7 +40,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -57,32 +56,30 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 /**
  * Class name: AddMoodActivity
  *
- * Version 1.0
+ * Version 2.0
  *
  * Date: November 4, 2019
  *
  * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
  */
 
-
 public class AddMoodActivity extends AppCompatActivity{
-    Mood mood;
+    private Mood mood;
     private StorageReference Folder;
-    ImageView imageView;
-    Uri imageUri;
-    String downloadUri;
+    private ImageView imageView;
+    private Uri imageUri;
+    private String downloadUri;
     private static final int PICK_IMAGE = 100;
-    String situationString, emotionString;
+    private String situationString, emotionString;
     private FirebaseFirestore db;
-    String name;
-    Date currentTime = Calendar.getInstance().getTime();
+    private String name;
+    private Date currentTime = Calendar.getInstance().getTime();
     private Switch locationSwitch;
     private TextView locationMessage;
     private LocationManager lm;
     private double longitude;
     private double latitude;
     private LocationListener mLocationListener;
-    private Context context;
 
     /**
      * Initialize
@@ -97,9 +94,6 @@ public class AddMoodActivity extends AppCompatActivity{
 
         db = FirebaseFirestore.getInstance();
         Folder = FirebaseStorage.getInstance().getReference().child("ImageFolder").child(name);
-
-        final CollectionReference collectionReference = db.collection("Users");
-
         imageView = findViewById(R.id.imageView);
 
         locationSwitch = findViewById(R.id.gpsSwitch);
@@ -127,8 +121,8 @@ public class AddMoodActivity extends AppCompatActivity{
 
                 EditText exp = findViewById(R.id.reason);
                 final String explanation = exp.getText().toString();
-                EditText titl = findViewById(R.id.title);
-                final String title = titl.getText().toString();
+                EditText titleEdit = findViewById(R.id.title);
+                final String title = titleEdit.getText().toString();
 
                 if (containsSpace(title)) {
                     Toast.makeText(AddMoodActivity.this, "Title has no more than 3 words", Toast.LENGTH_SHORT).show();
@@ -287,9 +281,7 @@ public class AddMoodActivity extends AppCompatActivity{
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-
     }
-
 
     /**
      * initialize the emotion spinner
@@ -344,7 +336,7 @@ public class AddMoodActivity extends AppCompatActivity{
                         case "lonely":
                             v.setBackgroundColor(Color.rgb(255,152,0));
                             v.getBackground().setAlpha(200);
-                            Bitmap bMap4 = BitmapFactory.decodeResource(view.getResources(), R.drawable.loney_marker);
+                            Bitmap bMap4 = BitmapFactory.decodeResource(view.getResources(), R.drawable.lonely_marker);
                             Bitmap bMapScaled4 = Bitmap.createScaledBitmap(bMap4, 100, 100, true);
                             FriendMoodState.setImageBitmap(bMapScaled4);
                             break;

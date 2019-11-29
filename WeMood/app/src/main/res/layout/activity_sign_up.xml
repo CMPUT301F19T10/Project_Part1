@@ -99,7 +99,7 @@
         android:layout_marginRight="30dp"
         android:layout_marginTop="455dp"
         android:onClick="onClick"
-
+        android:background="#F8E754"
         android:text="Confirm"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -9,7 +9,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +16,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -42,10 +39,8 @@ import java.util.ArrayList;
 public class FriendMoodList extends ArrayAdapter<Mood> {
     private ArrayList<Mood> moods;
     private Context context;
-
     private FirebaseFirestore db;
     private FirebaseStorage storage;
-    private StorageReference image;
 
     /**
      * Constructor to get the context and list of most recent friend moods.
@@ -80,11 +75,11 @@ public class FriendMoodList extends ArrayAdapter<Mood> {
 
 
     /**
-     * Get the view of the friendmoodlist. Will display the detail information of moods.
+     * Get the view of the friendMoodList. Will display the detail information of moods.
      * @param position
      * @param convertView
      * @param parent
-     * @return
+     * @return view
      */
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = convertView;
@@ -93,10 +88,10 @@ public class FriendMoodList extends ArrayAdapter<Mood> {
             view = LayoutInflater.from(context).inflate(R.layout.home_content,parent,false);
         }
 
-        // for each mood get the textview and images by id's
+        // for each mood get the textView and images by id's
         Mood mood = moods.get(position);
 
-        TextView FriendUername =view.findViewById(R.id.friend_mood_username);
+        TextView FriendUsername =view.findViewById(R.id.friend_mood_username);
         TextView FriendMoodExplanation = view.findViewById(R.id.friend_mood_explanation);
         TextView FriendMoodReason = view.findViewById(R.id.friend_mood_reason);
         TextView FriendMoodDate =view.findViewById(R.id.friend_mood_date);
@@ -107,10 +102,10 @@ public class FriendMoodList extends ArrayAdapter<Mood> {
         ImageView FriendMoodState = view.findViewById(R.id.friend_mood_state);
 
         // set mood properties shown in the list by call mood getters
-        FriendUername.setText(mood.getUsername());
+        FriendUsername.setText(mood.getUsername());
         FriendMoodExplanation.setText(mood.getExplanation());
         FriendMoodReason.setText(mood.getComment());
-        // Get the new format of the date and time and set textview
+        // Get the new format of the date and time and set textView
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
         FriendMoodDate.setText(dateFormat.format(mood.getDatetime().getTime()));
@@ -155,7 +150,7 @@ public class FriendMoodList extends ArrayAdapter<Mood> {
             case "lonely":
                 view.setBackgroundColor(Color.rgb(255,152,0));
                 view.getBackground().setAlpha(200);
-                Bitmap bMap4 = BitmapFactory.decodeResource(view.getResources(), R.drawable.loney_marker);
+                Bitmap bMap4 = BitmapFactory.decodeResource(view.getResources(), R.drawable.lonely_marker);
                 Bitmap bMapScaled4 = Bitmap.createScaledBitmap(bMap4, 100, 100, true);
                 FriendMoodState.setImageBitmap(bMapScaled4);
                 break;

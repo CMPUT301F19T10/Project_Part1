@@ -34,7 +34,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * must meet its complexity which is at least 6 length long and contain
  * letters and numbers. Username is unique. Phone is consisted of  digits.
  * Also no place can leave empty.
- * */
+ *
+ * @author ChengZhang Dong & RuoChen Lin
+
+ * @version 2.0
+ */
 
 public class SignUpActivity extends AppCompatActivity implements
         View.OnClickListener{
@@ -94,11 +98,6 @@ public class SignUpActivity extends AppCompatActivity implements
                 return;
             }
 
-            /*if (isUserNameValid(userName)){
-            }else{
-                addUserName.setError("User name is already exist");
-            }*/
-
             documentReference = db.collection("Users")
                     .document(userName);
 
@@ -125,7 +124,7 @@ public class SignUpActivity extends AppCompatActivity implements
     /**
      * This method is to take username, email, password, phone as argument
      * then check their validation and create user by his/her email address
-     * to firestore. If email format and password complexity match requirement
+     * to FireStore. If email format and password complexity match requirement
      * then show toast message "Success". If not meet, show "Authentication failed."
      * Also it allows user to update their profile by typing new email and other
      * user info.
@@ -184,7 +183,7 @@ public class SignUpActivity extends AppCompatActivity implements
 
     /**
      * This method is to create a new User class object and
-     * upload it to firebase
+     * upload it to FireBase
      * @param username
      * @param email
      * @param userId

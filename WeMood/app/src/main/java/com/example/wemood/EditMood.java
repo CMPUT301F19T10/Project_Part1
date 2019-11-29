@@ -35,8 +35,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -58,16 +56,16 @@ import com.squareup.picasso.Picasso;
  * Be able to edit a selected mood
  */
 public class EditMood extends AppCompatActivity {
-    String emotion;
-    Uri imageUri;
+    private String emotion;
+    private Uri imageUri;
     private FirebaseFirestore db;
-    Mood mood;
+    private Mood mood;
     private StorageReference Folder;
-    ImageView imageView;
+    private ImageView imageView;
     private CollectionReference collectionReference;
     private FirebaseAuth mAuth;
-    String situationString, emotionString;
-    String downloadUri;
+    private String situationString, emotionString;
+    private String downloadUri;
     private static final int PICK_IMAGE = 100;
     private ImageButton backButton;
 
@@ -75,7 +73,6 @@ public class EditMood extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_mood);
-
 
         backButton = findViewById(R.id.back);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -439,7 +436,6 @@ public class EditMood extends AppCompatActivity {
         }
 
         ArrayAdapter<String> emoAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, emotions);
-        //ArrayAdapter<CharSequence> emoAdapter = ArrayAdapter.createFromResource(this, R.array.emotionals, android.R.layout.simple_spinner_item);
         emoAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         e.setAdapter(emoAdapter);
         e.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -495,7 +491,7 @@ public class EditMood extends AppCompatActivity {
                             v.getBackground().setAlpha(200);
                             backButton.setBackgroundColor(Color.rgb(255,152,0));
                             backButton.getBackground().setAlpha(0);
-                            Bitmap bMap4 = BitmapFactory.decodeResource(view.getResources(), R.drawable.loney_marker);
+                            Bitmap bMap4 = BitmapFactory.decodeResource(view.getResources(), R.drawable.lonely_marker);
                             Bitmap bMapScaled4 = Bitmap.createScaledBitmap(bMap4, 100, 100, true);
                             FriendMoodState.setImageBitmap(bMapScaled4);
                             break;
@@ -518,5 +514,4 @@ public class EditMood extends AppCompatActivity {
             }
         }
     }
-
 }

@@ -3,7 +3,7 @@ package com.example.wemood;
 /**
  * Class name: MainActivity
  *
- * version 1.0
+ * version 2.0
  *
  * Date: November 5, 2019
  *
@@ -27,7 +27,7 @@ import com.example.wemood.Fragments.ProfileFragment;
 /**
  * @author ChengZhang Dong
  *
- * @version 1.0
+ * @version 2.0
  */
 public class MainActivity extends AppCompatActivity {
 

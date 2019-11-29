@@ -3,7 +3,6 @@ package com.example.wemood;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -17,7 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.wemood.Fragments.FriendUnfollowFragmentDialog;
-import com.example.wemood.Fragments.FriendsFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -43,9 +41,9 @@ import static android.content.ContentValues.TAG;
 
 
 public class FriendsExist extends AppCompatActivity implements FriendUnfollowFragmentDialog.OnFragmentInteractionListener{
-    ListView friendmoodList;
-    ArrayAdapter<Mood> moodAdapter;
-    ArrayList<Mood> moodDataList;
+    private ListView friendMoodList;
+    private ArrayAdapter<Mood> moodAdapter;
+    private ArrayList<Mood> moodDataList;
 
     private FirebaseAuth mAuth;
     private FirebaseUser user;
@@ -55,11 +53,8 @@ public class FriendsExist extends AppCompatActivity implements FriendUnfollowFra
     private DocumentReference documentReference;
     private FirebaseStorage storage;
     private StorageReference image;
-    private StorageReference folder;
-
     private TextView userNameView;
     private String searchName;
-
     private ImageView figureView;
     private TextView moodsView;
     private TextView followingView;
@@ -88,7 +83,7 @@ public class FriendsExist extends AppCompatActivity implements FriendUnfollowFra
         storage = getStorage();
 
         userNameView = findViewById(R.id.friend_view);
-        friendmoodList = findViewById(R.id.mood_list);
+        friendMoodList = findViewById(R.id.mood_list);
 
         moodDataList = new ArrayList<>();
         Intent intent=getIntent();
@@ -108,7 +103,6 @@ public class FriendsExist extends AppCompatActivity implements FriendUnfollowFra
         updateFollowing();
         setSearchName();
         getMostRecentMood();
-
 
     }
 
@@ -174,7 +168,7 @@ public class FriendsExist extends AppCompatActivity implements FriendUnfollowFra
                         }
                         Collections.sort(moodDataList, Collections.reverseOrder());
                         moodAdapter = new FriendMoodList(getBaseContext(), moodDataList);
-                        friendmoodList.setAdapter(moodAdapter);
+                        friendMoodList.setAdapter(moodAdapter);
                     }
                 });
     }
@@ -191,8 +185,6 @@ public class FriendsExist extends AppCompatActivity implements FriendUnfollowFra
                         User user = documentSnapshot.toObject(User.class);
                         ArrayList<String> friendList = user.getFriendList();
                         int numFollowing = friendList.size();
-//                        if (friendList.size() = null){
-//                        }
                         String followingDisplay = "Following\n%d";
                         followingDisplay = String.format(followingDisplay, numFollowing);
                         followingView.setText(followingDisplay);

@@ -3,16 +3,11 @@ package com.example.wemood;
 import android.app.Activity;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
-import android.widget.Spinner;
-
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
-
 import com.robotium.solo.Solo;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -34,7 +29,17 @@ public class EditMoodUI {
         solo.enterText((EditText) solo.getView(R.id.add_user_name), "yeye@qq.com");
         solo.enterText((EditText) solo.getView(R.id.add_user_password), "yeziyi123");
         solo.clickOnButton("Sign in");
+        solo.waitForActivity(MainActivity.class, 5000);
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+    }
+
+    @Test
+    public void start() throws Exception{
+        Activity activity = rule.getActivity();
+    }
+
+    @Test
+    public void testEdit() throws Exception {
         RadioButton profileButton = (RadioButton) solo.getView(R.id.profile_tab);
         solo.clickOnView(profileButton);
         //go to history
@@ -57,22 +62,7 @@ public class EditMoodUI {
         Button edit = (Button) solo.getView(R.id.add);
         solo.clickOnView(edit);
         solo.assertCurrentActivity("Not in EditMood", HappyMood.class);
-
     }
-
-    @Test
-    public void start() throws Exception{
-        Activity activity = rule.getActivity();
-    }
-
-    @Test
-    public void login(){
-
-
-
-    }
-
-
 
     @After
     public void tearDown() throws Exception{

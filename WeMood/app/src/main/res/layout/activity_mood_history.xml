@@ -176,6 +176,6 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sadIcon"
-        app:srcCompat="@drawable/zoey" />
+        app:srcCompat="@drawable/lonely_marker" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

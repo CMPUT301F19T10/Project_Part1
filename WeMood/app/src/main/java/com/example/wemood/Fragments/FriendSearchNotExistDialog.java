@@ -14,7 +14,6 @@ public class FriendSearchNotExistDialog extends DialogFragment {
      * Will Create a view of the FriendSearchNotExistDialog
      * the system will inform the user if the name they searched does not exist.
      * @param savedInstanceState
-     * @return
      */
     @NonNull
     @Override

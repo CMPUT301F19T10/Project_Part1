@@ -3,7 +3,7 @@ package com.example.wemood;
 /**
  * @author Zuhao Yang
  *
- * @version 1.0
+ * @version 2.0
  */
 
 import androidx.annotation.NonNull;
@@ -39,7 +39,7 @@ import static android.content.ContentValues.TAG;
 /**
  * Class name: AllMood
  *
- * Version 1.0
+ * Version 2.0
  *
  * Date: November 20, 2019
  *

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 /**
  * Class name: User
  *
- * version 1.0
+ * version 2.0
  *
  * Date: November 1, 2019
  *
@@ -80,8 +80,6 @@ public class  User {
     }
 
     public String getFigure() { return figure; }
-
-    public void setFigure(String figure) { this.figure = figure; }
 
     public ArrayList<String> getFriendList() {
         return friendList;

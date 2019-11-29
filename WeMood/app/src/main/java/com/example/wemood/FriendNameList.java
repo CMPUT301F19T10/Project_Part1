@@ -2,7 +2,7 @@ package com.example.wemood;
 /**
  * @author Alpha Hou
  *
- * @version 1.0
+ * @version 2.0
  */
 
 import android.content.Context;
@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Class name: FriendNameList
  *
- * Version 1.0
+ * Version 2.0
  *
  * Date: November 7, 2019
  *
@@ -48,7 +48,7 @@ public class FriendNameList extends ArrayAdapter<String> {
      * @param position
      * @param convertView
      * @param parent
-     * @return
+     * @return view
      */
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = convertView;
@@ -57,11 +57,11 @@ public class FriendNameList extends ArrayAdapter<String> {
             view = LayoutInflater.from(context).inflate(R.layout.friend_list, parent, false);
         }
 
-        String friendname = friends.get(position);
+        String friendName = friends.get(position);
 
         TextView FriendName = view.findViewById(R.id.friend_view);
 
-        FriendName.setText(friendname);
+        FriendName.setText(friendName);
 
         return view;
     }

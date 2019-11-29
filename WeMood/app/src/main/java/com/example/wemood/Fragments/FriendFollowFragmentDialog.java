@@ -2,7 +2,7 @@ package com.example.wemood.Fragments;
 /**
  * @author Alpha Hou
  *
- * @version 1.0
+ * @version 2.0
  */
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -18,7 +18,7 @@ import androidx.fragment.app.DialogFragment;
 /**
  * Class name: FriendFollowFragmentDialog
  *
- * Version 1.0
+ * Version 2.0
  *
  * Date: November 7, 2019
  *
@@ -35,7 +35,7 @@ public class FriendFollowFragmentDialog extends DialogFragment {
     }
 
     public interface OnFragmentInteractionListener {
-        public void FollowRequest();
+        void FollowRequest();
 
     }
 
@@ -47,7 +47,6 @@ public class FriendFollowFragmentDialog extends DialogFragment {
     /**
      * Create a dialog to send a follow request to  a User.
      * @param savedInstanceState
-     * @return
      */
     @NonNull
     @Override

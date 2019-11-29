@@ -7,31 +7,21 @@ package com.example.wemood;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Adapter;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.example.wemood.Fragments.RequestFragmentDialog;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
-
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 
 /**
  * Class name: MoodDetailClicked
@@ -46,7 +36,6 @@ import java.util.ArrayList;
 
 public class MoodDetailClicked extends AppCompatActivity {
 
-
     private FirebaseFirestore db;
     private FirebaseStorage storage;
     private StorageReference image;
@@ -59,7 +48,7 @@ public class MoodDetailClicked extends AppCompatActivity {
 
         Mood mood = (Mood) getIntent().getSerializableExtra("Mood");
 
-        TextView FriendUername = findViewById(R.id.friend_mood_username);
+        TextView FriendUsername = findViewById(R.id.friend_mood_username);
         TextView FriendMoodExplanation = findViewById(R.id.friend_mood_explanation);
         TextView FriendMoodReason = findViewById(R.id.friend_mood_reason);
         TextView FriendMoodDate = findViewById(R.id.friend_mood_date);
@@ -71,7 +60,7 @@ public class MoodDetailClicked extends AppCompatActivity {
 
 
         // set mood properties shown in the list by call mood getters
-        FriendUername.setText(mood.getUsername());
+        FriendUsername.setText(mood.getUsername());
         FriendMoodExplanation.setText(mood.getExplanation());
         FriendMoodReason.setText(mood.getComment());
         // Get the new format of the date and time and set textview
@@ -81,7 +70,6 @@ public class MoodDetailClicked extends AppCompatActivity {
         FriendMoodTime.setText(timeFormat.format(mood.getDatetime().getTime()));
         FriendMoodSocialSituation.setText(mood.getSocialSituation());
         FriendMoodLocation.setText(mood.getLocation());
-
 
         // Get and display figure
         // Get storage and image
@@ -135,14 +123,12 @@ public class MoodDetailClicked extends AppCompatActivity {
             case "lonely":
                 view.setBackgroundColor(Color.rgb(255,152,0));
                 view.getBackground().setAlpha(200);
-                Bitmap bMap4 = BitmapFactory.decodeResource(view.getResources(), R.drawable.loney_marker);
+                Bitmap bMap4 = BitmapFactory.decodeResource(view.getResources(), R.drawable.lonely_marker);
                 Bitmap bMapScaled4 = Bitmap.createScaledBitmap(bMap4, 100, 100, true);
                 FriendMoodState.setImageBitmap(bMapScaled4);
                 break;
 
         }
-
-
     }
 
     /**
@@ -164,7 +150,5 @@ public class MoodDetailClicked extends AppCompatActivity {
 
         return storage;
     }
-
-
 }
 
