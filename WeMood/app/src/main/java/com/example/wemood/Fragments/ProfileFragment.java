@@ -486,7 +486,7 @@ public class ProfileFragment extends Fragment {
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                                     User user = documentSnapshot.toObject(User.class);
                                     phone = user.getPhone();
-                                    phoneView.setText("New Phone No.: " + phone);
+                                    phoneView.setText("Phone No.: " + phone);
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                         @Override
