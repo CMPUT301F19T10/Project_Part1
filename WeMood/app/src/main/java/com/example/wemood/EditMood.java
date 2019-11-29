@@ -1,6 +1,9 @@
-
 package com.example.wemood;
-
+/**
+ * @author Ziyi Ye
+ *
+ * @version 1.0
+ */
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -39,8 +42,21 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 
+
+/**
+ * Class name: AddMoodActivity
+ *
+ * Version 1.0
+ *
+ * Date: November 4, 2019
+ *
+ * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
+ */
+
+/**
+ * Be able to edit a selected mood
+ */
 public class EditMood extends AppCompatActivity {
     String emotion;
     Uri imageUri;
@@ -80,7 +96,6 @@ public class EditMood extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         final FirebaseUser user = mAuth.getCurrentUser();
-
         final String userName = user.getDisplayName();
 
         //open ImageView
@@ -98,27 +113,12 @@ public class EditMood extends AppCompatActivity {
                 .document(userName)
                 .collection("MoodList");
 
-
-        //get edit text
-        EditText reason = findViewById(R.id.reason);
-        reason.setText(mood.getComment());
-        EditText title = findViewById(R.id.title);
-        title.setText(mood.getExplanation());
-
-        //get image if it exists
-
-        if (mood.getUri() != null) {
-            Picasso.get().load(mood.getUri()).into(imageView);
-        }else{
-            imageView.setImageResource(R.drawable.default_photo);
-        }
-
-
+        //click edit button
         Button Edit = findViewById(R.id.add);
         Edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //set
+                //collect new mood information
                 EditText r = findViewById(R.id.reason);
                 final String newReason = r.getText().toString();
                 EditText t = findViewById(R.id.title);
@@ -133,19 +133,19 @@ public class EditMood extends AppCompatActivity {
                 else {
                     final DocumentReference docRef = db.collection("Users").document(userName);
 
+                    // if image changes then need to update uri
                     if (imageUri != null) {
-                        System.out.println("not null");
                         final StorageReference Image = Folder.child(mood.getDatetime().toString());
                         Image.putFile(imageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                             @Override
                             public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-
                                 return Image.getDownloadUrl();
                             }
                         }).addOnCompleteListener(new OnCompleteListener<Uri>() {
                             @Override
                             public void onComplete(@NonNull Task<Uri> task) {
                                 if (task.isSuccessful()) {
+                                    //set new information to the mood
                                     downloadUri = task.getResult().toString();
                                     mood.setUri(downloadUri);
                                     mood.setComment(newReason);
@@ -160,6 +160,7 @@ public class EditMood extends AppCompatActivity {
                                                     docRef.collection("MoodList").document(mood.getDatetime().toString()).set(mood);
                                                 }
                                             });
+                                    // check emotion string
                                     if (emotion.equals("happy")) {
                                         returnHappy(mood);
                                     } else if (emotion.equals("angry")) {
@@ -175,7 +176,7 @@ public class EditMood extends AppCompatActivity {
                             }
                         });
                     }else{
-
+                        // if image doesn't change then no need to update uri
                         mood.setComment(newReason);
                         mood.setExplanation(newTitle);
                         mood.setEmotionalState(emotionString);
@@ -188,6 +189,7 @@ public class EditMood extends AppCompatActivity {
                                         docRef.collection("MoodList").document(mood.getDatetime().toString()).set(mood);
                                     }
                                 });
+                        // check emotion string
                         if (emotion.equals("happy")) {
                             returnHappy(mood);
                         } else if (emotion.equals("angry")) {
@@ -214,6 +216,7 @@ public class EditMood extends AppCompatActivity {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                // check emotion string
                                 if (emotion.equals("happy")) {
                                     HappyDelete();
                                 } else if (emotion.equals("angry")) {
@@ -275,33 +278,54 @@ public class EditMood extends AppCompatActivity {
         });
     }
 
+    /**
+     * return to the happy mood history
+     */
     private void HappyDelete() {
         Intent returnIntent = new Intent(this, HappyMood.class);
         setResult(5, returnIntent);
         finish();
     }
+
+    /**
+     * return to the angry mood history
+     */
     private void AngryDelete() {
         Intent returnIntent = new Intent(this, AngryMood.class);
         setResult(5, returnIntent);
         finish();
     }
+
+    /**
+     * return to the lonely mood history
+     */
     private void LonelyDelete() {
         Intent returnIntent = new Intent(this, LonelyMood.class);
         setResult(5, returnIntent);
         finish();
     }
+
+    /**
+     * return to the sad mood history
+     */
     private void SadDelete() {
         Intent returnIntent = new Intent(this, SadMood.class);
         setResult(5, returnIntent);
         finish();
     }
+
+    /**
+     * return to the tired mood history
+     */
     private void TiredDelete() {
         Intent returnIntent = new Intent(this, TiredMood.class);
         setResult(5, returnIntent);
         finish();
     }
 
-
+    /**
+     * return the modified happy mood
+     */
     private void returnHappy(Mood mood) {
         Intent returnIntent = new Intent(this, HappyMood.class);
         returnIntent.putExtra("mood", mood);
@@ -309,6 +333,9 @@ public class EditMood extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * return the modified angry mood
+     */
     private void returnAngry(Mood mood) {
         Intent returnIntent = new Intent(this, AngryMood.class);
         returnIntent.putExtra("mood", mood);
@@ -316,6 +343,9 @@ public class EditMood extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * return the modified lonely mood
+     */
     private void returnLonely(Mood mood) {
         Intent returnIntent = new Intent(this, LonelyMood.class);
         returnIntent.putExtra("mood", mood);
@@ -323,6 +353,9 @@ public class EditMood extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * return the modified sad mood
+     */
     private void returnSad(Mood mood) {
         Intent returnIntent = new Intent(this, SadMood.class);
         returnIntent.putExtra("mood", mood);
@@ -330,6 +363,9 @@ public class EditMood extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * return the modified tired mood
+     */
     private void returnTired(Mood mood) {
         Intent returnIntent = new Intent(this, TiredMood.class);
         returnIntent.putExtra("mood", mood);
@@ -358,10 +394,30 @@ public class EditMood extends AppCompatActivity {
     }
 
     /**
+     * set mood information to the edittext
+     * @param mood
+     */
+    public void setEditText(Mood mood){
+        //get edit text
+        EditText reason = findViewById(R.id.reason);
+        reason.setText(mood.getComment());
+        EditText title = findViewById(R.id.title);
+        title.setText(mood.getExplanation());
+
+        //get image if it exists
+
+        if (mood.getUri() != null) {
+            Picasso.get().load(mood.getUri()).into(imageView);
+        }else{
+            imageView.setImageResource(R.drawable.default_photo);
+        }
+    }
+
+    /**
      * initialize the emotion spinner
      * use emotion spinner to select an emotion
      */
-    private void setEmotionSpinner() {
+    public void setEmotionSpinner() {
         Spinner e = findViewById(R.id.emotionals);
         String[] emotions= {"happy", "sad", "lonely", "angry", "tired"};
         if (emotion.equals("sad")){
