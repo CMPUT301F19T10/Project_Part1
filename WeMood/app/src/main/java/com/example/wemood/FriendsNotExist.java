@@ -18,8 +18,11 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.wemood.Fragments.FriendFollowFragmentDialog;
+import com.example.wemood.Fragments.FriendUnfollowFragmentDialog;
+import com.example.wemood.Fragments.FriendsFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -117,7 +120,7 @@ public class FriendsNotExist extends AppCompatActivity implements FriendFollowFr
         image.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(final Uri uri) {
-                Picasso.get().load(uri).into(figureView);
+                Picasso.get().load(uri).fit().into(figureView);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -153,6 +156,7 @@ public class FriendsNotExist extends AppCompatActivity implements FriendFollowFr
                     }
                 });
     }
+
     public void updateFollowing() {
         // Get collection reference
         documentReference = db.collection("Users")
@@ -165,8 +169,6 @@ public class FriendsNotExist extends AppCompatActivity implements FriendFollowFr
                         User user = documentSnapshot.toObject(User.class);
                         ArrayList<String> friendList = user.getFriendList();
                         int numFollowing = friendList.size();
-//                        if (friendList.size() = null){
-//                        }
                         String followingDisplay = "Following\n%d";
                         followingDisplay = String.format(followingDisplay, numFollowing);
                         followingView.setText(followingDisplay);
