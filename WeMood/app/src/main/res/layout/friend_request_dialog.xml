@@ -10,7 +10,7 @@
         android:id="@+id/friend_request_permission_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
         android:text="Do you want to give Ken permission to follow your most recent mood event"
-        android:textSize="20dp">
-    </TextView>
+        android:textSize="20dp"></TextView>
 </LinearLayout>

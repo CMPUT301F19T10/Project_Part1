@@ -28,7 +28,8 @@
                     android:id="@+id/mood_num"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="15sp"
+                    android:textColor="@android:color/black"
+                    android:textSize="23sp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginStart="16dp"
                     android:padding="4dp"
@@ -37,22 +38,26 @@
                     android:id="@+id/following_num"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="15sp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginStart="16dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="23sp"
                     android:padding="4dp"
                     android:hint="Following" />
             </LinearLayout>
+
             <TextView
                 android:id="@+id/friend_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginLeft="8dp"
                 android:layout_marginStart="16dp"
+                android:layout_marginLeft="8dp"
                 android:layout_marginTop="40dp"
-                android:padding="1dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/alfa_slab_one"
                 android:hint="Zoey"
+                android:padding="1dp"
+                android:textColor="#000000"
                 android:textSize="30sp" />
             <LinearLayout
                 android:layout_width="wrap_content"

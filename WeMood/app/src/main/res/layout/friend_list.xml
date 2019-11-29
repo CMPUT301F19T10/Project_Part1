@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/friend_view"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="20dp"
-    android:text="friend list"
-    android:textSize="30sp">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/friend_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:fontFamily="@font/alfa_slab_one"
+        android:padding="20dp"
+        android:text="friend list"
+        android:textColor="#000000"
+        android:textSize="30sp">
+
+    </TextView>
 
 
-</TextView>
+</LinearLayout>

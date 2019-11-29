@@ -16,8 +16,9 @@
             android:id="@+id/friend_mood_username"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/abril_fatface"
             android:text="username"
-            android:textColor="#64FFDA"
+            android:textColor="#00897B"
             android:textSize="30dp" />
 
         <LinearLayout
@@ -29,7 +30,7 @@
 
         <ImageView
             android:id="@+id/friend_mood_state"
-            android:layout_width="100dp"
+            android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_gravity="right"
             android:adjustViewBounds="true"
@@ -58,6 +59,7 @@
                 android:id="@+id/friend_mood_explanation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/abril_fatface"
                 android:padding="10dp"
                 android:text="I am Happy!"
                 android:textColor="#000000"
@@ -69,6 +71,7 @@
                 android:id="@+id/friend_mood_reason"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="casual"
                 android:padding="10dp"
                 android:text="Here to display reasons"
                 android:textColor="#000000"
@@ -84,6 +87,7 @@
                     android:id="@+id/friend_mood_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="casual"
                     android:padding="10dp"
                     android:text="2019-05-09"
                     android:textColor="#000000"
@@ -95,6 +99,7 @@
                     android:id="@+id/friend_mood_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="casual"
                     android:padding="10dp"
                     android:text="19:00"
                     android:textColor="#000000"
@@ -108,6 +113,7 @@
                 android:id="@+id/friend_mood_social_situation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/acme"
                 android:padding="10dp"
                 android:text="Alone"
                 android:textColor="#000000"
@@ -119,6 +125,7 @@
                 android:id="@+id/friend_mood_location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/acme"
                 android:padding="10dp"
                 android:text="here shows locations"
                 android:textColor="#000000">
