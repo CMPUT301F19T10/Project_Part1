@@ -13,6 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".AllMood"></activity>
+        <activity android:name=".EditAll"/>
         <activity android:name=".FriendRequestMessageActivity" />
         <activity android:name=".MoodDetailClicked" />
         <activity android:name=".FriendsExist" />
