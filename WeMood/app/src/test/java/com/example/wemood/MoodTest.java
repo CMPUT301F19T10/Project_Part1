@@ -1,23 +1,22 @@
 package com.example.wemood;
+
 /**
  * @author Boyuan Dong
  *
- * @version 1.0
+ * @version 2.0
  */
-
 
 import org.junit.Test;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
 /**
  * Class name: MainActivityFriendPageTest
  *
- * Version 1.0
+ * Version 2.0
  *
- * Date: November 7, 2019
+ * Date: November 26, 2019
  *
  * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
  */

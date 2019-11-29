@@ -1,5 +1,11 @@
 package com.example.wemood;
 
+/**
+ * @author Boyuan Dong
+ *
+ * @version 2.0
+ */
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -25,6 +31,16 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+
+/**
+ * Class name: FriendRequestMessageActivity
+ *
+ * Version 2.0
+ *
+ * Date: November 7, 2019
+ *
+ * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
+ */
 
 public class FriendRequestMessageActivity extends AppCompatActivity implements RequestFragmentDialog.OnFragmentInteractionListener {
 

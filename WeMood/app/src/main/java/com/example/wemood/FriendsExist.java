@@ -1,5 +1,11 @@
 package com.example.wemood;
 
+/**
+ * @author Alpha Hou
+ *
+ * @version 2.0
+ */
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -39,6 +45,15 @@ import java.util.Collections;
 
 import static android.content.ContentValues.TAG;
 
+/**
+ * Class name: FriendsExist
+ *
+ * Version 2.0
+ *
+ * Date: November 7, 2019
+ *
+ * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
+ */
 
 public class FriendsExist extends AppCompatActivity implements FriendUnfollowFragmentDialog.OnFragmentInteractionListener{
     private ListView friendMoodList;
@@ -106,6 +121,9 @@ public class FriendsExist extends AppCompatActivity implements FriendUnfollowFra
 
     }
 
+    /**
+     * Get photo from FireBase Storage
+     */
     public void getPhoto(){
         // Get and display figure
         // Get storage and image
@@ -123,6 +141,9 @@ public class FriendsExist extends AppCompatActivity implements FriendUnfollowFra
         });
     }
 
+    /**
+     * Update the number of moods
+     */
     public void updateMoods() {
         collectionReference = db.collection("Users")
                 .document(searchName)
@@ -150,6 +171,9 @@ public class FriendsExist extends AppCompatActivity implements FriendUnfollowFra
                 });
     }
 
+    /**
+     * Get the most recent mood
+     */
     public void getMostRecentMood(){
         collectionReference = db.collection("Users")
                 .document(searchName)
@@ -173,6 +197,9 @@ public class FriendsExist extends AppCompatActivity implements FriendUnfollowFra
                 });
     }
 
+    /**
+     * Update the number of following
+     */
     public void updateFollowing() {
         // Get collection reference
         documentReference = db.collection("Users")
@@ -199,11 +226,18 @@ public class FriendsExist extends AppCompatActivity implements FriendUnfollowFra
                 });
     }
 
+    /**
+     * Set text for the search name
+     */
     public void setSearchName(){
         // Get and display username
         userNameView.setText(searchName);
     }
 
+    /**
+     * Set the back button
+     * @param backButton
+     */
     public void setBackButton(Button backButton){
         backButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -212,6 +246,10 @@ public class FriendsExist extends AppCompatActivity implements FriendUnfollowFra
         });
     }
 
+    /**
+     * Set the unfollow button
+     * @param unfollowButton
+     */
     public void setUnfollowButton(Button unfollowButton){
         unfollowButton.setOnClickListener(new View.OnClickListener() {
             @Override

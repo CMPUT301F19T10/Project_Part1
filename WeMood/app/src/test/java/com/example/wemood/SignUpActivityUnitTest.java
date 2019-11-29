@@ -1,5 +1,11 @@
 package com.example.wemood;
 
+/**
+ * @author Ruochen Lin
+ *
+ * @version 2.0
+ */
+
 import org.junit.Test;
 
 import com.google.firebase.firestore.CollectionReference;
@@ -9,8 +15,17 @@ import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 
 /**
- * Unit test class for Sign up Activity. All the unit tests are written here.*/
+ * Class name: SignUpActivityUnitTest
+ *
+ * Version 2.0
+ *
+ * Date: November 28, 2019
+ *
+ * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
+ */
 
+/**
+ * Unit test class for Sign up Activity. All the unit tests are written here.*/
 public class SignUpActivityUnitTest {
 
     /**To get activity object so that we can access method from SignUpActivity*/

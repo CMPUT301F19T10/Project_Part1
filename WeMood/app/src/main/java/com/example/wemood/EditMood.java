@@ -235,6 +235,9 @@ public class EditMood extends AppCompatActivity {
 
     }
 
+    /**
+     * Set the spinner of situations
+     */
     private void setSituationSpinner() {
         String[] situations= {"choose a situation","alone", "with one other person", "with two to several people", "with a crowd"};
 

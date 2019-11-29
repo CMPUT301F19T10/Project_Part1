@@ -1,5 +1,11 @@
 package com.example.wemood;
 
+/**
+ * @author Ziyi Ye
+ *
+ * @version 2.0
+ */
+
 
 import java.util.ArrayList;
 

@@ -1,5 +1,11 @@
 package com.example.wemood;
 
+/**
+ * @author Chengzhang Dong
+ *
+ * @version 2.0
+ */
+
 import android.widget.EditText;
 import android.widget.RadioButton;
 
@@ -11,6 +17,16 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+
+/**
+ * Class name: MapFragmentUITest
+ *
+ * Version 2.0
+ *
+ * Date: November 26, 2019
+ *
+ * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
+ */
 
 /**
  * Test MapFragment

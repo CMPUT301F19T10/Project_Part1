@@ -43,7 +43,7 @@ import static android.content.ContentValues.TAG;
 /**
  * Class name: FriendsFragment
  *
- * Version 1.0
+ * Version 2.0
  *
  * Date: November 7, 2019
  *
@@ -138,6 +138,9 @@ public class FriendsFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     * Real-time update
+     */
     @Override
     public void onResume(){
         super.onResume();
@@ -147,6 +150,11 @@ public class FriendsFragment extends Fragment {
 
         setSearchButton(searchButton);
     }
+
+    /**
+     * Set search button
+     * @param searchButton
+     */
 
     public void setSearchButton(Button searchButton){
 
@@ -217,6 +225,9 @@ public class FriendsFragment extends Fragment {
         });
     }
 
+    /**
+     * Get friend name list
+     */
     public void getFriendNameList(){
         collectionReference = db.collection("Users");
         collectionReference.document(userName).get()

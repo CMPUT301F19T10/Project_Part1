@@ -96,9 +96,7 @@ public class HomeFragment extends Fragment {
         user = mAuth.getCurrentUser();
         userName = user.getDisplayName();
         user = mAuth.getCurrentUser();
-
     }
-
 
     /**
      * Create a view of the HomeFragment to display friends' most recent moods.

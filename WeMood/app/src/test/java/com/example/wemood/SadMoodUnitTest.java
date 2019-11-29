@@ -1,11 +1,27 @@
 package com.example.wemood;
 
+/**
+ * @author Zuhao Yang
+ *
+ * @version 1.0
+ */
+
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+/**
+ * Class name: SadMoodUnitTest
+ *
+ * Version 1.0
+ *
+ * Date: November 28, 2019
+ *
+ * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
+ */
 
 /**
  * This class is designed to conduct the unit test for SadMood Activity

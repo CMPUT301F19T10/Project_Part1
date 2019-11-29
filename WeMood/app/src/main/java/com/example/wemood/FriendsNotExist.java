@@ -3,7 +3,7 @@ package com.example.wemood;
 /**
  * @author Alpha Hou
  *
- * @version 1.0
+ * @version 2.0
  */
 
 import android.content.Intent;
@@ -39,10 +39,11 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import static android.content.ContentValues.TAG;
+
 /**
  * Class name: FriendsNotExist
  *
- * Version 1.0
+ * Version 2.0
  *
  * Date: November 7, 2019
  *
@@ -109,6 +110,9 @@ public class FriendsNotExist extends AppCompatActivity implements FriendFollowFr
         setFollowButton(followButton);
     }
 
+    /**
+     * Get photo from the FireBase Storage
+     */
     public void getPhoto(){
         // Get and display figure
         // Get storage and image
@@ -126,6 +130,9 @@ public class FriendsNotExist extends AppCompatActivity implements FriendFollowFr
         });
     }
 
+    /**
+     * Update the number of moods
+     */
     public void updateMoods() {
         collectionReference = db.collection("Users")
                 .document(searchName)
@@ -153,6 +160,9 @@ public class FriendsNotExist extends AppCompatActivity implements FriendFollowFr
                 });
     }
 
+    /**
+     * Update the number of following
+     */
     public void updateFollowing() {
         // Get collection reference
         documentReference = db.collection("Users")
@@ -179,11 +189,18 @@ public class FriendsNotExist extends AppCompatActivity implements FriendFollowFr
                 });
     }
 
+    /**
+     * Set the search name
+     */
     public void setSearchName(){
         // Get and display username
         userNameView.setText(searchName);
     }
 
+    /**
+     * Set the cancel button
+     * @param cancelButton
+     */
     public void setCancelButton(Button cancelButton){
         cancelButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -192,6 +209,10 @@ public class FriendsNotExist extends AppCompatActivity implements FriendFollowFr
         });
     }
 
+    /**
+     * Set the follow button
+     * @param followButton
+     */
     public void setFollowButton(Button followButton){
         followButton.setOnClickListener(new View.OnClickListener() {
             @Override

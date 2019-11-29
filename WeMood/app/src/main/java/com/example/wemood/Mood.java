@@ -1,12 +1,18 @@
 package com.example.wemood;
 
+/**
+ * @author Ziyi Ye
+ *
+ * @version 2.0
+ */
+
 import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Class name: Mood
  *
- * version 1.0
+ * version 2.0
  *
  * Date: November 1, 2019
  *

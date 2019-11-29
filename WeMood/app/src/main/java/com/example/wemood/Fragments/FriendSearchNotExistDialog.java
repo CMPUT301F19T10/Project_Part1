@@ -1,5 +1,11 @@
 package com.example.wemood.Fragments;
 
+/**
+ * @author Alpha Hou
+ *
+ * @version 2.0
+ */
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
@@ -7,6 +13,16 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+
+/**
+ * Class name: FriendSearchNotExistDialog
+ *
+ * Version 2.0
+ *
+ * Date: November 7, 2019
+ *
+ * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
+ */
 
 public class FriendSearchNotExistDialog extends DialogFragment {
 

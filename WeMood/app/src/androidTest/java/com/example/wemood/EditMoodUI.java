@@ -1,5 +1,11 @@
 package com.example.wemood;
 
+/**
+ * @author Ziyi Ye
+ *
+ * @version 1.0
+ */
+
 import android.app.Activity;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,6 +20,16 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertTrue;
+
+/**
+ * Class name: EditMoodUI
+ *
+ * Version 1.0
+ *
+ * Date: November 26, 2019
+ *
+ * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
+ */
 
 public class EditMoodUI {
     private Solo solo;

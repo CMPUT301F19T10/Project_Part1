@@ -1,5 +1,11 @@
 package com.example.wemood;
 
+/**
+ * @author Ziyi Ye
+ *
+ * @version 2.0
+ */
+
 import android.app.Activity;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -14,6 +20,16 @@ import org.junit.Test;
 import androidx.test.rule.ActivityTestRule;
 
 import com.robotium.solo.Solo;
+
+/**
+ * Class name: AddMoodActivityTest
+ *
+ * Version 2.0
+ *
+ * Date: November 26, 2019
+ *
+ * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
+ */
 
 public class AddMoodActivityTest {
     private Solo solo;
