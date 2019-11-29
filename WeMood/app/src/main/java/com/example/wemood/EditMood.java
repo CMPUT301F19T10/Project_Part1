@@ -1,6 +1,9 @@
-
 package com.example.wemood;
-
+/**
+ * @author Ziyi Ye
+ *
+ * @version 1.0
+ */
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -32,11 +35,28 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+
+
+/**
+ * Class name: AddMoodActivity
+ *
+ * Version 1.0
+ *
+ * Date: November 4, 2019
+ *
+ * Copyright [2019] [Team10, Fall CMPUT301, University of Alberta]
+ */
+
+/**
+ * Be able to edit a selected mood
+ */
 public class EditMood extends AppCompatActivity {
     String emotion;
     Uri imageUri;
@@ -55,8 +75,7 @@ public class EditMood extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_mood);
-        setSituationSpinner();
-        setEmotionSpinner();
+
 
         backButton = findViewById(R.id.back);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -72,9 +91,11 @@ public class EditMood extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         mood = (Mood) intent.getSerializableExtra("mood");
 
+        setSituationSpinner();
+        setEmotionSpinner();
+
         mAuth = FirebaseAuth.getInstance();
         final FirebaseUser user = mAuth.getCurrentUser();
-
         final String userName = user.getDisplayName();
 
         //open ImageView
@@ -91,28 +112,13 @@ public class EditMood extends AppCompatActivity {
         collectionReference = db.collection("Users")
                 .document(userName)
                 .collection("MoodList");
-
-
-        //get edit text
-        EditText reason = findViewById(R.id.reason);
-        reason.setText(mood.getComment());
-        EditText title = findViewById(R.id.title);
-        title.setText(mood.getExplanation());
-
-        //get image if it exists
-
-        if (mood.getUri() != null) {
-            Picasso.get().load(mood.getUri()).into(imageView);
-        }else{
-            imageView.setImageResource(R.drawable.default_photo);
-        }
-
-
+        setEditText(mood);
+        //click edit button
         Button Edit = findViewById(R.id.add);
         Edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //set
+                //collect new mood information
                 EditText r = findViewById(R.id.reason);
                 final String newReason = r.getText().toString();
                 EditText t = findViewById(R.id.title);
@@ -127,19 +133,19 @@ public class EditMood extends AppCompatActivity {
                 else {
                     final DocumentReference docRef = db.collection("Users").document(userName);
 
+                    // if image changes then need to update uri
                     if (imageUri != null) {
-                        System.out.println("not null");
                         final StorageReference Image = Folder.child(mood.getDatetime().toString());
                         Image.putFile(imageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                             @Override
                             public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-
                                 return Image.getDownloadUrl();
                             }
                         }).addOnCompleteListener(new OnCompleteListener<Uri>() {
                             @Override
                             public void onComplete(@NonNull Task<Uri> task) {
                                 if (task.isSuccessful()) {
+                                    //set new information to the mood
                                     downloadUri = task.getResult().toString();
                                     mood.setUri(downloadUri);
                                     mood.setComment(newReason);
@@ -154,6 +160,7 @@ public class EditMood extends AppCompatActivity {
                                                     docRef.collection("MoodList").document(mood.getDatetime().toString()).set(mood);
                                                 }
                                             });
+                                    // check emotion string
                                     if (emotion.equals("happy")) {
                                         returnHappy(mood);
                                     } else if (emotion.equals("angry")) {
@@ -169,7 +176,7 @@ public class EditMood extends AppCompatActivity {
                             }
                         });
                     }else{
-
+                        // if image doesn't change then no need to update uri
                         mood.setComment(newReason);
                         mood.setExplanation(newTitle);
                         mood.setEmotionalState(emotionString);
@@ -182,6 +189,7 @@ public class EditMood extends AppCompatActivity {
                                         docRef.collection("MoodList").document(mood.getDatetime().toString()).set(mood);
                                     }
                                 });
+                        // check emotion string
                         if (emotion.equals("happy")) {
                             returnHappy(mood);
                         } else if (emotion.equals("angry")) {
@@ -208,6 +216,7 @@ public class EditMood extends AppCompatActivity {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                // check emotion string
                                 if (emotion.equals("happy")) {
                                     HappyDelete();
                                 } else if (emotion.equals("angry")) {
@@ -230,8 +239,28 @@ public class EditMood extends AppCompatActivity {
     }
 
     private void setSituationSpinner() {
+        String[] situations= {"choose a situation","alone", "with one other person", "with two to several people", "with a crowd"};
+
+        if (mood.getSocialSituation().equals("alone")){
+            String temp = situations[0];
+            situations[0] = situations[1];
+            situations[1] = temp;
+        }else if (mood.getSocialSituation().equals("with one other person")){
+            String temp = situations[0];
+            situations[0] = situations[2];
+            situations[2] = temp;
+        }else if (mood.getSocialSituation().equals("with two to several people")){
+            String temp = situations[0];
+            situations[0] = situations[3];
+            situations[3] = temp;
+        }else if (mood.getSocialSituation().equals("with a crowd")){
+            String temp = situations[0];
+            situations[0] = situations[4];
+            situations[4] = temp;
+        }
         Spinner situation = findViewById(R.id.situations);
-        ArrayAdapter<CharSequence> sitAdapter = ArrayAdapter.createFromResource(this, R.array.situations, android.R.layout.simple_spinner_item);
+        ArrayAdapter<String> sitAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, situations);
+        //ArrayAdapter<CharSequence> sitAdapter = ArrayAdapter.createFromResource(this, R.array.situations, android.R.layout.simple_spinner_item);
         sitAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         situation.setAdapter(sitAdapter);
         situation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -249,33 +278,54 @@ public class EditMood extends AppCompatActivity {
         });
     }
 
+    /**
+     * return to the happy mood history
+     */
     private void HappyDelete() {
         Intent returnIntent = new Intent(this, HappyMood.class);
         setResult(5, returnIntent);
         finish();
     }
+
+    /**
+     * return to the angry mood history
+     */
     private void AngryDelete() {
         Intent returnIntent = new Intent(this, AngryMood.class);
         setResult(5, returnIntent);
         finish();
     }
+
+    /**
+     * return to the lonely mood history
+     */
     private void LonelyDelete() {
         Intent returnIntent = new Intent(this, LonelyMood.class);
         setResult(5, returnIntent);
         finish();
     }
+
+    /**
+     * return to the sad mood history
+     */
     private void SadDelete() {
         Intent returnIntent = new Intent(this, SadMood.class);
         setResult(5, returnIntent);
         finish();
     }
+
+    /**
+     * return to the tired mood history
+     */
     private void TiredDelete() {
         Intent returnIntent = new Intent(this, TiredMood.class);
         setResult(5, returnIntent);
         finish();
     }
 
-
+    /**
+     * return the modified happy mood
+     */
     private void returnHappy(Mood mood) {
         Intent returnIntent = new Intent(this, HappyMood.class);
         returnIntent.putExtra("mood", mood);
@@ -283,6 +333,9 @@ public class EditMood extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * return the modified angry mood
+     */
     private void returnAngry(Mood mood) {
         Intent returnIntent = new Intent(this, AngryMood.class);
         returnIntent.putExtra("mood", mood);
@@ -290,6 +343,9 @@ public class EditMood extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * return the modified lonely mood
+     */
     private void returnLonely(Mood mood) {
         Intent returnIntent = new Intent(this, LonelyMood.class);
         returnIntent.putExtra("mood", mood);
@@ -297,6 +353,9 @@ public class EditMood extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * return the modified sad mood
+     */
     private void returnSad(Mood mood) {
         Intent returnIntent = new Intent(this, SadMood.class);
         returnIntent.putExtra("mood", mood);
@@ -304,6 +363,9 @@ public class EditMood extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * return the modified tired mood
+     */
     private void returnTired(Mood mood) {
         Intent returnIntent = new Intent(this, TiredMood.class);
         returnIntent.putExtra("mood", mood);
@@ -332,15 +394,55 @@ public class EditMood extends AppCompatActivity {
     }
 
     /**
+     * set mood information to the edittext
+     * @param mood
+     */
+    public void setEditText(Mood mood){
+        //get edit text
+        EditText reason = findViewById(R.id.reason);
+        reason.setText(mood.getComment());
+        EditText title = findViewById(R.id.title);
+        title.setText(mood.getExplanation());
+
+        //get image if it exists
+
+        if (mood.getUri() != null) {
+            Picasso.get().load(mood.getUri()).into(imageView);
+        }else{
+            imageView.setImageResource(R.drawable.default_photo);
+        }
+    }
+
+    /**
      * initialize the emotion spinner
      * use emotion spinner to select an emotion
      */
-    private void setEmotionSpinner() {
-        Spinner emotion = findViewById(R.id.emotionals);
-        ArrayAdapter<CharSequence> emoAdapter = ArrayAdapter.createFromResource(this, R.array.emotionals, android.R.layout.simple_spinner_item);
+    public void setEmotionSpinner() {
+        Spinner e = findViewById(R.id.emotionals);
+        String[] emotions= {"happy", "sad", "lonely", "angry", "tired"};
+        if (emotion.equals("sad")){
+            String temp = emotions[0];
+            emotions[0] = emotions[1];
+            emotions[1] = temp;
+        }else if (emotion.equals("lonely")){
+            String temp = emotions[0];
+            emotions[0] = emotions[2];
+            emotions[2] = temp;
+        }else if (emotion.equals("angry")){
+            String temp = emotions[0];
+            emotions[0] = emotions[3];
+            emotions[3] = temp;
+        }else if (emotion.equals("tired")){
+            String temp = emotions[0];
+            emotions[0] = emotions[4];
+            emotions[4] = temp;
+        }
+
+        ArrayAdapter<String> emoAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, emotions);
+        //ArrayAdapter<CharSequence> emoAdapter = ArrayAdapter.createFromResource(this, R.array.emotionals, android.R.layout.simple_spinner_item);
         emoAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        emotion.setAdapter(emoAdapter);
-        emotion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        e.setAdapter(emoAdapter);
+        e.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (parent.getItemAtPosition(position).equals("choose an emotion")) {
