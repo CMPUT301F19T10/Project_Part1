@@ -65,7 +65,7 @@ public class RequestFragmentDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
                 .setTitle("Friend Request")
-                .setMessage("Do you want " + requestName +" to be your friend ?")
+                .setMessage("Do you accept "+ requestName +" add you to be his/her friend so that he/she will be able to follow and view your most recent mood?")
                 .setNegativeButton("Decline", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

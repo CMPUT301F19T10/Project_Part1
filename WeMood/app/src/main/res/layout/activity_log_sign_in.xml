@@ -31,6 +31,7 @@
 
 
         android:baselineAligned="false"
+        android:fontFamily="@font/abril_fatface"
         android:gravity="center"
         android:text="Login"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"

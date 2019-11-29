@@ -51,7 +51,7 @@ public class MainActivityFriendPageTest {
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
         //initialize the ShowActivity environment before testing
         solo.assertCurrentActivity("Not in LogSignInActivity", LogSignInActivity.class);
-        solo.enterText((EditText) solo.getView(R.id.add_user_name), "winsordby@gmail.com");
+        solo.enterText((EditText) solo.getView(R.id.add_user_name), "dbytest@gmail.com");
         solo.enterText((EditText) solo.getView(R.id.add_user_password),"dby123");
         solo.clickOnView(solo.getView(R.id.sign_in_button));
         solo.waitForActivity(MainActivity.class,2000);
