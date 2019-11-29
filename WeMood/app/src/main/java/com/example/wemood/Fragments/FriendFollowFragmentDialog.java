@@ -65,5 +65,4 @@ public class FriendFollowFragmentDialog extends DialogFragment {
                 })
                 .create();
     }
-
 }
