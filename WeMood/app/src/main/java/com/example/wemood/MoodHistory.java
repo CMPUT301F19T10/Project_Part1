@@ -32,6 +32,7 @@ public class MoodHistory extends AppCompatActivity {
     private Button lonelyButton;
     private Button angryButton;
     private Button tiredButton;
+    private Button allButton;
 
     /**
      * Initialize the activity
@@ -49,6 +50,7 @@ public class MoodHistory extends AppCompatActivity {
         lonelyButton = findViewById(R.id.lonely);
         angryButton = findViewById(R.id.angry);
         tiredButton = findViewById(R.id.tired);
+        allButton = findViewById(R.id.all);
 
         // Go back to ProfileFragment Fragment
         backProfile();
@@ -67,6 +69,9 @@ public class MoodHistory extends AppCompatActivity {
 
         // Go to TiredMood Activity
         goTired();
+
+        // Go to AllMood Activity
+        goAll();
     }
 
     /**
@@ -147,6 +152,20 @@ public class MoodHistory extends AppCompatActivity {
             public void onClick(View view) {
                 // Go to TiredMood Activity
                 Intent intent = new Intent(MoodHistory.this, TiredMood.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    /**
+     * Go to AllMood Activity
+     */
+    public void goAll() {
+        allButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Go to AllMood Activity
+                Intent intent = new Intent(MoodHistory.this, AllMood.class);
                 startActivity(intent);
             }
         });
