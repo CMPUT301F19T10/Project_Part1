@@ -143,7 +143,7 @@ public class AllMood extends AppCompatActivity {
         moodList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(AllMood.this, EditMood.class);
+                Intent intent = new Intent(AllMood.this, EditAll.class);
                 intent.putExtra("string", moodDataList.get(position).getEmotionalState());
                 Mood mood = moodDataList.get(position);
                 intent.putExtra("mood", mood);
@@ -196,9 +196,6 @@ public class AllMood extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 Mood mood = (Mood) data.getSerializableExtra("mood");
                 moodDataList.set(i, mood);
-                if (!mood.getEmotionalState().equals("happy")) {
-                    moodDataList.remove(i);
-                }
                 moodAdapter = new FriendMoodList(getBaseContext(), moodDataList);
                 moodList.setAdapter(moodAdapter);
             } else if (resultCode == 5) {
