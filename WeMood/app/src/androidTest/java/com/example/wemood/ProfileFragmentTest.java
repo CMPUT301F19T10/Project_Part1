@@ -184,6 +184,22 @@ public class ProfileFragmentTest {
         solo.waitForActivity(MoodHistory.class, 5000);
         solo.assertCurrentActivity("Not in MoodHistory", MoodHistory.class);
 
+        // Check all mood
+        Button allButton = (Button) solo.getView(R.id.all);
+        solo.clickOnView(allButton);
+        solo.waitForActivity(AllMood.class, 5000);
+        solo.assertCurrentActivity("Not in AllMood", AllMood.class);
+        // Check title for HappyMood
+        assertTrue(solo.waitForText("My All Moods", 1, 2000));
+        // Check ListView for HappyMood
+        ListView allMoodList = (ListView) solo.getView(R.id.moodList);
+        solo.waitForView(allMoodList, 1, 2000);
+        // Check return to MoodHistory
+        ImageButton allBackButton = (ImageButton) solo.getView(R.id.back);
+        solo.clickOnView(allBackButton);
+        solo.waitForActivity(MoodHistory.class, 5000);
+        solo.assertCurrentActivity("Not in MoodHistory", MoodHistory.class);
+
         // Check return to ProfileFragment
         ImageButton historyBackButton = (ImageButton) solo.getView(R.id.back);
         solo.clickOnView(historyBackButton);
