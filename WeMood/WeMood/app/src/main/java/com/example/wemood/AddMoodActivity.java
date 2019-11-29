@@ -165,6 +165,8 @@ public class AddMoodActivity extends AppCompatActivity{
                                 }
                             }
                         });
+                    }else{
+                        addMood(currentTime, emotionString, explanation, situationString, title, docRef, downloadUri);
                     }
 
 
