@@ -31,8 +31,7 @@
         android:gravity="center|left"
         android:text="My Moods History"
         android:textColor="#000000"
-        android:fontFamily="@font/aclonica"
-        android:textSize="25sp"
+        android:textSize="32sp"
         android:textStyle="bold"
         app:layout_constraintBaseline_toBaselineOf="@+id/back"
         app:layout_constraintEnd_toEndOf="parent"
@@ -42,21 +41,21 @@
     <Button
         android:id="@+id/happy"
         android:layout_width="250dp"
-        android:layout_height="75dp"
+        android:layout_height="70dp"
         android:background="#CCFD5B5B"
         android:text="Happy"
         android:textColor="#FFFFFF"
         android:textSize="28sp"
         app:layout_constraintBottom_toTopOf="@+id/sad"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.800"
+        app:layout_constraintHorizontal_bias="0.801"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/back" />
 
     <Button
         android:id="@+id/sad"
         android:layout_width="250dp"
-        android:layout_height="75dp"
+        android:layout_height="70dp"
         android:background="#CC6A6AF0"
         android:text="Sad"
         android:textColor="#FFFFFF"
@@ -70,7 +69,7 @@
     <Button
         android:id="@+id/lonely"
         android:layout_width="250dp"
-        android:layout_height="75dp"
+        android:layout_height="70dp"
         android:background="#CCFF9800"
         android:text="Lonely"
         android:textColor="#000000"
@@ -84,7 +83,7 @@
     <Button
         android:id="@+id/angry"
         android:layout_width="250dp"
-        android:layout_height="75dp"
+        android:layout_height="70dp"
         android:background="#FAE95A"
         android:text="Angry"
         android:textColor="#000000"
@@ -98,17 +97,30 @@
     <Button
         android:id="@+id/tired"
         android:layout_width="250dp"
-        android:layout_height="75dp"
-        android:layout_marginBottom="35dp"
+        android:layout_height="70dp"
         android:background="#A6797979"
         android:text="Tired"
         android:textColor="#FFFFFF"
         android:textSize="28sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/all"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.800"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/angry" />
+
+    <Button
+        android:id="@+id/all"
+        android:layout_width="290dp"
+        android:layout_height="70dp"
+        android:background="#E7ECEC"
+        android:text="All Moods"
+        android:textColor="#000000"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tired" />
 
     <ImageView
         android:id="@+id/happyIcon"
@@ -116,7 +128,7 @@
         android:layout_height="75dp"
         app:layout_constraintBottom_toTopOf="@+id/sadIcon"
         app:layout_constraintEnd_toStartOf="@+id/happy"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.508"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/back"
         app:srcCompat="@drawable/happy_marker" />
@@ -138,7 +150,7 @@
         android:layout_height="75dp"
         app:layout_constraintBottom_toTopOf="@+id/tiredIcon"
         app:layout_constraintEnd_toStartOf="@+id/angry"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.508"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lonelyIcon"
         app:srcCompat="@drawable/angry_marker" />
@@ -147,13 +159,12 @@
         android:id="@+id/tiredIcon"
         android:layout_width="70dp"
         android:layout_height="75dp"
-        android:layout_marginBottom="35dp"
+        android:layout_marginBottom="103dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/tired"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.508"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/angryIcon"
-        app:layout_constraintVertical_bias="0.345"
         app:srcCompat="@drawable/tired_marker" />
 
     <ImageView
@@ -166,4 +177,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sadIcon"
         app:srcCompat="@drawable/zoey" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
