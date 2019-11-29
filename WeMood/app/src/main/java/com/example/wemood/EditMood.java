@@ -32,10 +32,14 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 public class EditMood extends AppCompatActivity {
     String emotion;
@@ -55,8 +59,7 @@ public class EditMood extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_mood);
-        setSituationSpinner();
-        setEmotionSpinner();
+
 
         backButton = findViewById(R.id.back);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -71,6 +74,9 @@ public class EditMood extends AppCompatActivity {
         emotion = intent.getStringExtra("string");
         db = FirebaseFirestore.getInstance();
         mood = (Mood) intent.getSerializableExtra("mood");
+
+        setSituationSpinner();
+        setEmotionSpinner();
 
         mAuth = FirebaseAuth.getInstance();
         final FirebaseUser user = mAuth.getCurrentUser();
@@ -230,8 +236,28 @@ public class EditMood extends AppCompatActivity {
     }
 
     private void setSituationSpinner() {
+        String[] situations= {"choose a situation","alone", "with one other person", "with two to several people", "with a crowd"};
+
+        if (mood.getSocialSituation().equals("alone")){
+            String temp = situations[0];
+            situations[0] = situations[1];
+            situations[1] = temp;
+        }else if (mood.getSocialSituation().equals("with one other person")){
+            String temp = situations[0];
+            situations[0] = situations[2];
+            situations[2] = temp;
+        }else if (mood.getSocialSituation().equals("with two to several people")){
+            String temp = situations[0];
+            situations[0] = situations[3];
+            situations[3] = temp;
+        }else if (mood.getSocialSituation().equals("with a crowd")){
+            String temp = situations[0];
+            situations[0] = situations[4];
+            situations[4] = temp;
+        }
         Spinner situation = findViewById(R.id.situations);
-        ArrayAdapter<CharSequence> sitAdapter = ArrayAdapter.createFromResource(this, R.array.situations, android.R.layout.simple_spinner_item);
+        ArrayAdapter<String> sitAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, situations);
+        //ArrayAdapter<CharSequence> sitAdapter = ArrayAdapter.createFromResource(this, R.array.situations, android.R.layout.simple_spinner_item);
         sitAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         situation.setAdapter(sitAdapter);
         situation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -336,11 +362,31 @@ public class EditMood extends AppCompatActivity {
      * use emotion spinner to select an emotion
      */
     private void setEmotionSpinner() {
-        Spinner emotion = findViewById(R.id.emotionals);
-        ArrayAdapter<CharSequence> emoAdapter = ArrayAdapter.createFromResource(this, R.array.emotionals, android.R.layout.simple_spinner_item);
+        Spinner e = findViewById(R.id.emotionals);
+        String[] emotions= {"happy", "sad", "lonely", "angry", "tired"};
+        if (emotion.equals("sad")){
+            String temp = emotions[0];
+            emotions[0] = emotions[1];
+            emotions[1] = temp;
+        }else if (emotion.equals("lonely")){
+            String temp = emotions[0];
+            emotions[0] = emotions[2];
+            emotions[2] = temp;
+        }else if (emotion.equals("angry")){
+            String temp = emotions[0];
+            emotions[0] = emotions[3];
+            emotions[3] = temp;
+        }else if (emotion.equals("tired")){
+            String temp = emotions[0];
+            emotions[0] = emotions[4];
+            emotions[4] = temp;
+        }
+
+        ArrayAdapter<String> emoAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, emotions);
+        //ArrayAdapter<CharSequence> emoAdapter = ArrayAdapter.createFromResource(this, R.array.emotionals, android.R.layout.simple_spinner_item);
         emoAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        emotion.setAdapter(emoAdapter);
-        emotion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        e.setAdapter(emoAdapter);
+        e.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (parent.getItemAtPosition(position).equals("choose an emotion")) {

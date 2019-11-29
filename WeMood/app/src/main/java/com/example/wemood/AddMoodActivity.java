@@ -85,6 +85,7 @@ public class AddMoodActivity extends AppCompatActivity{
     private double longitude;
     private double latitude;
     private LocationListener mLocationListener;
+    private Context context;
 
     /**
      * Initialize
@@ -144,7 +145,7 @@ public class AddMoodActivity extends AppCompatActivity{
                     db = FirebaseFirestore.getInstance();
 
                     //add image to storage if it is not null
-                    if (imageUri != null) {
+                    if (imageUri != null){
                         final StorageReference Image = Folder.child(currentTime.toString());
                         Image.putFile(imageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                             @Override
@@ -160,12 +161,14 @@ public class AddMoodActivity extends AppCompatActivity{
                                 if (task.isSuccessful()) {
                                     downloadUri = task.getResult().toString();
                                     addMood(currentTime, emotionString, explanation, situationString, title, docRef, downloadUri);
+
                                 }
                             }
                         });
-                    } else {
+                    }else{
                         addMood(currentTime, emotionString, explanation, situationString, title, docRef, downloadUri);
                     }
+
 
                     finish();
                 }

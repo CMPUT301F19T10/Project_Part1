@@ -61,6 +61,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="80dp"
         android:text="Post"
+        android:background="#F8E754"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -93,12 +94,12 @@
         android:id="@+id/gpsSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="show your location   "
+        android:text="location   "
         android:textOff="Location off"
         android:textOn="Location on"
+        android:gravity="center"
         app:layout_constraintBaseline_toBaselineOf="@+id/locationMessage"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.112"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView

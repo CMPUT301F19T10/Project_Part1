@@ -18,13 +18,14 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="Please enter a UserID"
+            android:hint="Please enter a username"
             android:inputType="textPersonName" />
 
         <Button
             android:id="@+id/friend_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="#F8E754"
             android:padding="5dp"
             android:text="Search"
             android:textSize="15sp" />
