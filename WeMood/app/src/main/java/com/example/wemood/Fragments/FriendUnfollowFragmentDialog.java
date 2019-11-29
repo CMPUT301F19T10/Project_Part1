@@ -15,6 +15,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.example.wemood.R;
 
 /**
  * Class name: FriendUnfollowFragmentDialog
@@ -39,7 +42,6 @@ public class FriendUnfollowFragmentDialog extends DialogFragment {
     }
 
     public interface OnFragmentInteractionListener {
-        //        public void setCancelButton(String message);
         public void UnfollowRequest();
 
     }
@@ -71,5 +73,4 @@ public class FriendUnfollowFragmentDialog extends DialogFragment {
                 })
                 .create();
     }
-
 }
