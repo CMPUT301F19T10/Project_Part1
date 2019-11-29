@@ -112,7 +112,7 @@ public class EditMood extends AppCompatActivity {
         collectionReference = db.collection("Users")
                 .document(userName)
                 .collection("MoodList");
-
+        setEditText(mood);
         //click edit button
         Button Edit = findViewById(R.id.add);
         Edit.setOnClickListener(new View.OnClickListener() {
